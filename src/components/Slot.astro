@@ -1,0 +1,362 @@
+---
+/*
+  ぴのくんスロット — まろぴよさんの「とりっぴるスロットリ」を参考に。
+  3 リール × ぴのくんスタンプ全 24 枚から抽選。
+  - スピン回数 / ぞろ目（3 つ揃い）回数を localStorage に保存
+  - 各リール は 200ms ずつズレて止まる
+  - スタンプ画像は CSS クロップしない（生 <img>）
+*/
+const STAMPS = Array.from({ length: 24 }, (_, i) => i + 1);
+const REEL_INDEXES = [0, 1, 2];
+---
+
+<section class="slot-section" aria-labelledby="slot-title">
+  <div class="container">
+    <h2 id="slot-title" class="slot-heading">
+      <span class="star">★</span> ぴのくんスロット <span class="star">★</span>
+    </h2>
+
+    <div class="slot-machine card">
+      <div class="reels">
+        {REEL_INDEXES.map((r) => (
+          <div class="reel" data-reel={r}>
+            <ul class="reel-strip">
+              {STAMPS.map((n) => (
+                <li>
+                  <img
+                    src={`/assets/pinokun/stamps/${n}.png`}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="120"
+                    height="120"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <button id="slot-lever" class="lever" type="button" aria-label="スロットを回す">
+          <span class="lever-stick" aria-hidden="true"></span>
+          <span class="lever-knob" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <p class="slot-stats">
+        あなたの回転数 <span id="slot-spins" class="num">0</span> 回
+        <span class="sep">/</span>
+        ぞろ目 <span id="slot-matches" class="num">0</span> 回
+      </p>
+
+      <p id="slot-result" class="slot-result" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ============== Slot logic ==============
+  const REEL_COUNT = 3;
+  const STAMP_COUNT = 24;
+
+  const lever = document.getElementById("slot-lever") as HTMLButtonElement | null;
+  const spinsEl = document.getElementById("slot-spins");
+  const matchesEl = document.getElementById("slot-matches");
+  const resultEl = document.getElementById("slot-result");
+  const reels = Array.from(document.querySelectorAll<HTMLElement>(".reel"));
+  const strips = reels.map((r) => r.querySelector<HTMLElement>(".reel-strip")!);
+
+  // モバイル/デスクトップで .reel の高さが変わるので実測する
+  const measureItemHeight = (): number => {
+    const firstReel = reels[0];
+    if (!firstReel) return 120;
+    const rect = firstReel.getBoundingClientRect();
+    return rect.height || 120;
+  };
+
+  if (lever && spinsEl && matchesEl && strips.length === REEL_COUNT) {
+    // ---------- Persistence ----------
+    const STORAGE_KEY_SPINS = "pino_slot_spins";
+    const STORAGE_KEY_MATCHES = "pino_slot_matches";
+    const readNum = (k: string) => {
+      const raw = localStorage.getItem(k);
+      const n = raw ? parseInt(raw, 10) : 0;
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    };
+    let spins = readNum(STORAGE_KEY_SPINS);
+    let matches = readNum(STORAGE_KEY_MATCHES);
+    spinsEl.textContent = String(spins);
+    matchesEl.textContent = String(matches);
+
+    // ---------- Initial reel positions (random rest state) ----------
+    const initial = strips.map(() => Math.floor(Math.random() * STAMP_COUNT));
+    const itemH0 = measureItemHeight();
+    strips.forEach((s, i) => {
+      s.style.transition = "none";
+      s.style.transform = `translateY(${-initial[i] * itemH0}px)`;
+    });
+
+    // ウィンドウサイズが変わったら現在位置を再計算（リールがズレないように）
+    window.addEventListener("resize", () => {
+      const h = measureItemHeight();
+      strips.forEach((s, i) => {
+        s.style.transition = "none";
+        s.style.transform = `translateY(${-lastResult[i] * h}px)`;
+      });
+    });
+
+    let spinning = false;
+    let lastResult: number[] = [...initial];
+
+    lever.addEventListener("click", () => {
+      if (spinning) return;
+      spinning = true;
+      lever.classList.add("is-pulling");
+      if (resultEl) resultEl.textContent = "";
+
+      const itemH = measureItemHeight();
+
+      // 各リールのターゲットインデックスを抽選
+      const targets = Array.from({ length: REEL_COUNT }, () =>
+        Math.floor(Math.random() * STAMP_COUNT)
+      );
+
+      // リールごとに、最低 N 周＋目的位置で止める
+      const baseLoops = 4;
+      strips.forEach((strip, i) => {
+        const extra = i * 1; // 後段リールほど多く回す（ズレ感を強調）
+        const totalCycles = baseLoops + extra;
+
+        // 一旦 transition 解除して現在位置に固定 → 次フレームで transition 戻して目的地へ
+        strip.style.transition = "none";
+        strip.style.transform = `translateY(${-lastResult[i] * itemH}px)`;
+        // force reflow
+        void strip.offsetHeight;
+
+        const dur = 1.4 + i * 0.45; // 左から右へ少しずつ長く
+        strip.style.transition = `transform ${dur}s cubic-bezier(0.22, 1, 0.36, 1)`;
+        strip.style.transform = `translateY(${
+          -(totalCycles * STAMP_COUNT + targets[i]) * itemH
+        }px)`;
+      });
+
+      // 最後のリール停止後の処理
+      const lastDur = 1.4 + (REEL_COUNT - 1) * 0.45;
+      window.setTimeout(() => {
+        spinning = false;
+        lever.classList.remove("is-pulling");
+        lastResult = targets;
+
+        // 表示位置を「論理的な現在位置」に戻す（次回の起点を綺麗にする）
+        const h = measureItemHeight();
+        strips.forEach((strip, i) => {
+          strip.style.transition = "none";
+          strip.style.transform = `translateY(${-targets[i] * h}px)`;
+        });
+
+        // カウンター更新
+        spins += 1;
+        localStorage.setItem(STORAGE_KEY_SPINS, String(spins));
+        spinsEl.textContent = String(spins);
+
+        const allMatch =
+          targets[0] === targets[1] && targets[1] === targets[2];
+        if (allMatch) {
+          matches += 1;
+          localStorage.setItem(STORAGE_KEY_MATCHES, String(matches));
+          matchesEl.textContent = String(matches);
+          if (resultEl) {
+            resultEl.textContent = "ぞろ目！おめでとう ✨";
+            resultEl.classList.add("is-jackpot");
+            window.setTimeout(() => resultEl.classList.remove("is-jackpot"), 2400);
+          }
+        }
+      }, lastDur * 1000 + 50);
+    });
+  }
+</script>
+
+<style>
+  .slot-section {
+    padding: 28px 0 12px;
+  }
+  .slot-heading {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: var(--brown-1);
+    margin-bottom: 14px;
+  }
+  .slot-heading .star {
+    color: var(--orange);
+    margin: 0 8px;
+  }
+
+  .slot-machine {
+    /* card class が背景・枠・余白を持つので、ここでは中身レイアウトのみ */
+    text-align: center;
+  }
+
+  .reels {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: linear-gradient(180deg, #2a1f15 0%, #3a2c1f 100%);
+    border: 3px solid var(--yellow-deep);
+    border-radius: 14px;
+    box-shadow:
+      inset 0 2px 0 rgba(255, 230, 150, 0.15),
+      0 4px 0 rgba(120, 90, 50, 0.25);
+  }
+
+  .reel {
+    width: 96px;
+    height: 120px;
+    overflow: hidden;
+    background: var(--cream-1);
+    border: 2px solid var(--cream-5);
+    border-radius: 8px;
+    position: relative;
+    /* 中央以外は薄く（覗き窓らしさ） */
+  }
+  .reel::before,
+  .reel::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 22px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .reel::before {
+    top: 0;
+    background: linear-gradient(180deg, rgba(255, 253, 244, 0.95), transparent);
+  }
+  .reel::after {
+    bottom: 0;
+    background: linear-gradient(0deg, rgba(255, 253, 244, 0.95), transparent);
+  }
+
+  .reel-strip {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* will-change で transform をコンポジターに乗せる */
+    will-change: transform;
+  }
+  .reel-strip li {
+    width: 96px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .reel-strip img {
+    width: 92%;
+    height: 92%;
+    object-fit: contain;
+  }
+
+  /* ---------- Lever ---------- */
+  .lever {
+    position: relative;
+    width: 38px;
+    height: 120px;
+    margin-left: 6px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+    /* タップ領域は広く、見た目は棒＋ノブ */
+  }
+  .lever:disabled { cursor: not-allowed; opacity: 0.6; }
+  .lever .lever-stick {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 6px;
+    width: 6px;
+    height: 78px;
+    background: linear-gradient(180deg, #c9c9d0, #7d7d85);
+    border-radius: 3px;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+  }
+  .lever .lever-knob {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff8a5b, #d63a1a 70%, #8a1d09);
+    box-shadow:
+      inset 1px 1px 2px rgba(255, 255, 255, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.25s var(--ease-out-quint);
+  }
+  .lever:hover .lever-knob { transform: translate(-50%, -2px) scale(1.05); }
+  .lever:active .lever-knob,
+  .lever.is-pulling .lever-knob {
+    transform: translate(-50%, 38px) scale(0.95);
+  }
+  .lever:active .lever-stick,
+  .lever.is-pulling .lever-stick {
+    height: 40px;
+  }
+
+  /* ---------- Stats / result ---------- */
+  .slot-stats {
+    margin-top: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brown-3);
+    letter-spacing: 0.04em;
+  }
+  .slot-stats .num {
+    display: inline-block;
+    min-width: 24px;
+    padding: 2px 6px;
+    margin: 0 2px;
+    background: var(--cream-2);
+    border: 1px solid var(--cream-5);
+    border-radius: 4px;
+    font-family: var(--font-display, monospace);
+    color: var(--brown-1);
+  }
+  .slot-stats .sep { margin: 0 4px; color: var(--brown-5); }
+
+  .slot-result {
+    min-height: 1.6em;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--orange);
+    letter-spacing: 0.02em;
+    transition: transform 0.25s var(--ease-out-quint);
+  }
+  .slot-result.is-jackpot {
+    animation: slotPop 0.6s ease-out 1, slotBounce 0.5s ease-in-out 2 0.6s;
+    color: var(--orange-deep);
+  }
+  @keyframes slotPop {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  @keyframes slotBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 480px) {
+    .reel { width: 76px; height: 100px; }
+    .reel-strip li { width: 76px; height: 100px; }
+    .lever { height: 100px; }
+    .lever .lever-stick { height: 60px; }
+  }
+</style>

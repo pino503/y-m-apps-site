@@ -1,0 +1,81 @@
+---
+/**
+ * Pinokun stamp with the LINE-stamp speech-bubble text cropped out.
+ *
+ * The 24-piece stamp set has Japanese text (e.g. 「あそぼ！」「むりw」)
+ * to one side of the cat character. For decorative use on the site
+ * we want the cat alone, no text. Each stamp is rendered as a CSS
+ * background-image that's zoomed in and positioned so only the
+ * character side is visible.
+ *
+ * `num`  : stamp number (1–24)
+ * `size` : width AND height in px (stamps are square)
+ * `class`: extra class names appended to the wrapper
+ *
+ * Stamps where the text is on the LEFT (character on right) need
+ * the visible window to land on the right; vice versa for the
+ * stamps with text on the right. The TEXT_SIDE map below was
+ * derived from inspecting each used stamp; defaults to "left" for
+ * unmapped numbers (leans on the more common arrangement).
+ */
+interface Props {
+  num: number;
+  size?: number;
+  class?: string;
+  alt?: string;
+}
+
+const { num, size = 96, class: extraClass = "", alt = "" } = Astro.props;
+
+// Stamp number -> which side the speech-bubble text occupies. Anything
+// not listed defaults to "left" (character on right) since that's the
+// majority arrangement in the deck.
+const TEXT_SIDE: Record<number, "left" | "right"> = {
+  1: "left",
+  5: "left",
+  7: "left",
+  10: "left",
+  12: "right",
+  14: "right",
+  18: "right",
+  24: "right",
+};
+const textSide = TEXT_SIDE[num] ?? "left";
+
+// Background offset: when text is on the LEFT we slide the background
+// right so the character side fills the box; opposite for text-right.
+// 100% positions the right edge to the right edge of the box.
+const bgPos = textSide === "left" ? "100% 50%" : "0% 50%";
+
+const url = `/assets/pinokun/stamps/${num}.png`;
+---
+
+<span
+  class={`pino-stamp ${extraClass}`}
+  role={alt ? "img" : "presentation"}
+  aria-label={alt || undefined}
+  style={`--pino-url: url('${url}'); --pino-bg-pos: ${bgPos}; --pino-size: ${size}px;`}
+></span>
+
+<style>
+  .pino-stamp {
+    display: inline-block;
+    width: var(--pino-size);
+    height: var(--pino-size);
+    background-image: var(--pino-url);
+    background-repeat: no-repeat;
+    /* 165% zoom = the character occupies ~60% of the source image.
+       Combined with `background-position` this hides the speech-
+       bubble text on the opposite side. */
+    background-size: 165% auto;
+    background-position: var(--pino-bg-pos);
+    /* Drop-shadow on a span via filter to mimic the look the original
+       <img> got from filter:drop-shadow. */
+    filter: drop-shadow(0 4px 8px rgba(120, 90, 50, 0.15));
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: rotate(-4deg);
+  }
+  .pino-stamp:hover {
+    transform: rotate(2deg) translateY(-3px);
+  }
+</style>

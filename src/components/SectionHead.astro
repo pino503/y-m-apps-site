@@ -1,0 +1,23 @@
+---
+interface Props {
+  title: string;          // text inside the yellow bar
+  lede?: string;          // intro paragraph
+}
+
+const { title, lede } = Astro.props;
+---
+
+<header class="section-head" data-reveal>
+  <h2 class="section-title">{title}</h2>
+  {lede && <p class="lede">{lede}</p>}
+</header>
+
+<style>
+  .section-head { margin-top: 16px; }
+  .lede {
+    font-size: 13px;
+    color: var(--brown-3);
+    line-height: 1.85;
+    margin: 10px 0 18px;
+  }
+</style>

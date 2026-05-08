@@ -1,0 +1,463 @@
+/* ============================================================
+   Y.M Apps — Craft Desk Notebook
+   紙質感・付箋・マスキングテープ・手描き罫線で
+   「机の上に置かれた作業ノート」を目指したテーマ。
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Press+Start+2P&family=DotGothic16&display=swap');
+
+:root {
+  /* ---- Cream palette ---- */
+  --cream-1: #FFFDF4;        /* highest */
+  --cream-2: #FFF8E1;        /* base bg */
+  --cream-3: #FFF3D6;        /* card hover */
+  --cream-4: #FBE8B0;        /* edge */
+  --cream-5: #F2D484;        /* deep cream */
+
+  /* ---- Brown ink ---- */
+  --brown-1: #3E2723;
+  --brown-2: #5D4037;
+  --brown-3: #795548;
+  --brown-4: #8D6E63;
+  --brown-5: #BCAAA4;
+
+  /* ---- Accents ---- */
+  --yellow: #FFD54F;
+  --yellow-soft: #FFE082;
+  --yellow-deep: #FFC107;
+  --orange: #E59F43;
+  --orange-deep: #C07F23;
+  --pino-pink: #FF6B8E;
+  --pino-yellow: #FFD84D;
+
+  /* ---- Type ---- */
+  --font-body: 'M PLUS Rounded 1c', 'Hiragino Sans', 'YuGothic', system-ui, sans-serif;
+  --font-display: 'M PLUS Rounded 1c', 'Hiragino Sans', sans-serif;
+  --font-pixel: 'Press Start 2P', 'DotGothic16', monospace;
+  --font-mono: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* ---- Spacing ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 80px;
+  --space-10: 96px;
+
+  /* ---- Container — narrow for personal-site vibe ---- */
+  --container: 640px;
+  --container-tight: 560px;
+  --container-wide: 760px;
+
+  /* ---- Radius ---- */
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+
+  /* ---- Motion ---- */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* ----------------------------------------------------------
+   Reset
+   ---------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--brown-2);
+  /* ベース：クリーム紙。ノイズと薄いシミで「紙」の触感を出す。
+     - SVG turbulence でランダムノイズを敷く
+     - 大判の薄い radial-gradient で紙ムラを足す */
+  background-color: #fbf3df;
+  background-image:
+    /* シミ・ムラ */
+    radial-gradient(circle at 18% 22%, rgba(212, 168, 96, 0.10), transparent 38%),
+    radial-gradient(circle at 82% 70%, rgba(180, 140, 80, 0.08), transparent 42%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.18), transparent 60%),
+    /* 紙のノイズ（ごく弱め） */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0 0.1  0 0 0 0.16 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: auto, auto, auto, 240px 240px;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+  min-height: 100dvh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ----------------------------------------------------------
+   Typography
+   ---------------------------------------------------------- */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  color: var(--brown-1);
+  letter-spacing: 0.02em;
+  font-weight: 900;
+  line-height: 1.4;
+}
+h1 { font-size: clamp(22px, 5.5vw, 30px); }
+h2 { font-size: 16px; }
+h3 { font-size: 14px; }
+
+p { color: var(--brown-2); font-size: 14px; line-height: 1.85; }
+small { font-size: 12px; color: var(--brown-4); }
+
+a {
+  color: var(--orange);
+  text-decoration: none;
+  transition: opacity 0.18s var(--ease-out-cubic);
+}
+a:hover { opacity: 0.7; text-decoration: underline; }
+
+::selection { background: var(--yellow); color: var(--brown-1); }
+
+/* ----------------------------------------------------------
+   Layout
+   ---------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
+  z-index: 2;
+}
+.container-tight { max-width: var(--container-tight); }
+.container-wide { max-width: var(--container-wide); }
+
+main { display: block; padding-bottom: 32px; }
+
+section { position: relative; z-index: 2; }
+.stack-section { padding: 24px 0 8px; }
+
+/* ----------------------------------------------------------
+   Section Title — 手描き下線スタイル
+   黄色バーをやめ、見出しテキスト＋黄色のラフな下線（SVG）。
+   背景が紙なので、文字とラインだけで十分目立つ。
+   ---------------------------------------------------------- */
+.section-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--brown-1);
+  text-align: left;
+  margin: 28px 0 18px;
+  padding: 0 4px 10px;
+  letter-spacing: 0.04em;
+  /* 手描き風のラフな下線。SVG パスでうっすら波打たせる。 */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M2 8 C 30 2, 60 11, 100 6 S 170 9, 198 5' stroke='%23FFC107' stroke-width='4' stroke-linecap='round' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 100% 12px;
+  font-family: var(--font-display);
+  position: relative;
+}
+/* 旧 .sparkle 互換（もう使わないが残す） */
+.section-title .sparkle {
+  color: var(--orange);
+  font-size: 11px;
+  margin: 0 8px;
+  vertical-align: middle;
+}
+
+/* ----------------------------------------------------------
+   HR — 手描き風の波線
+   旧 dashed yellow からノートの罫線っぽい薄い波線に変更。
+   ---------------------------------------------------------- */
+.retro-hr {
+  border: none;
+  height: 12px;
+  margin: 18px 0 4px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 12' preserveAspectRatio='none'><path d='M2 6 C 30 1, 60 11, 96 5 S 170 9, 198 5 S 232 1, 238 7' stroke='%23BFA570' stroke-width='1.2' stroke-linecap='round' fill='none' opacity='0.55'/></svg>");
+  background-repeat: repeat-x;
+  background-size: 240px 12px;
+  background-position: center;
+  opacity: 0.9;
+}
+
+/* ----------------------------------------------------------
+   Card — クラフト紙風の小箱
+   黄色枠の代わりに、薄茶のシャドウで紙が浮いている感じ。
+   左上には .tape を置けるよう position:relative。
+   ---------------------------------------------------------- */
+.card {
+  background: #fffdf7;
+  border: 1px solid rgba(140, 110, 70, 0.18);
+  border-radius: var(--radius-2);
+  padding: 20px;
+  margin: 14px 0;
+  line-height: 1.85;
+  font-size: 14px;
+  position: relative;
+  /* 紙が机に置かれている感じの軽い影 */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 1px 1px rgba(120, 90, 50, 0.06),
+    0 6px 14px -10px rgba(120, 90, 50, 0.18);
+}
+
+/* ----------------------------------------------------------
+   Masking Tape — カード/見出しの装飾用
+   .tape を絶対配置すると、付箋やテープの紙片に見える。
+   ---------------------------------------------------------- */
+.tape {
+  position: absolute;
+  display: inline-block;
+  width: 56px;
+  height: 16px;
+  background: rgba(255, 213, 79, 0.62);
+  /* テープの繊維っぽい縦ノイズ */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.10) 0,
+      rgba(255, 255, 255, 0.10) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  box-shadow:
+    0 1px 1px rgba(120, 90, 50, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+}
+.tape-tl { top: -8px;  left:  18px; transform: rotate(-6deg); }
+.tape-tr { top: -8px;  right: 18px; transform: rotate( 5deg); }
+.tape-bl { bottom: -8px; left: 24px; transform: rotate(-3deg); }
+.tape-br { bottom: -8px; right: 24px; transform: rotate( 4deg); }
+
+/* テープの色バリエーション */
+.tape-kraft { background-color: rgba(187, 142, 85, 0.55); }
+.tape-pink  { background-color: rgba(255, 158, 178, 0.55); }
+.tape-blue  { background-color: rgba(150, 196, 224, 0.55); }
+
+/* ----------------------------------------------------------
+   Sticky Note — 小さいメモ帳
+   ヘッダーのお知らせ等で使う、傾いた付箋風カード。
+   ---------------------------------------------------------- */
+.sticky {
+  position: relative;
+  display: inline-block;
+  background: #fff5b8;
+  padding: 10px 14px 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--brown-2);
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+  transform: rotate(-1.4deg);
+  box-shadow:
+    0 2px 4px rgba(120, 90, 50, 0.14),
+    0 8px 18px -10px rgba(120, 90, 50, 0.20);
+  /* 紙の右下が少しめくれているような切り欠き */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%
+  );
+}
+.sticky::after {
+  /* めくれた角の影 */
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, transparent 50%, rgba(120, 90, 50, 0.18) 50%);
+}
+
+/* ----------------------------------------------------------
+   Buttons
+   ---------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--brown-1);
+  border: 2px solid var(--yellow);
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: all 0.2s var(--ease-out-cubic);
+}
+.btn:hover {
+  background: var(--yellow);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.btn-primary {
+  background: var(--yellow);
+  color: var(--brown-1);
+  border-color: var(--orange);
+  box-shadow: 0 3px 0 var(--orange);
+}
+.btn-primary:hover {
+  background: var(--yellow-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 var(--orange);
+}
+
+/* ----------------------------------------------------------
+   Tag / Badge
+   ---------------------------------------------------------- */
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--orange);
+  background: #fff;
+  border: 1px solid var(--yellow);
+  border-radius: 999px;
+  padding: 2px 9px;
+  margin: 2px;
+}
+
+/* ----------------------------------------------------------
+   News Strip — ヘッダー直下の付箋風お知らせ
+   旧マーキー（スクロール）廃止。静的な付箋カードに変更。
+   .sticky を使うので追加 CSS は最小限。
+   ---------------------------------------------------------- */
+.news-strip {
+  display: flex;
+  justify-content: center;
+  padding: 14px 16px 6px;
+  flex-wrap: wrap;
+  gap: 10px;
+  position: relative;
+  z-index: 4;
+}
+
+/* ----------------------------------------------------------
+   Ruled list — for writings
+   ---------------------------------------------------------- */
+.ruled-list { list-style: none; }
+.ruled-list li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 14px;
+  padding: 12px 4px;
+  border-bottom: 1px dashed var(--cream-5);
+  transition: background 0.18s var(--ease-out-cubic);
+}
+.ruled-list li:last-child { border-bottom: 0; }
+.ruled-list li:hover { background: var(--cream-3); }
+.ruled-list a {
+  color: var(--brown-1);
+  font-weight: 700;
+  font-size: 14px;
+}
+.ruled-list a:hover { color: var(--orange); text-decoration: none; }
+.ruled-list .meta {
+  font-size: 11px;
+  color: var(--brown-4);
+  font-weight: 700;
+}
+.ruled-list .summary {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--brown-3);
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+/* ----------------------------------------------------------
+   Reveal animation
+   ---------------------------------------------------------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s var(--ease-out-quint), transform 0.7s var(--ease-out-quint);
+}
+[data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+[data-reveal-delay="1"] { transition-delay: 0.06s; }
+[data-reveal-delay="2"] { transition-delay: 0.12s; }
+[data-reveal-delay="3"] { transition-delay: 0.18s; }
+[data-reveal-delay="4"] { transition-delay: 0.24s; }
+[data-reveal-delay="5"] { transition-delay: 0.30s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   Mobile / Tablet
+   ============================================================ */
+
+/* タブレット〜小デスクトップ */
+@media (max-width: 768px) {
+  .container { padding: 0 14px; }
+  .section-title {
+    font-size: 19px;
+    margin: 22px 0 14px;
+    background-size: 100% 10px;
+  }
+  .card { padding: 16px; }
+}
+
+/* スマートフォン */
+@media (max-width: 520px) {
+  body { font-size: 13.5px; }
+  .container { padding: 0 12px; }
+
+  /* セクションタイトルはさらに小さく、波線も細く */
+  .section-title {
+    font-size: 17px;
+    margin: 18px 0 12px;
+    padding-bottom: 8px;
+    background-size: 100% 8px;
+    letter-spacing: 0.02em;
+  }
+
+  /* 紙片カードのパディングを詰める */
+  .card { padding: 14px; margin: 10px 0; }
+
+  /* ニュース付箋は縦並び寄り、サイズ控えめ */
+  .news-strip { padding: 10px 12px 4px; gap: 8px; }
+  .sticky {
+    font-size: 11.5px;
+    padding: 8px 12px 10px;
+  }
+
+  /* 罫線リストのメタ列を上に逃がす（ぴったり 1 行に詰めない） */
+  .ruled-list li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 10px 4px;
+  }
+  .ruled-list .meta {
+    grid-row: 1;
+    font-size: 10.5px;
+  }
+
+  /* ボタンはタップしやすいサイズに */
+  .btn { padding: 9px 16px; font-size: 12.5px; }
+
+  /* 手描き hr の隙間を詰める */
+  .retro-hr { margin: 14px 0 2px; }
+}
+
+/* 極小（〜360px / 旧 iPhone SE 以下） */
+@media (max-width: 360px) {
+  .section-title { font-size: 15.5px; }
+  .sticky { font-size: 11px; padding: 7px 10px 9px; }
+  .btn { padding: 8px 14px; font-size: 12px; }
+}

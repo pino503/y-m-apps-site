@@ -1,0 +1,96 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  app: CollectionEntry<"apps">;
+  index: number;
+}
+
+const { app, index } = Astro.props;
+const { data } = app;
+const slug = app.slug;
+const indexLabel = String(index + 1).padStart(2, "0");
+
+const worldClass =
+  data.world === "sidewalk-defender" ? "sidewalk" :
+  data.world === "pinokun-stamps" ? "stamps" : data.world;
+---
+
+<a class="work-card card" href={`/works/${slug}`} data-world={data.world} data-reveal data-reveal-delay={Math.min(index, 5)}>
+  <div class={`world-strip world-mock--${worldClass}`}>
+    <slot />
+  </div>
+
+  <div class="card-body">
+    <div class="meta-row">
+      <span class="card-no">No.{indexLabel}</span>
+      <span class="card-platform">{data.platform}</span>
+    </div>
+    <h3 class="card-title">{data.title}</h3>
+    <p class="card-tag">{data.tagline}</p>
+    <div class="card-tags">
+      {data.badges.map((b) => <span class="tag">{b}</span>)}
+    </div>
+    <span class="more-link">View →</span>
+  </div>
+</a>
+
+<style>
+  .work-card {
+    display: block;
+    color: var(--brown-1);
+    text-decoration: none;
+    padding: 0;
+    overflow: hidden;
+    transition: transform 0.4s var(--ease-out-quint), box-shadow 0.4s var(--ease-out-quint);
+  }
+  .work-card:hover {
+    text-decoration: none;
+    transform: translateY(-3px) rotate(-0.3deg);
+    box-shadow: 0 12px 24px -12px rgba(120,90,50,0.25), 0 3px 0 var(--orange);
+    border-color: var(--orange);
+  }
+  .work-card:hover .more-link { color: var(--orange-deep); }
+
+  .world-strip {
+    aspect-ratio: 16 / 9;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--yellow);
+  }
+  .card-body { padding: 16px 18px 18px; }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  .card-no { color: var(--orange); }
+  .card-platform { color: var(--brown-4); }
+  .card-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--brown-1);
+    margin-bottom: 4px;
+    letter-spacing: 0;
+  }
+  .card-tag {
+    font-size: 13px;
+    color: var(--brown-3);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+  .more-link {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--orange);
+    transition: color 0.2s var(--ease-out-cubic);
+  }
+</style>

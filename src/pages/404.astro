@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="404 — Y.M Apps">
+  <section class="stack-section">
+    <div class="container" style="text-align: center;">
+      <img src="/assets/pinokun/stamps/21.png" alt="" class="lost-pino" />
+      <h2 class="section-title">404 NOT FOUND</h2>
+      <div class="card">
+        <h1 style="font-size:20px;margin-bottom:10px;">ページが見つかりませんでした</h1>
+        <p style="font-size:13px;line-height:1.85;margin-bottom:20px;color:var(--brown-3);">
+          URL を確認するか、トップに戻ってください。
+        </p>
+        <a class="btn btn-primary" href="/">トップに戻る</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lost-pino {
+    width: 180px;
+    height: auto;
+    margin: 12px auto 8px;
+    display: block;
+    transform: rotate(-4deg);
+    animation: lostFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 12px 24px rgba(120,90,50,0.18));
+  }
+  @keyframes lostFloat {
+    0%, 100% { transform: rotate(-4deg) translateY(0); }
+    50% { transform: rotate(-2deg) translateY(-6px); }
+  }
+</style>

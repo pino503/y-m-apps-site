@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import { getCollection } from "astro:content";
+
+const apps = (await getCollection("apps")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Press Kit — Y.M Apps">
+  <section class="stack-section">
+    <div class="container">
+      <SectionHead
+        title="Press Kit"
+        lede="レビュー記事・媒体掲載・SNS紹介などにご利用ください。出典は「Y.M Apps」または「PINO」と記載いただければ大丈夫です。"
+      />
+
+      <h2 class="section-title">プロダクト一覧</h2>
+
+      <div class="card">
+        <ul class="ruled-list">
+          {apps.map((a) => (
+            <li>
+              <div>
+                <a href={`/works/${a.slug}`}>{a.data.title}</a>
+                <p class="summary">{a.data.tagline}</p>
+              </div>
+              <span class="meta">{a.data.platform}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <h2 class="section-title">取材のお問い合わせ</h2>
+
+      <div class="card" style="text-align: center;">
+        <p style="font-size:13px;margin-bottom:10px;">Email: <a href="mailto:y.m_games503@protonmail.com">y.m_games503@protonmail.com</a></p>
+        <p style="font-size:11.5px;color:var(--brown-4);">個別取材・出演・寄稿等のご相談はメールにて。</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .press-h { font-size: 15px; font-weight: 900; margin-bottom: 8px; color: var(--brown-1); }
+  .press-p { font-size: 12.5px; color: var(--brown-3); margin-bottom: 14px; line-height: 1.85; }
+</style>

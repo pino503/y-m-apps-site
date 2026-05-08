@@ -1,0 +1,355 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHead from "../components/SectionHead.astro";
+import Slot from "../components/Slot.astro";
+import { getCollection } from "astro:content";
+
+const apps = (await getCollection("apps")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const writings = (await getCollection("writings")).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const recentWritings = writings.slice(0, 5);
+---
+
+<BaseLayout title="Y.M Apps — 暮らしに溶ける、小さな道具">
+  {/* ============== HERO (poster image) ============== */}
+  <section class="hero">
+    <div class="container">
+      <div class="hero-poster-img" data-reveal>
+        {/* 創意工夫 — PINO のものづくりを 1 枚で表すポスター。
+            画像内にタイトル相当の文字とキャラが収まっていて、画像自体は
+            見切れない（max-width 560px / モバイルは 92vw で常時フィット）。
+            出し分けは WebP srcset、PNG フォールバックあり。 */}
+        <picture>
+          <source
+            type="image/webp"
+            srcset={`/assets/hero/poster-560.webp 560w, /assets/hero/poster.webp 1120w`}
+            sizes="(max-width: 520px) 92vw, 560px"
+          />
+          <img
+            src="/assets/hero/poster-1120.png"
+            alt="創意工夫 — PINO のものづくり。ぴのくんと道具たちのポスター"
+            width="1120"
+            height="1120"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </picture>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#works">作品を見る</a>
+          <a class="btn" href="#about">About</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="retro-hr" />
+
+  {/* ============== WORKS (simple list) ============== */}
+  <section id="works" class="stack-section">
+    <div class="container">
+      <SectionHead
+        title="Works"
+        lede="ぜんぶ、自分がほしいなと思って作りました。"
+      />
+
+      <div class="card works-card">
+        <ul class="works-list">
+          {apps.map((app, i) => (
+            <li data-reveal data-reveal-delay={Math.min(i, 5)}>
+              <a class="work-row" href={`/works/${app.slug}`}>
+                <span class="work-no">{String(i + 1).padStart(2, "0")}</span>
+                <div class="work-body">
+                  <div class="work-head">
+                    <span class="work-title">{app.data.title}</span>
+                    <span class="work-platform">{app.data.platform}</span>
+                  </div>
+                  <p class="work-tag">{app.data.tagline}</p>
+                </div>
+                <span class="work-more" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="retro-hr" />
+
+  {/* ============== WRITINGS ============== */}
+  <section id="writings" class="stack-section">
+    <div class="container">
+      <SectionHead
+        title="Writings"
+        lede="アプリ開発の裏側、E-Ink 端末の検証ログ、AI との付き合い方。note で公開しています。"
+      />
+
+      <div class="card">
+        <ul class="ruled-list">
+          {recentWritings.map((w, i) => (
+            <li data-reveal data-reveal-delay={Math.min(i, 5)}>
+              <a href={w.data.url} target="_blank" rel="noopener noreferrer">{w.data.title}</a>
+              <span class="meta">{w.data.date.replace(/-/g, "/").slice(2)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p style="margin-top:14px; text-align:right;">
+        <a href="/writings" style="font-size:12px;font-weight:900;">すべての記事 ({writings.length}) →</a>
+      </p>
+    </div>
+  </section>
+
+  <hr class="retro-hr" />
+
+  {/* ============== ABOUT ============== */}
+  <section id="about" class="stack-section">
+    <div class="container">
+      <SectionHead
+        title="About"
+      />
+
+      <div class="card about-card" data-reveal>
+        <div class="about-body">
+          <p><strong>PINO</strong>（<a href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a>）。Android と Web を中心に、AI を相棒にアプリ・拡張機能・ゲーム・LINE スタンプを作っている個人開発者です。</p>
+          <p>読書、野球、生活を整える小さな道具が好き。「使い続けられる」「無理なく続く」── そんな静かに馴染むものを目指しています。</p>
+          <p>お仕事のご依頼、アプリへのご要望、バグ報告などは <a href="#contact">Contact</a> からどうぞ。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="retro-hr" />
+
+  {/* ============== CONTACT (Press 統合) ============== */}
+  <section id="contact" class="stack-section">
+    <div class="container">
+      <SectionHead
+        title="Contact"
+        lede="お仕事のご依頼、アプリへのご要望、バグ報告などは、メールでお気軽にどうぞ。"
+      />
+
+      <div class="card contact-card" data-reveal>
+        <div class="contact-cta">
+          <a class="btn btn-primary" href="mailto:y.m_games503@protonmail.com">メールを送る</a>
+          <span class="contact-email">y.m_games503@protonmail.com</span>
+        </div>
+
+        <p class="contact-subhead">その他のリンク</p>
+
+        <ul class="contact-list">
+          <li><span class="k">X</span><a href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a></li>
+          <li><span class="k">note</span><a href="https://note.com/y_m656" target="_blank" rel="noopener noreferrer">@y_m656</a></li>
+          <li><span class="k">itch.io</span><a href="https://pinopino503.itch.io/" target="_blank" rel="noopener noreferrer">pinopino503</a></li>
+          <li><span class="k">LINE STORE</span><a href="https://store.line.me/stickershop/author/1039160/ja" target="_blank" rel="noopener noreferrer">クリエイターページ</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- Hero (poster image) ----------
+     ChatGPT で作った「創意工夫」ポスターを中央に 1 枚。max-width で
+     必ず画面に収まる（見切れない）。下に CTA 2 つ。 */
+  .hero { padding: 18px 0 10px; }
+  .hero-poster-img { text-align: center; }
+  .hero-poster-img img {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 28px -14px rgba(120, 90, 50, 0.28);
+  }
+  .hero-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 22px;
+  }
+
+  /* ---------- Works (simple list) ----------
+     カードの中に罫線リスト。各行に番号・タイトル・プラットフォーム・1行
+     紹介・矢印。背景は白に近いクリーム、強調はキャップと同じ黄色。 */
+  .works-card { padding: 4px 0; }
+  .works-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .works-list li + li {
+    border-top: 1px dashed var(--cream-5);
+  }
+  .work-row {
+    display: grid;
+    grid-template-columns: 44px 1fr 24px;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    color: var(--brown-1);
+    text-decoration: none;
+    transition: background 0.2s var(--ease-out-cubic);
+  }
+  .work-row:hover {
+    background: var(--cream-2);
+    text-decoration: none;
+  }
+  .work-row:hover .work-more { color: var(--orange-deep); transform: translateX(3px); }
+  .work-no {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--orange);
+    letter-spacing: 0.08em;
+  }
+  .work-body { min-width: 0; }
+  .work-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .work-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--brown-1);
+    letter-spacing: 0.01em;
+  }
+  .work-platform {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10.5px;
+    font-weight: 900;
+    color: var(--brown-3);
+    background: var(--cream-3);
+    border: 1px solid var(--cream-5);
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+  }
+  .work-tag {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--brown-3);
+    margin: 0;
+  }
+  .work-more {
+    justify-self: end;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--orange);
+    transition: color 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-cubic);
+  }
+
+  /* ---------- About ---------- */
+  .about-body { width: 100%; }
+  .about-body p { font-size: 13px; line-height: 1.95; margin-bottom: 8px; }
+  .about-meta {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--cream-5);
+  }
+  .about-meta div {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 12.5px;
+  }
+  .about-meta dt { color: var(--brown-4); font-weight: 900; letter-spacing: 0.05em; }
+  .about-meta dd { color: var(--brown-2); }
+
+  /* ---------- Press ---------- */
+  .press-card { text-align: center; }
+  .press-h { font-size: 14px; font-weight: 900; margin-bottom: 6px; color: var(--brown-1); }
+  .press-p { font-size: 12.5px; color: var(--brown-3); margin-bottom: 14px; line-height: 1.85; }
+
+  /* ---------- Contact ---------- */
+  .contact-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0 14px;
+  }
+  .contact-email {
+    font-size: 12.5px;
+    color: var(--brown-3);
+    word-break: break-all;
+  }
+  .contact-subhead {
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--cream-5);
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--brown-4);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .contact-list { list-style: none; margin-top: 4px; }
+  .contact-list li {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--cream-5);
+    align-items: baseline;
+    font-size: 13px;
+  }
+  .contact-list li:last-child { border-bottom: 0; }
+  .contact-list .k { color: var(--brown-4); font-weight: 900; font-size: 12px; letter-spacing: 0.05em; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 520px) {
+    .hero { padding: 12px 0 6px; }
+    .hero-poster-img img { max-width: 92vw; border-radius: 12px; }
+    .hero-actions { margin-top: 16px; gap: 8px; }
+
+    /* Works リストはモバイルで番号と矢印を控えめに、1 列に集約 */
+    .work-row {
+      grid-template-columns: 1fr 18px;
+      gap: 10px;
+      padding: 13px 12px;
+    }
+    .work-no { display: none; }
+    .work-title { font-size: 14.5px; }
+    .work-platform { font-size: 10px; padding: 1px 7px; }
+    .work-tag { font-size: 12px; line-height: 1.65; }
+    .works-card { padding: 0; }
+
+    /* About のメタ表（領域・言語・マスコット）は縦積みに */
+    .about-meta div {
+      grid-template-columns: 70px 1fr;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    /* Contact 一覧はラベル列を縮める */
+    .contact-list li {
+      grid-template-columns: 80px 1fr;
+      gap: 8px;
+      font-size: 12.5px;
+      padding: 7px 0;
+    }
+    .contact-list .k { font-size: 11px; }
+  }
+
+  @media (max-width: 360px) {
+    .work-row { padding: 12px 10px; }
+    .work-title { font-size: 13.5px; }
+    .work-tag { font-size: 11.5px; }
+    .about-meta div { grid-template-columns: 60px 1fr; font-size: 11.5px; }
+    .contact-list li { grid-template-columns: 64px 1fr; font-size: 12px; }
+  }
+</style>

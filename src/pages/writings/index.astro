@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionHead from "../../components/SectionHead.astro";
+import { getCollection } from "astro:content";
+
+const writings = (await getCollection("writings")).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<BaseLayout
+  title="Writings — Y.M Apps"
+  description="PINO が note に書いた記事のリスト。"
+>
+  <section class="stack-section">
+    <div class="container">
+      <SectionHead
+        title="Writings"
+        lede="アプリ開発の裏側、E-Ink 端末の検証ログ、AI との付き合い方。新しい順で並んでいます。"
+      />
+
+      <div class="card">
+        <ul class="ruled-list">
+          {writings.map((w, i) => (
+            <li data-reveal data-reveal-delay={Math.min(i, 5)}>
+              <div>
+                <a href={w.data.url} target="_blank" rel="noopener noreferrer">{w.data.title}</a>
+                {w.data.summary && <p class="summary">{w.data.summary}</p>}
+              </div>
+              <span class="meta">{w.data.date.replace(/-/g, "/").slice(2)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p style="margin-top: 18px; text-align: center;">
+        <a href="https://note.com/y_m656" target="_blank" rel="noopener noreferrer" style="font-size:13px;font-weight:900;">note (@y_m656) で全記事を見る →</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
