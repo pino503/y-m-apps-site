@@ -29,6 +29,15 @@
   --orange-deep: #C07F23;
   --pino-pink: #FF6B8E;
   --pino-yellow: #FFD84D;
+  --page-bg: #f7f3ea;
+  --surface: #fffdf8;
+  --surface-soft: #f0e9dc;
+  --line: rgba(52, 64, 84, 0.10);
+  --line-strong: rgba(52, 64, 84, 0.18);
+  --muted: #69727f;
+  --accent: #ffd84d;
+  --accent-deep: #a85f2d;
+  --ink: #27313f;
 
   /* ---- Type ---- */
   --font-body: 'M PLUS Rounded 1c', 'Hiragino Sans', 'YuGothic', system-ui, sans-serif;
@@ -49,9 +58,9 @@
   --space-10: 96px;
 
   /* ---- Container — narrow for personal-site vibe ---- */
-  --container: 640px;
-  --container-tight: 560px;
-  --container-wide: 760px;
+  --container: 1120px;
+  --container-tight: 720px;
+  --container-wide: 1120px;
 
   /* ---- Radius ---- */
   --radius-1: 4px;
@@ -73,20 +82,15 @@ body {
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.85;
-  color: var(--brown-2);
-  /* ベース：クリーム紙。ノイズと薄いシミで「紙」の触感を出す。
-     - SVG turbulence でランダムノイズを敷く
-     - 大判の薄い radial-gradient で紙ムラを足す */
-  background-color: #fbf3df;
+  color: var(--ink);
+  background-color: var(--page-bg);
   background-image:
-    /* シミ・ムラ */
-    radial-gradient(circle at 18% 22%, rgba(212, 168, 96, 0.10), transparent 38%),
-    radial-gradient(circle at 82% 70%, rgba(180, 140, 80, 0.08), transparent 42%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.18), transparent 60%),
-    /* 紙のノイズ（ごく弱め） */
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0 0.1  0 0 0 0.16 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-size: auto, auto, auto, 240px 240px;
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+    linear-gradient(90deg, rgba(52, 64, 84, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(52, 64, 84, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 82% 12%, rgba(255, 216, 77, 0.20), transparent 34%),
+    radial-gradient(circle at 12% 42%, rgba(61, 125, 142, 0.10), transparent 30%);
+  background-size: 72px 72px, 72px 72px, auto, auto;
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
   min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
@@ -106,17 +110,17 @@ h1 { font-size: clamp(22px, 5.5vw, 30px); }
 h2 { font-size: 16px; }
 h3 { font-size: 14px; }
 
-p { color: var(--brown-2); font-size: 14px; line-height: 1.85; }
-small { font-size: 12px; color: var(--brown-4); }
+p { color: var(--ink); font-size: 14px; line-height: 1.85; }
+small { font-size: 12px; color: var(--muted); }
 
 a {
-  color: var(--orange);
+  color: var(--accent-deep);
   text-decoration: none;
   transition: opacity 0.18s var(--ease-out-cubic);
 }
 a:hover { opacity: 0.7; text-decoration: underline; }
 
-::selection { background: var(--yellow); color: var(--brown-1); }
+::selection { background: var(--accent); color: var(--ink); }
 
 /* ----------------------------------------------------------
    Layout
@@ -132,10 +136,10 @@ a:hover { opacity: 0.7; text-decoration: underline; }
 .container-tight { max-width: var(--container-tight); }
 .container-wide { max-width: var(--container-wide); }
 
-main { display: block; padding-bottom: 32px; }
+main { display: block; padding-bottom: 54px; }
 
 section { position: relative; z-index: 2; }
-.stack-section { padding: 24px 0 8px; }
+.stack-section { padding: 44px 0 8px; }
 
 /* ----------------------------------------------------------
    Section Title — 手描き下線スタイル
@@ -143,18 +147,14 @@ section { position: relative; z-index: 2; }
    背景が紙なので、文字とラインだけで十分目立つ。
    ---------------------------------------------------------- */
 .section-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 900;
-  color: var(--brown-1);
+  color: var(--ink);
   text-align: left;
-  margin: 28px 0 18px;
-  padding: 0 4px 10px;
-  letter-spacing: 0.04em;
-  /* 手描き風のラフな下線。SVG パスでうっすら波打たせる。 */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M2 8 C 30 2, 60 11, 100 6 S 170 9, 198 5' stroke='%23FFC107' stroke-width='4' stroke-linecap='round' fill='none'/></svg>");
-  background-repeat: no-repeat;
-  background-position: left bottom;
-  background-size: 100% 12px;
+  margin: 26px 0 10px;
+  padding: 0;
+  letter-spacing: 0;
+  background-image: none;
   font-family: var(--font-display);
   position: relative;
 }
@@ -172,13 +172,11 @@ section { position: relative; z-index: 2; }
    ---------------------------------------------------------- */
 .retro-hr {
   border: none;
-  height: 12px;
-  margin: 18px 0 4px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 12' preserveAspectRatio='none'><path d='M2 6 C 30 1, 60 11, 96 5 S 170 9, 198 5 S 232 1, 238 7' stroke='%23BFA570' stroke-width='1.2' stroke-linecap='round' fill='none' opacity='0.55'/></svg>");
-  background-repeat: repeat-x;
-  background-size: 240px 12px;
-  background-position: center;
-  opacity: 0.9;
+  height: 1px;
+  max-width: var(--container);
+  margin: 34px auto 0;
+  background: var(--line);
+  opacity: 1;
 }
 
 /* ----------------------------------------------------------
@@ -187,19 +185,17 @@ section { position: relative; z-index: 2; }
    左上には .tape を置けるよう position:relative。
    ---------------------------------------------------------- */
 .card {
-  background: #fffdf7;
-  border: 1px solid rgba(140, 110, 70, 0.18);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--line);
   border-radius: var(--radius-2);
   padding: 20px;
   margin: 14px 0;
   line-height: 1.85;
   font-size: 14px;
   position: relative;
-  /* 紙が机に置かれている感じの軽い影 */
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 1px 1px rgba(120, 90, 50, 0.06),
-    0 6px 14px -10px rgba(120, 90, 50, 0.18);
+    0 1px 0 rgba(255, 255, 255, 0.70) inset,
+    0 16px 40px -34px rgba(38, 52, 74, 0.34);
 }
 
 /* ----------------------------------------------------------
@@ -284,31 +280,31 @@ section { position: relative; z-index: 2; }
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 900;
-  padding: 8px 18px;
+  padding: 10px 18px;
   border-radius: 999px;
-  background: #fff;
-  color: var(--brown-1);
-  border: 2px solid var(--yellow);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
   cursor: pointer;
   text-decoration: none;
   letter-spacing: 0.05em;
   transition: all 0.2s var(--ease-out-cubic);
 }
 .btn:hover {
-  background: var(--yellow);
+  background: #ffffff;
   text-decoration: none;
   transform: translateY(-1px);
 }
 .btn-primary {
-  background: var(--yellow);
-  color: var(--brown-1);
-  border-color: var(--orange);
-  box-shadow: 0 3px 0 var(--orange);
+  background: var(--ink);
+  color: #fffdf8;
+  border-color: var(--ink);
+  box-shadow: 0 12px 28px -18px rgba(38, 52, 74, 0.62);
 }
 .btn-primary:hover {
-  background: var(--yellow-soft);
+  background: #111827;
   transform: translateY(-2px);
-  box-shadow: 0 4px 0 var(--orange);
+  box-shadow: 0 16px 34px -20px rgba(38, 52, 74, 0.72);
 }
 
 /* ----------------------------------------------------------
@@ -318,9 +314,9 @@ section { position: relative; z-index: 2; }
   display: inline-block;
   font-size: 11px;
   font-weight: 700;
-  color: var(--orange);
-  background: #fff;
-  border: 1px solid var(--yellow);
+  color: var(--accent-deep);
+  background: rgba(255, 216, 77, 0.16);
+  border: 1px solid rgba(168, 95, 45, 0.14);
   border-radius: 999px;
   padding: 2px 9px;
   margin: 2px;
@@ -351,26 +347,26 @@ section { position: relative; z-index: 2; }
   align-items: baseline;
   gap: 14px;
   padding: 12px 4px;
-  border-bottom: 1px dashed var(--cream-5);
+  border-bottom: 1px solid var(--line);
   transition: background 0.18s var(--ease-out-cubic);
 }
 .ruled-list li:last-child { border-bottom: 0; }
-.ruled-list li:hover { background: var(--cream-3); }
+.ruled-list li:hover { background: rgba(255, 255, 255, 0.44); }
 .ruled-list a {
-  color: var(--brown-1);
+  color: var(--ink);
   font-weight: 700;
   font-size: 14px;
 }
-.ruled-list a:hover { color: var(--orange); text-decoration: none; }
+.ruled-list a:hover { color: var(--accent-deep); text-decoration: none; }
 .ruled-list .meta {
   font-size: 11px;
-  color: var(--brown-4);
+  color: var(--muted);
   font-weight: 700;
 }
 .ruled-list .summary {
   margin-top: 4px;
   font-size: 12px;
-  color: var(--brown-3);
+  color: var(--muted);
   font-weight: 400;
   line-height: 1.7;
 }

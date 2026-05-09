@@ -16,6 +16,7 @@ const apps = defineCollection({
     badges: z.array(z.string()).default([]),
     storeUrl: z.string().url().optional(),
     storeLabel: z.string().optional(),
+    iconImage: z.string().optional(),
     coverImage: z.string().optional(),
     screenshots: z.array(z.string()).default([]),
     features: z.array(z.object({ title: z.string(), body: z.string() })).default([]),

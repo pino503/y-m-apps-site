@@ -7,17 +7,24 @@ interface Props {
 const { title, lede } = Astro.props;
 ---
 
-<header class="section-head" data-reveal>
+<header class="section-head">
   <h2 class="section-title">{title}</h2>
   {lede && <p class="lede">{lede}</p>}
 </header>
 
 <style>
-  .section-head { margin-top: 16px; }
+  .section-head {
+    margin-top: 16px;
+    margin-bottom: 10px;
+    max-width: 720px;
+  }
   .lede {
-    font-size: 13px;
-    color: var(--brown-3);
+    font-size: 14px;
+    color: var(--muted);
     line-height: 1.85;
-    margin: 10px 0 18px;
+    margin: 4px 0 12px;
+  }
+  @media (max-width: 640px) {
+    .lede { margin-bottom: 10px; }
   }
 </style>

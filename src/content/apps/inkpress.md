@@ -7,8 +7,12 @@ badges: ["Android", "v1.1.6", "BOOX対応"]
 storeUrl: https://play.google.com/store/apps/details?id=com.pino.inkpress
 storeLabel: Google Play
 order: 1
-coverImage: /assets/apps/inkpress-cover.png
-screenshots: []
+iconImage: /assets/apps/inkpress-icon.png
+coverImage: /assets/apps/inkpress-reader-controls.png
+screenshots:
+  - /assets/apps/inkpress-onboarding.png
+  - /assets/apps/inkpress-settings.png
+  - /assets/apps/inkpress-reader-controls.png
 features:
   - title: BOOX 等の Android E-Ink 端末向け
     body: ディザリング・コントラスト調整・E-Ink ディスプレイの残像と反応速度に合わせた描画。BOOX をはじめとする Android E-Ink 端末で、紙の本に近い読み心地を狙っています。
