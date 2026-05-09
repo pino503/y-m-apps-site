@@ -138,9 +138,52 @@ const recentWritings = writings.slice(0, 5);
 
       <div class="card contact-card" data-reveal>
         <div class="contact-cta">
-          <a class="btn btn-primary" href="mailto:y.m_games503@protonmail.com">メールを送る</a>
-          <span class="contact-email">y.m_games503@protonmail.com</span>
+          {/* mailto: はメーラー未設定の環境で無反応に見えるため、
+              ボタンはクリップボードコピー方式に。
+              押すと押下表示が「コピーしました：<address>」に 3 秒切り替わる。 */}
+          <button
+            id="copy-email"
+            class="btn btn-primary"
+            type="button"
+            data-email="y.m_games503@protonmail.com"
+          >
+            📋 メールアドレスをコピー
+          </button>
         </div>
+
+        <script>
+          // メアドコピー：クリックでクリップボードに入れる。
+          // 成功表示はボタン上書き 3 秒後に元のラベルへ戻す。
+          const btn = document.getElementById("copy-email") as HTMLButtonElement | null;
+          if (btn) {
+            const original = btn.innerHTML;
+            const email = btn.dataset.email ?? "";
+            let revertId: number | undefined;
+            btn.addEventListener("click", async () => {
+              try {
+                await navigator.clipboard.writeText(email);
+                btn.innerHTML = `✓ コピーしました：${email}`;
+              } catch {
+                // 古いブラウザ用フォールバック
+                const ta = document.createElement("textarea");
+                ta.value = email;
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand("copy"); } catch {}
+                document.body.removeChild(ta);
+                btn.innerHTML = `✓ コピーしました：${email}`;
+              }
+              btn.classList.add("is-copied");
+              if (revertId) window.clearTimeout(revertId);
+              revertId = window.setTimeout(() => {
+                btn.innerHTML = original;
+                btn.classList.remove("is-copied");
+              }, 3000);
+            });
+          }
+        </script>
 
         <p class="contact-subhead">その他のリンク</p>
 
@@ -276,16 +319,14 @@ const recentWritings = writings.slice(0, 5);
 
   /* ---------- Contact ---------- */
   .contact-cta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
     padding: 4px 0 14px;
   }
-  .contact-email {
-    font-size: 12.5px;
-    color: var(--brown-3);
-    word-break: break-all;
+  /* コピー成功直後はボタンのアウトラインを淡く */
+  :global(.btn.is-copied) {
+    background: var(--cream-3);
+    color: var(--brown-2);
+    border-color: var(--cream-5);
+    box-shadow: none;
   }
   .contact-subhead {
     margin-top: 6px;
