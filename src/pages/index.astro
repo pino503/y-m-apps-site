@@ -138,32 +138,35 @@ const recentWritings = writings.slice(0, 5);
 
       <div class="card contact-card" data-reveal>
         <div class="contact-cta">
-          {/* mailto: はメーラー未設定の環境で無反応に見えるため、
-              ボタンはクリップボードコピー方式に。
-              押すと押下表示が「コピーしました：<address>」に 3 秒切り替わる。 */}
-          <button
-            id="copy-email"
+          {/* メーラーが設定されている環境：mailto: で送信画面が開く。
+              未設定の環境：押下時にアドレスをクリップボードにコピー。
+              メーラー未起動だった場合の保険として、800ms 後にヒント表示。 */}
+          <a
+            id="contact-link"
             class="btn btn-primary"
-            type="button"
+            href="mailto:y.m_games503@protonmail.com"
             data-email="y.m_games503@protonmail.com"
           >
-            📋 メールアドレスをコピー
-          </button>
+            ✉ メールを送る
+          </a>
+          <p id="copy-hint" class="copy-hint" hidden aria-live="polite">
+            メーラーが開かない場合は、アドレスをコピー済みです：<br />
+            <code>y.m_games503@protonmail.com</code>
+          </p>
         </div>
 
         <script>
-          // メアドコピー：クリックでクリップボードに入れる。
-          // 成功表示はボタン上書き 3 秒後に元のラベルへ戻す。
-          const btn = document.getElementById("copy-email") as HTMLButtonElement | null;
-          if (btn) {
-            const original = btn.innerHTML;
-            const email = btn.dataset.email ?? "";
-            let revertId: number | undefined;
-            btn.addEventListener("click", async () => {
-              try {
-                await navigator.clipboard.writeText(email);
-                btn.innerHTML = `✓ コピーしました：${email}`;
-              } catch {
+          // mailto: + クリップボードコピーの合わせ技。
+          // メーラー設定済み → 既定アプリが起動。
+          // 未設定 → 何も起きないように見えるが、ヒントとクリップボードで救済。
+          const link = document.getElementById("contact-link") as HTMLAnchorElement | null;
+          const hint = document.getElementById("copy-hint");
+          if (link && hint) {
+            const email = link.dataset.email ?? "";
+            let hideId: number | undefined;
+            link.addEventListener("click", () => {
+              // クリップボードコピー（失敗してもメーラー起動は妨げない）
+              navigator.clipboard.writeText(email).catch(() => {
                 // 古いブラウザ用フォールバック
                 const ta = document.createElement("textarea");
                 ta.value = email;
@@ -173,14 +176,14 @@ const recentWritings = writings.slice(0, 5);
                 ta.select();
                 try { document.execCommand("copy"); } catch {}
                 document.body.removeChild(ta);
-                btn.innerHTML = `✓ コピーしました：${email}`;
-              }
-              btn.classList.add("is-copied");
-              if (revertId) window.clearTimeout(revertId);
-              revertId = window.setTimeout(() => {
-                btn.innerHTML = original;
-                btn.classList.remove("is-copied");
-              }, 3000);
+              });
+              // メーラー起動の試行が落ち着いた頃にヒント表示
+              window.setTimeout(() => {
+                hint.hidden = false;
+              }, 800);
+              // 10 秒後に隠す（次回クリック時に再表示）
+              if (hideId) window.clearTimeout(hideId);
+              hideId = window.setTimeout(() => { hint.hidden = true; }, 10000);
             });
           }
         </script>
@@ -321,12 +324,25 @@ const recentWritings = writings.slice(0, 5);
   .contact-cta {
     padding: 4px 0 14px;
   }
-  /* コピー成功直後はボタンのアウトラインを淡く */
-  :global(.btn.is-copied) {
-    background: var(--cream-3);
-    color: var(--brown-2);
-    border-color: var(--cream-5);
-    box-shadow: none;
+  /* メーラー未起動時に出る保険ヒント */
+  .copy-hint {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: var(--cream-2);
+    border: 1px dashed var(--cream-5);
+    border-radius: var(--radius-2);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--brown-3);
+  }
+  .copy-hint code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--brown-1);
+    background: rgba(255, 213, 79, 0.25);
+    padding: 1px 6px;
+    border-radius: 3px;
+    word-break: break-all;
   }
   .contact-subhead {
     margin-top: 6px;
