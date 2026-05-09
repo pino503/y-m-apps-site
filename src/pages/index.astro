@@ -140,12 +140,18 @@ const recentWritings = writings.slice(0, 5);
         <div class="contact-cta">
           {/* メーラーが設定されている環境：mailto: で送信画面が開く。
               未設定の環境：押下時にアドレスをクリップボードにコピー。
-              メーラー未起動だった場合の保険として、800ms 後にヒント表示。 */}
+              メーラー未起動だった場合の保険として、800ms 後にヒント表示。
+
+              ボット対策：HTML 上にはメアドの完全形を出さず、ローカル部と
+              ドメイン部を data 属性に分割して保持。JS で組み立ててから
+              href に流し込む。簡易スクレイパは @ 記号で正規表現マッチ
+              するので、これだけで取れる確率はぐっと下がる。 */}
           <a
             id="contact-link"
             class="btn btn-primary"
-            href="mailto:y.m_games503@protonmail.com"
-            data-email="y.m_games503@protonmail.com"
+            href="#contact"
+            data-l="y.m_games503"
+            data-d="protonmail.com"
           >
             ✉ メールを送る
           </a>
@@ -156,12 +162,19 @@ const recentWritings = writings.slice(0, 5);
 
         <script>
           // mailto: + クリップボードコピーの合わせ技。
-          // メーラー設定済み → 既定アプリが起動。
-          // 未設定 → 何も起きないように見えるが、ヒントとクリップボードで救済。
+          // ボット対策：data-l / data-d を JS で組み立てて mailto: 化。
+          //   メーラー設定済み → 既定アプリが起動。
+          //   未設定 → ヒントとクリップボードで救済。
           const link = document.getElementById("contact-link") as HTMLAnchorElement | null;
           const hint = document.getElementById("copy-hint");
           if (link && hint) {
-            const email = link.dataset.email ?? "";
+            const local = link.dataset.l ?? "";
+            const domain = link.dataset.d ?? "";
+            const email = `${local}@${domain}`;
+            // ページ表示直後に href を mailto: に置き換える。
+            // 右クリック「リンクをコピー」もこの時点で機能する。
+            link.setAttribute("href", `mailto:${email}`);
+
             let hideId: number | undefined;
             link.addEventListener("click", () => {
               // クリップボードコピー（失敗してもメーラー起動は妨げない）
@@ -180,7 +193,7 @@ const recentWritings = writings.slice(0, 5);
               window.setTimeout(() => {
                 hint.hidden = false;
               }, 800);
-              // 10 秒後に隠す（次回クリック時に再表示）
+              // 10 秒後に隠す
               if (hideId) window.clearTimeout(hideId);
               hideId = window.setTimeout(() => { hint.hidden = true; }, 10000);
             });

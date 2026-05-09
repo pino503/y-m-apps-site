@@ -33,11 +33,31 @@ const apps = (await getCollection("apps")).sort((a, b) => a.data.order - b.data.
       <h2 class="section-title">取材のお問い合わせ</h2>
 
       <div class="card" style="text-align: center;">
-        <p style="font-size:13px;margin-bottom:10px;">Email: <a href="mailto:y.m_games503@protonmail.com">y.m_games503@protonmail.com</a></p>
-        <p style="font-size:11.5px;color:var(--brown-4);">個別取材・出演・寄稿等のご相談はメールにて。</p>
+        {/* HTML 上にメアド完全形を出さず、JS で組み立てる。
+            ボット対策として data 属性に分割して保持。 */}
+        <a
+          id="press-link"
+          class="btn btn-primary"
+          href="#"
+          data-l="y.m_games503"
+          data-d="protonmail.com"
+        >
+          ✉ メールを送る
+        </a>
+        <p style="font-size:11.5px;color:var(--brown-4);margin-top:10px;">個別取材・出演・寄稿等のご相談はメールにて。</p>
       </div>
     </div>
   </section>
+
+  <script>
+    // ホームの Contact と同じ方式で mailto: を JS 構築
+    const link = document.getElementById("press-link") as HTMLAnchorElement | null;
+    if (link) {
+      const local = link.dataset.l ?? "";
+      const domain = link.dataset.d ?? "";
+      link.setAttribute("href", `mailto:${local}@${domain}`);
+    }
+  </script>
 </BaseLayout>
 
 <style>

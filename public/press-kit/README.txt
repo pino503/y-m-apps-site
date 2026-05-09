@@ -14,6 +14,7 @@ Y.M Apps Press Kit
 記事内にサイトのURLを掲載いただけると幸いです。
 
 == 取材・お問い合わせ ==
-Email: y.m_games503@protonmail.com
+サイトの Contact フォームからご連絡ください：
+https://y-m-apps-site.pages.dev/#contact
 
 最終更新: 2026年5月
