@@ -1091,7 +1091,9 @@ function update(){
     SFX.suck();
     const suck = (arr)=>{
       for(const j of arr){
-        if(j.dead) continue;
+        // skip dead items, and skip gunner bullets (fromMob): they're pure
+        // damage projectiles and visually rendered red — not suckable
+        if(j.dead || j.fromMob) continue;
         const dx=nozX-j.x, dy=nozY-j.y, d=Math.hypot(dx,dy)||1;
         if(d<RNG){
           const pull=(1-d/RNG)*0.95;
@@ -1859,13 +1861,13 @@ function render(){
     }
   }
   // boss spit (suckable, red-tinted)
-  // ebullets: boss spit (junk-looking, suckable hazard) vs gunner shot
-  // (clearly hostile red projectile so the player can read the threat instantly)
+  // ebullets — visual = suckability:
+  //   junk-looking sprite → suckable (boss spit becomes cargo when sucked in)
+  //   red projectile      → pure damage (gunner bullet, NOT suckable)
   for(const e of G.ebullets){
     if(!onScreen(e.x,e.y)) continue;
     const ex = sx(e.x), ey = sy(e.y);
     if(e.fromMob){
-      // GUNNER bullet — red core + yellow center + pulsing red ring, no junk sprite
       const pulse = ((G.t + (e.t|0)) & 3) === 0;
       ctx.save(); ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 6;
       px(ex-2, ey-2, 4, 4, '#ef4444');
@@ -1873,7 +1875,7 @@ function render(){
       ctx.restore();
       if(pulse){ ctx.save(); ctx.globalAlpha=0.6; px(ex-3, ey-3, 6, 6, '#fca5a5'); ctx.restore(); }
     } else {
-      // boss spit — still looks like junk because it IS suckable cargo
+      // boss spit — looks like junk because it really is suckable cargo
       px(ex-3, ey-3, 6, 6, 'rgba(248,113,113,0.18)');
       blit(SPR[JUNK[e.key].spr], ex, ey);
     }
