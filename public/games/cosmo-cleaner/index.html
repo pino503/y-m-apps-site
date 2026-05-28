@@ -1682,7 +1682,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.0', rightAlign('v1.0', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.0.1', rightAlign('v1.0.1', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -1742,7 +1742,8 @@ function render(){
       glowCenter('> _', 250, UI.amberHi, 1, 8);
     }
     center('TAP / SPACE', 264, UI.amberDim, 1);
-    drawBudget(54, 298);
+    drawBudget(54, 290);
+    center('© Y.M Apps', 312, UI.amberDark, 1);
     return;
   }
 
