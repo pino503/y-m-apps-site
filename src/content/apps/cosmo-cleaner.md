@@ -3,7 +3,7 @@ title: COSMO CLEANER
 tagline: 宇宙ゴミを集めて、基地で強化。圧縮弾を作って敵とボスに挑む、CRT風の宇宙清掃シューティングゲーム。
 world: cosmo-cleaner
 platform: Webゲーム
-badges: ["Web", "HTML5", "Pixel Art", "v1.1.0"]
+badges: ["Web", "HTML5", "Pixel Art", "v1.3.3"]
 storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
 order: 5
@@ -24,7 +24,7 @@ features:
   - title: SHIELD & HULL UPGRADES
     body: 体力上限を最大5まで強化。自機の周りを回転する護衛ドローンを最大3機まで装備。敵弾を物理的にブロック。
   - title: 5 STAGES & BOSSES
-    body: 5つのエリアを探索、各エリアに潜むボスを発見して撃破。HP半減で Phase 2 に突入する激しい攻撃をかわせ。
+    body: ジャンク・コア／アイアン・ハスク／ゴミラ／ヴォイド・リヴァイアサン／プロジェニター。各ボスが固有の攻撃を持ち、HP半減で Phase 2 の変態演出に突入。
   - title: SUB-1.44MB MINI JAM
     body: 単一HTMLファイルで動く、1.44MB未満のミニゲーム。インストール不要、ブラウザからすぐ遊べる。
 ---
