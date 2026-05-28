@@ -126,6 +126,7 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
                       <div class="work-body">
                         <div class="work-head">
                           <span class="work-title">{app.data.title}</span>
+                          {app.data.isNew && <span class="work-new">NEW</span>}
                           <span class="work-platform">{app.data.platform}</span>
                         </div>
                         <p class="work-tag">{app.data.tagline}</p>
@@ -590,6 +591,22 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
     border: 1px solid var(--line);
     border-radius: 999px;
     letter-spacing: 0.06em;
+  }
+  .work-new {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 900;
+    color: #fff;
+    background: var(--accent, #ef4444);
+    border-radius: 999px;
+    letter-spacing: 0.12em;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.08);
+    animation: workNewPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes workNewPulse {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-1px) scale(1.04); }
   }
   .work-tag {
     font-size: 13.5px;

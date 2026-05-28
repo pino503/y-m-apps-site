@@ -8,6 +8,7 @@ storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
 order: 5
 category: game
+isNew: true
 embedPath: /games/cosmo-cleaner/index.html
 coverImage: /assets/apps/cosmo-cleaner-gameplay.jpg
 screenshots:

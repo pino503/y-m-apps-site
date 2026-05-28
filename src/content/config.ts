@@ -28,6 +28,8 @@ const apps = defineCollection({
     embedPath: z.string().optional(),
     // 種類グルーピング — Works section で見出しに使う
     category: z.enum(["tool", "game", "sticker"]).default("tool"),
+    // 新作マーク — Works 行に NEW バッジを出す
+    isNew: z.boolean().default(false),
   }),
 });
 
