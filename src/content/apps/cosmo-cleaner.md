@@ -3,44 +3,42 @@ title: COSMO CLEANER
 tagline: 宇宙ゴミを集めて、基地で強化。圧縮弾を作って敵とボスに挑む、CRT風の宇宙清掃シューティングゲーム。
 world: cosmo-cleaner
 platform: Webゲーム
-badges: ["Web", "HTML5", "Pixel Art", "ミニジャム"]
+badges: ["Web", "HTML5", "Pixel Art", "v1.1.0"]
 storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
 order: 5
 category: game
 embedPath: /games/cosmo-cleaner/index.html
-coverImage: /assets/apps/cosmo-cleaner-screenshot-1.png
+coverImage: /assets/apps/cosmo-cleaner-gameplay.jpg
 screenshots:
+  - /assets/apps/cosmo-cleaner-gameplay.jpg
+  - /assets/apps/cosmo-cleaner-pick.jpg
   - /assets/apps/cosmo-cleaner-screenshot-1.png
 features:
   - title: COLLECT / RETURN / POWER UP
-    body: 宇宙ゴミを吸い込み、基地へ持ち帰って自機を強化。戻るタイミングと強化の判断が攻略のカギになります。
+    body: 宇宙ゴミを吸い込み、基地へ持ち帰って自機を強化。戻るタイミングと強化の判断が攻略のカギ。
   - title: COMPRESSED SHOT
-    body: 回収したゴミから圧縮弾を生成。集めたものを武器に変えて、敵やボスに立ち向かいます。
+    body: 回収したゴミを圧縮して弾に変換。集めたものを武器に変えて敵やボスに立ち向かう。
+  - title: 5 POWER-UPS
+    body: 吸引レンジ・タンク容量・弾威力・体力上限+1・護衛ドローン+1。5種類のアップグレードから毎回選んで自機を育てる。
+  - title: SHIELD & HULL UPGRADES
+    body: 体力上限を最大5まで強化。自機の周りを回転する護衛ドローンを最大3機まで装備。敵弾を物理的にブロック。
   - title: 5 STAGES & BOSSES
-    body: 5つのエリアを探索し、どこかに潜むボスを発見して撃破。ゴミ回収と戦闘をくり返しながら、宇宙のクリーンアップを進めます。
+    body: 5つのエリアを探索、各エリアに潜むボスを発見して撃破。HP半減で Phase 2 に突入する激しい攻撃をかわせ。
   - title: SUB-1.44MB MINI JAM
-    body: 単一HTMLファイルで動く、1.44MB未満のミニゲーム。インストール不要で、ブラウザからすぐに遊べます。
+    body: 単一HTMLファイルで動く、1.44MB未満のミニゲーム。インストール不要、ブラウザからすぐ遊べる。
 ---
 
 COSMO CLEANER は、宇宙ゴミを回収しながら戦うミニシューティングゲームです。
-フィールドに漂うゴミを吸い込み、基地へ持ち帰ることで、自機のパワーアップや圧縮弾の生成ができます。
+フィールドに漂うゴミを吸い込み、基地へ持ち帰ることで自機の強化と圧縮弾の生成ができます。
 
-ゴミを集める、基地に戻る、強化する、再び出撃する。
-そのサイクルをくり返しながら、雑魚敵を倒し、エリアのどこかに潜むボスの撃破を目指します。
+ゴミを集める → 基地に戻る → 強化する → 再び出撃する。
+そのサイクルをくり返しながら、エリアのどこかに潜むボスの撃破を目指します。
 
-## 🎮 操作方法
+## 操作方法
 
-| アクション | スマホ | PC |
+|  | スマホ | PC |
 |---|---|---|
-| **移動** | キャンバスをドラッグ | マウス左ボタンを押しながら動かす |
-| **吸引** | 同じくドラッグ中は常時吸引（指を離せば停止） | マウス押下中は常時吸引 |
-| **発射** | 右下の `FIRE` ボタンをタップ | `Space` / `Enter` キー |
-| **ステージバナーを閉じる** | 画面のどこかをタップ | 何かのキーを押す |
-
-### ヒント
-- タンクが満タン (`FULL` 表示) になったら、画面中央のドック (`DOCK`) に戻って積荷を弾薬に変換。
-- 安全圏 (`SAFE` 内) では弾は撃てません（節約のため）。
-- 宝箱 (`!` マーク) はステージごとに 2 個出現。中身は HULL 回復か追加アップグレード。
-- ボス HP が 50% を切ると **Phase 2** 突入。攻撃が激しくなるので注意。
-- 5 ステージクリアで `ALL CLEAR`。掃除率に応じて **S / A / B / C** のランクが付きます。
+| 移動 | ドラッグ | マウス押下＋動かす |
+| 吸引 | ドラッグ中はずっと吸う | マウス押下中はずっと吸う |
+| 発射 | 右下 `FIRE` ボタン | `Space` / `Enter` |
