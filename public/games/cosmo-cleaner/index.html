@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>COSMO CLEANER</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +89,7 @@ function applyCanvasSize(){
   ctx.imageSmoothingEnabled = false;
   buildVignette();
   try { FIRE_BTN.x = LW-22; FIRE_BTN.y = LH-24; } catch(e){}
-  try { CARD.w = Math.min(150, LW-20); } catch(e){}
+  try { CARD.w = Math.max(150, Math.min(240, LW-40)); } catch(e){}
   try { PB_BTN.w = Math.min(160, LW-24); } catch(e){}
 }
 
@@ -480,27 +483,91 @@ function stopBGM(){ bgmOn=false; if(bgmTick) clearTimeout(bgmTick); bgmTick=null
 function setBGM(mode){ if(bgmMode!==mode){ bgmMode=mode; bstep=0; } }
 
 /* ============================================================
+   BALANCE — all gameplay tuning lives here.
+   Change a value here and the whole game reflects it.
+   STAGES / MOB_KIND / JUNK / PU_DEFS arrays remain below
+   for per-type tables; raw scalars live in this block.
+   ============================================================ */
+const BALANCE = {
+  // ---- WORLD ----
+  world: {
+    W: 1100, H: 1500,           // world size in pixels
+    safeR: 90,                  // base safe-zone radius (enemies can't enter; no fire from inside)
+    minMobFromBase: 280,        // min spawn distance for mobs from station (keeps start area calm)
+    totalStages: 5,             // total stages
+  },
+  // ---- PLAYER (base values, before any PU upgrade) ----
+  player: {
+    hp: 3,                      // starting HP (also HP cap before HULL upgrade)
+    cargoMax: 100,              // base cargo capacity (overridden by cargoCap() once TANK > 0)
+    invulnHit: 70,              // i-frames after losing HP
+    invulnShieldAbsorb: 30,     // i-frames after a shield drone absorbs a hit
+    shieldR: 18,                // shield drone orbit radius around player
+    shieldHit: 5,               // shield collision radius vs bullets
+    cargoLossOnHit: 15,         // cargo dropped when player takes HP damage
+  },
+  // ---- SHOT (compressed shot fired with FIRE) ----
+  shot: {
+    speed: 4.8,                 // base shot velocity per frame
+    speedPerPowerLv: 0.4,       // PWR upgrade also accelerates shots: 4.8 → 6.8 at Lv5
+    fireCd: 9,                  // frames between shots
+    cdInSafeZone: 14,           // cooldown when trying to fire from inside base (small punish)
+    life: 90,                   // shot lifetime in frames before turning to junk on miss
+    r: 5,                       // shot collision radius
+    baseDmg: 12,                // shotPower() base damage (was 10; bumped for PWR feel)
+    dmgPerLv: 6,                // shotPower() damage added per PWR upgrade level (was 4)
+  },
+  // ---- UNLOAD ----
+  unloadPerAmmo: 20,            // cargo consumed per +1 ammo gained at the dock
+  // ---- CRATE (supply boxes that spawn during stage) ----
+  crate: {
+    firstCdMin: 360,            // first crate appears: firstCdMin + rand*firstCdSpread frames (~6-10s)
+    firstCdSpread: 240,
+    nextCdMin: 800,             // subsequent crates: nextCdMin + rand*nextCdSpread frames (~13-23s)
+    nextCdSpread: 600,
+    maxPerStage: 2,             // max crates per stage
+    healChance: 0.60,           // probability the reward is the heal-chain vs upgrade
+  },
+  // ---- PU SCALING (derived stat formulas) ----
+  pu: {
+    range:    lv => 14 + lv*14,       // SUCK.RNG: 14 → 84 at Lv5
+    capacity: lv => 100 + lv*36,      // TANK.CAP: 100 → 280 at Lv5
+    // shotPower() lives in BALANCE.shot.baseDmg / dmgPerLv above
+  },
+  // ---- PU carryover caps (per-stage transition) ----
+  // No absolute cap on PUs within a stage; instead, when entering stage N (>=2)
+  // each PU level is clipped to puCarryByStage[N][k]. Cap rises per stage so
+  // carryover power grows with progression.
+  puCarryByStage: {
+    2: { suck:1, tank:1, power:1, hull:0, shield:0 },  // total 3  — fresh-ish start
+    3: { suck:2, tank:2, power:2, hull:1, shield:1 },  // total 8  — mid-game footing
+    4: { suck:3, tank:3, power:3, hull:1, shield:1 },  // total 11 — pre-finale
+    5: { suck:4, tank:4, power:4, hull:2, shield:2 },  // total 16 — nearly maxed
+  },
+};
+
+/* ============================================================
    GAME STATE  (now with a large scrolling WORLD)
    ============================================================ */
-const WW = 1100, WH = 1500;          // world size (much bigger than the 200x320 screen)
+const WW = BALANCE.world.W, WH = BALANCE.world.H;  // world size (much bigger than the 200x320 screen)
 const STATION = { x:WW/2, y:WH/2, w:54, h:18 }; // docking bay sits at the centre of the world
-const SAFE_R = 90;  // radius of the "safe zone" around the station — enemies can't enter
-const TOTAL_STAGES = 5;
+const SAFE_R = BALANCE.world.safeR;  // radius of the "safe zone" around the station — enemies can't enter
+const TOTAL_STAGES = BALANCE.world.totalStages;
 // per-stage tuning: composition, boss HP, junk count, PU rate, boss visual, area name
 // theme = accent hue for bg/grid (overlays on the neon-green base palette)
 // obstacles = number of static rock/wreckage obstacles in the area
 const STAGES = [
-  { name:'NEBULA OUTSKIRTS', bossName:'JUNK CORE',     bossSpr:'boss',  junk:50,  bossHp:100, mobs:{base:6,gunner:0,split:0,rush:0}, puBase:160, puStep:60,  theme:{tint:'#3a1a4a', accent:'#c084fc', name:'NEBULA'},   obstacles:3 },
-  { name:'ASTEROID FIELD',   bossName:'IRON HUSK',     bossSpr:'boss2', junk:70,  bossHp:160, mobs:{base:5,gunner:2,split:0,rush:0}, puBase:200, puStep:70,  theme:{tint:'#3a2810', accent:'#fbbf24', name:'ROCK'},     obstacles:10 },
-  { name:'WRECKAGE BELT',    bossName:'KAIJU',         bossSpr:'boss3', junk:85,  bossHp:210, mobs:{base:5,gunner:2,split:2,rush:0}, puBase:240, puStep:80,  theme:{tint:'#0a2838', accent:'#22d3ee', name:'WRECK'},    obstacles:8 },
-  { name:'DEAD ZONE',        bossName:'VOID LEVIATHAN',bossSpr:'boss4', junk:100, bossHp:270, mobs:{base:4,gunner:3,split:2,rush:3}, puBase:280, puStep:90,  theme:{tint:'#3a0a14', accent:'#ef4444', name:'DANGER'},   obstacles:5 },
-  { name:'THE HIVE',         bossName:'PROGENITOR',    bossSpr:'boss5', junk:120, bossHp:340, mobs:{base:6,gunner:3,split:3,rush:4}, puBase:320, puStep:100, theme:{tint:'#2a0a3a', accent:'#e879f9', name:'HIVE'},     obstacles:12 },
+  { name:'NEBULA OUTSKIRTS', bossName:'JUNK CORE',     bossNameJp:'ジャンク・コア',         bossSpr:'boss',  junk:50,  bossHp:160, mobs:{base:6,gunner:0,split:0,rush:0}, puBase:160, puStep:45, theme:{tint:'#3a1a4a', accent:'#c084fc', name:'NEBULA'},   obstacles:6 },
+  { name:'ASTEROID FIELD',   bossName:'IRON HUSK',     bossNameJp:'アイアン・ハスク',       bossSpr:'boss2', junk:70,  bossHp:260, mobs:{base:5,gunner:2,split:0,rush:0}, puBase:200, puStep:50, theme:{tint:'#3a2810', accent:'#fbbf24', name:'ROCK'},     obstacles:18 },
+  { name:'WRECKAGE BELT',    bossName:'GOMILLA',       bossNameJp:'ゴミラ',                  bossSpr:'boss3', junk:85,  bossHp:345, mobs:{base:5,gunner:2,split:2,rush:0}, puBase:240, puStep:55, theme:{tint:'#0a2838', accent:'#22d3ee', name:'WRECK'},    obstacles:14 },
+  { name:'DEAD ZONE',        bossName:'VOID LEVIATHAN',bossNameJp:'ヴォイド・リヴァイアサン',bossSpr:'boss4', junk:100, bossHp:440, mobs:{base:4,gunner:3,split:2,rush:3}, puBase:280, puStep:65, theme:{tint:'#3a0a14', accent:'#ef4444', name:'DANGER'},   obstacles:10 },
+  { name:'THE HIVE',         bossName:'PROGENITOR',    bossNameJp:'プロジェニター',         bossSpr:'boss5', junk:120, bossHp:555, mobs:{base:6,gunner:3,split:3,rush:4}, puBase:320, puStep:70, theme:{tint:'#2a0a3a', accent:'#e879f9', name:'HIVE'},     obstacles:22 },
 ];
 const G = {
   state:'title', t:0,
   px:WW/2, py:WH/2+40,               // player in WORLD coords
   camX:0, camY:0,                    // top-left of camera in world coords
-  junk:[], shots:[], ebullets:[], missiles:[], mobs:[], parts:[],
+  junk:[], shots:[], ebullets:[], missiles:[], flameOrbs:[], mobs:[], parts:[],
   cargo:0, cargoMax:100,
   ammo:0,
   sucking:false,
@@ -512,14 +579,17 @@ const G = {
   fireCd:0, dockCd:0, shake:0,
   boss:null, bossFound:false, bossDowned:false, postBossMenuShown:false,
   stage:1,
-  crates:[], crateCd:600, cratesSpawned:0, crateMsg:'', crateMsgT:0,
+  crates:[], crateCd:600, cratesSpawned:0, crateMsg:'', crateMsgT:0, crateMsgKind:'reward',
   obstacles:[],
   showStageBanner:false,
   // power-up levels
   pu:{ suck:0, tank:0, power:0, hull:0, shield:0 },
   puFlash:0, puName:'',
   puPicks:0, puProgress:0,
+  puPicksThisStage:0,           // count of PUs actually picked DURING current stage (not carried)
   puCards:null,
+  healFlash:0, missFlash:0,     // brief HUD cues for crate heal / shot miss
+  totalJunkAtStart:0,           // cfg.junk snapshot for cleanliness % math
 };
 // starfield is in SCREEN space (parallax handled at draw time)
 for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+Math.floor(Math.random()*3), tw:Math.random()*6.28});
@@ -527,10 +597,10 @@ for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+
 /* ---------- derived stats from power-ups ---------- */
 /* ---------- derived stats from power-ups (all capped at Lv5) ---------- */
 const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones
-const SHIELD_R = 18;    // orbit radius around player
-const SHIELD_HIT = 5;   // bullet vs shield collision radius
-function suckRange(){ return 14 + G.pu.suck*14; }         // 14 -> 84 at Lv5
-function cargoCap(){  return 100 + G.pu.tank*36; }        // 100 -> 280 at Lv5
+const SHIELD_R = BALANCE.player.shieldR;    // orbit radius around player
+const SHIELD_HIT = BALANCE.player.shieldHit;   // bullet vs shield collision radius
+function suckRange(){ return BALANCE.pu.range(G.pu.suck); }         // 14 -> 84 at Lv5
+function cargoCap(){  return BALANCE.pu.capacity(G.pu.tank); }      // 100 -> 280 at Lv5
 function shipMk(){
   const total = G.pu.suck + G.pu.tank + G.pu.power;
   if(total>=11) return SPR.ship4;
@@ -539,7 +609,7 @@ function shipMk(){
   return SPR.ship;
 }
 
-function shotPower(){ return 10 + G.pu.power*4; }         // 10 -> 30 at Lv5
+function shotPower(){ return BALANCE.shot.baseDmg + G.pu.power*BALANCE.shot.dmgPerLv; }  // 10 -> 30 at Lv5
 function moveScale(){ return 1; }                          // movement is fixed
 
 /* ---------- junk types ---------- */
@@ -549,12 +619,25 @@ const JUNK = {
   sludge: { spr:'sludge', r:4, score:15, weight:18, vy:0.45 },
 };
 const JUNK_KEYS = ['scrap','scrap','sat','sludge'];
-const UNLOAD_PER_AMMO = 20;
+const UNLOAD_PER_AMMO = BALANCE.unloadPerAmmo;
 function puNeedNow(){
   const cfg = STAGES[Math.min(G.stage||1, TOTAL_STAGES)-1];
-  // PUs reset per stage; "taken" is picks within this stage only
-  const taken = (G.pu.suck + G.pu.tank + G.pu.power + G.pu.hull + G.pu.shield) + G.puPicks;
+  // "taken" = picks this stage + pending queued picks. Carried PUs are NOT counted,
+  // so each stage's first PU costs cfg.puBase (same feel as Stage 1).
+  const taken = G.puPicksThisStage + G.puPicks;
   return cfg.puBase + taken*cfg.puStep;
+}
+// CLEAN % shown in HUD. dirty = junk currently in world + suckable boss-spit ebullets.
+// Formula: collected / (collected + dirty). Sucking ALWAYS pushes % up (numerator grows
+// faster than denominator). Boss spit / mob litter temporarily lowers % by inflating
+// the denominator. When the world is empty, % = 100. When spit flies off-screen the
+// denominator drops back down naturally.
+function cleanPercent(){
+  let dirty = G.junk.length;
+  for(const e of G.ebullets){ if(!e.fromMob) dirty++; }
+  const total = G.collected + dirty;
+  if(total <= 0) return 0;
+  return Math.max(0, Math.min(100, Math.floor(100 * G.collected / total)));
 }
 // the upgrades, drawn as cards when choosing
 const PU_DEFS = [
@@ -660,29 +743,43 @@ function reset(stage){
   const cfg = STAGES[Math.min(stage,TOTAL_STAGES)-1];
   G.stage = stage;
   G.t=0; G.px=WW/2; G.py=WH/2+40; G.camX=0; G.camY=0;
-  G.junk=[]; G.shots=[]; G.ebullets=[]; G.missiles=[]; G.mobs=[]; G.parts=[]; G.crates=[]; G.obstacles=[];
+  G.junk=[]; G.shots=[]; G.ebullets=[]; G.missiles=[]; G.flameOrbs=[]; G.mobs=[]; G.parts=[]; G.crates=[]; G.obstacles=[];
   G.planets=[]; G.clouds=[];
   G.flashHp=0; G.hitStop=0; G.bossHitFlash=0;
   G.bossIntro=0; G.phase2Banner=0;
-  G.cargo=0; G.cargoMax=100; G.ammo=0; G.sucking=false; G.fireCd=0; G.dockCd=0; G.shake=0;
+  G.cargo=0; G.cargoMax=BALANCE.player.cargoMax; G.ammo=0; G.sucking=false; G.fireCd=0; G.dockCd=0; G.shake=0;
   G.collected=0; G.unloaded=0; G.hitsOnBoss=0; G.missed=0; G.junkMass=0; G.collectedMass=0;
-  G.crateCd = 360 + Math.random()*240;  // next crate spawn (frames). First crate ~6-10 sec in.
-  G.cratesSpawned = 0;  // count of crates spawned this stage (max 2)
-  G.crateMsg = '';  G.crateMsgT = 0;  // pop-up message after opening
-  G.hp=3; G.hpMax=3; G.invuln=0; G.cleanliness=0;
-  G.shields=[];
+  G.crateCd = BALANCE.crate.firstCdMin + Math.random()*BALANCE.crate.firstCdSpread;  // first crate spawn timer
+  G.cratesSpawned = 0;  // count of crates spawned this stage (cap = BALANCE.crate.maxPerStage)
+  G.crateMsg = '';  G.crateMsgT = 0; G.crateMsgKind = 'reward';  // pop-up message after opening
+  G.invuln=0; G.cleanliness=0;
+  G.totalJunkAtStart = cfg.junk;        // for cleanliness % denominator
+  G.healFlash=0; G.missFlash=0;
   G.bossFound=false; G.bossDowned=false; G.postBossMenuShown=false;
   G.showStageBanner=true;  // shows until the player taps to dismiss
-  // PUs reset every stage — each area is its own self-contained mission
-  G.pu={suck:0,tank:0,power:0,hull:0,shield:0}; G.puPicks=0; G.puProgress=0;
+  // PUs: reset only on Stage 1. On stage >=2, clip carried PUs to puCarryByStage[stage].
+  // puPicksThisStage / puPicks / puProgress always reset (cost accumulator scoped to the stage).
+  if(stage===1){
+    G.pu={suck:0,tank:0,power:0,hull:0,shield:0};
+  } else {
+    const cap = BALANCE.puCarryByStage[stage];
+    if(cap){ for(const k in G.pu) G.pu[k] = Math.min(G.pu[k], cap[k]); }
+  }
+  G.puPicks=0; G.puProgress=0; G.puPicksThisStage=0;
   G.puFlash=0; G.puName=''; G.puCards=null;
+  // Recompute HP / cargo / shields from carried PUs (or zeroes on stage 1)
+  G.hpMax = BALANCE.player.hp + G.pu.hull;
+  G.hp = G.hpMax;   // full heal between stages — survival reward
+  G.cargoMax = BALANCE.pu.capacity(G.pu.tank);
+  G.shields = [];
+  for(let i=0;i<G.pu.shield;i++) G.shields.push({ angle: (i/Math.max(1,G.pu.shield))*Math.PI*2 });
   // junk count from stage config
   for(let i=0;i<cfg.junk;i++){
     const k=JUNK_KEYS[Math.floor(Math.random()*JUNK_KEYS.length)];
     spawnJunk(120+Math.random()*(WW-240), 120+Math.random()*(WH-240), k, 0);
   }
   // mobs from stage config — must spawn well away from the base (not near start)
-  const MIN_FROM_BASE = 280;  // > SAFE_R(90) * 3, keeps spawn out of the comfort zone
+  const MIN_FROM_BASE = BALANCE.world.minMobFromBase;  // > SAFE_R * 3, keeps spawn out of the comfort zone
   for(const kind of Object.keys(cfg.mobs)){
     for(let i=0;i<cfg.mobs[kind];i++){
       let mx,my,tr=0;
@@ -691,7 +788,7 @@ function reset(stage){
       spawnMob(mx,my,kind);
     }
   }
-  spawnBoss(cfg.bossHp, cfg.bossSpr, cfg.bossName);
+  spawnBoss(cfg.bossHp, cfg.bossSpr, cfg.bossName, cfg.bossNameJp);
   // place static obstacles — far from base, varied sizes for visual variety
   const nObs = cfg.obstacles || 0;
   for(let i=0;i<nObs;i++){
@@ -702,7 +799,7 @@ function reset(stage){
       // don't overlap with other obstacles
       for(const o of G.obstacles){ if(Math.hypot(o.x-ox,o.y-oy)<o.r+18){ ok=false; break; } }
     }
-    if(ok) G.obstacles.push({ x:ox, y:oy, r:10+Math.random()*8, seed:Math.random()*1000 });
+    if(ok) G.obstacles.push({ x:ox, y:oy, r:10+Math.random()*8, seed:Math.random()*1000, kind: cfg.theme.name });
   }
   // planets — 2-3 distant celestial bodies per stage, themed by accent color
   const tint = cfg.theme.accent;
@@ -741,7 +838,7 @@ const MOB_KIND = {
   base:   { r:7, hp:4, sp:0.55, glow:'#c026d3', litter:[160,280], drops:3 },
   gunner: { r:7, hp:6, sp:0.10, glow:'#bef264', litter:[260,400], drops:4, shootCd:[120,180] },
   split:  { r:7, hp:3, sp:0.7,  glow:'#fb7185', litter:[200,340], drops:2, splits:true },
-  rush:   { r:5, hp:1, sp:1.6,  glow:'#ef4444', litter:[400,800], drops:1 },
+  rush:   { r:5, hp:1, sp:1.35, glow:'#ef4444', litter:[400,800], drops:1 },
 };
 function spawnMob(x,y,kind){
   kind = kind || 'base';
@@ -761,51 +858,71 @@ function spawnCrate(){
   do{ cx=80+Math.random()*(WW-160); cy=80+Math.random()*(WH-160); tr++; }
   while(tr<25 && (Math.hypot(cx-STATION.x,cy-STATION.y)<260 || Math.hypot(cx-G.px,cy-G.py)<140));
   G.crates.push({ x:cx, y:cy, t:0, opened:false, life:0 });
+  // HUD banner so the player knows a crate exists. First time = long tutorial form.
+  let seen = false;
+  try { seen = !!localStorage.getItem('cosmoc.seenCrate'); } catch(e){}
+  if(!seen){
+    G.crateMsg = '接近で開封 / HP・PU補給';
+    try { localStorage.setItem('cosmoc.seenCrate','1'); } catch(e){}
+  } else {
+    G.crateMsg = '探索すべし';
+  }
+  G.crateMsgT = 120;
+  G.crateMsgKind = 'spawn';
   // soft chime to alert the player a crate has appeared
   blip(880,.08,'triangle',.04);
   blip(1320,.12,'triangle',.04);
 }
 function openCrate(cr){
   cr.opened=true;
-  // roll reward: 60% HEAL, 40% UPGRADE
+  // helpers to make each reward branch feel distinct
+  function reward(kind){
+    G.hitStop = Math.max(G.hitStop, kind==='UPGRADE' ? 8 : 6);
+    G.shake = Math.max(G.shake, kind==='UPGRADE' ? 5 : 3);
+  }
+  function sfxHull(){ blip(660,.10,'square',.07); blip(880,.14,'square',.06); }
+  function sfxShield(){ blip(1200,.08,'triangle',.06); blip(1760,.12,'triangle',.05); }
+  function sfxUpgrade(){ blip(660,.08,'square',.06); blip(880,.08,'square',.06); blip(1100,.16,'square',.06); }
+
+  // roll reward: HEAL-chain vs UPGRADE (probability from BALANCE.crate.healChance)
   const r = Math.random();
-  let msg='';
-  if(r<0.60){
+  let msg='', kind='';
+  if(r<BALANCE.crate.healChance){
     // HEAL chain: HP first, then SHIELD recharge if HP is full, then UPGRADE.
     if(G.hp < G.hpMax){
-      G.hp = Math.min(G.hpMax, G.hp+1); msg='+1 HULL';
+      G.hp = Math.min(G.hpMax, G.hp+1); msg='+1 HULL'; kind='HULL';
       burst(cr.x,cr.y,'r',16,1.8);
-      shockwave(cr.x, cr.y, '#fb7185', 28, 18);
-      sparks(cr.x, cr.y, '#fb7185', 10, 2.0);
+      shockwave(cr.x, cr.y, '#22ff88', 36, 22);   // green wave — "heal" reads at a glance
+      sparks(cr.x, cr.y, '#22ff88', 12, 2.0);
+      G.healFlash = 30;
+      reward(kind); SFX.dock(); sfxHull();
     } else if(G.shields.length < G.pu.shield){
-      // shields can only be revived manually — this is one of those routes
       G.shields.push({angle: Math.random()*Math.PI*2});
-      msg='+1 SHIELD';
+      msg='+1 SHIELD'; kind='SHIELD';
       burst(cr.x,cr.y,'c',16,1.8);
-      shockwave(cr.x, cr.y, '#5eead4', 28, 18);
-      sparks(cr.x, cr.y, '#a7ffd0', 10, 2.0);
+      shockwave(cr.x, cr.y, '#5eead4', 36, 22);
+      sparks(cr.x, cr.y, '#a7ffd0', 12, 2.0);
+      // extra centered ring on the player so the new drone is obviously theirs
+      shockwave(G.px, G.py, '#5eead4', 28, 18);
+      reward(kind); SFX.dock(); sfxShield();
     } else {
-      G.puPicks+=1; msg='+1 UPGRADE';
+      G.puPicks+=1; msg='+1 UPGRADE'; kind='UPGRADE';
       burst(cr.x,cr.y,'y',20,2.0);
-      shockwave(cr.x, cr.y, '#fde047', 28, 18);
-      sparks(cr.x, cr.y, '#fde047', 12, 2.2);
-      G.shake=Math.max(G.shake,4); openPick();
+      shockwave(cr.x, cr.y, '#fde047', 36, 22);
+      sparks(cr.x, cr.y, '#fde047', 14, 2.2);
+      reward(kind); SFX.dock(); sfxUpgrade(); openPick();
     }
   } else {
-    G.puPicks += 1; msg='+1 UPGRADE';
+    G.puPicks += 1; msg='+1 UPGRADE'; kind='UPGRADE';
     burst(cr.x,cr.y,'y',20,2.0);
-    shockwave(cr.x, cr.y, '#fde047', 28, 18);
-    sparks(cr.x, cr.y, '#fde047', 12, 2.2);
-    G.shake = Math.max(G.shake, 4);
-    openPick();
+    shockwave(cr.x, cr.y, '#fde047', 36, 22);
+    sparks(cr.x, cr.y, '#fde047', 14, 2.2);
+    reward(kind); SFX.dock(); sfxUpgrade(); openPick();
   }
-  G.crateMsg = msg; G.crateMsgT = 90;
-  SFX.dock();
-  blip(1320,.08,'square',.06);
-  blip(1760,.14,'square',.05);
+  G.crateMsg = msg; G.crateMsgT = 100; G.crateMsgKind = 'reward';
 }
 
-function spawnBoss(hpMax, spr, name){
+function spawnBoss(hpMax, spr, name, nameJp){
   hpMax = hpMax || 140;
   spr = spr || 'boss';
   let bx,by,tries=0;
@@ -816,10 +933,25 @@ function spawnBoss(hpMax, spr, name){
   const w = tall ? 26 : 30;
   const h = tall ? 34 : 24;
   G.boss = {
-    x:bx, y:by, w, h, hp:hpMax, hpMax:hpMax, spr, name:(name||'BOSS'),
+    x:bx, y:by, w, h, hp:hpMax, hpMax:hpMax, spr, name:(name||'BOSS'), nameJp:(nameJp||''),
     t:0, awake:false, dead:false, dieT:0,
     spitCd:70, missileCd:160, driftA:Math.random()*6.28,
     phase:1,
+    // PHASE 2 aimed-laser state (idle in phase 1)
+    laserCd:240,   // frames until next telegraph (cools 240 → 0)
+    laserT:0,      // >0 = telegraphing; ticks down to 0 then fires
+    laserFire:0,   // >0 = beam is firing this frame (hits player on overlap)
+    laserAng:0,    // locked angle: snapshot of player direction at telegraph start
+    // GOMILLA (boss3): flame-wrapped junk orb
+    flameCd: 160, flameT: 0, flameAng: 0,
+    // JUNK CORE (boss): orbiting junk satellites (damage-dealing)
+    orbCount: 4, orbAng: 0,
+    // IRON HUSK (boss2): dash charge
+    dashCd: 250, dashT: 0, dashFire: 0, dashAng: 0, dashSpd: 5.5,
+    // VOID LEVIATHAN (boss4): short-range teleport
+    tpCd: 340, tpT: 0, tpAlpha: 1, tpTX: 0, tpTY: 0,
+    // PROGENITOR (boss5): minion summon
+    summonCd: 380, summonT: 0,
   };
 }
 function updateBoss(){
@@ -868,7 +1000,10 @@ function updateBoss(){
   }
   // awake: slowly chases the player around the field while attacking
   const dx=G.px-b.x, dy=G.py-b.y, d=Math.hypot(dx,dy)||1;
-  b.x += dx/d*0.35; b.y += dy/d*0.35;
+  // suppress seek during IRON HUSK dash or VOID LEVIATHAN vanish phase
+  const seekMul = (b.spr==='boss2' && b.dashFire>0) ? 0
+                : (b.spr==='boss4' && b.tpT>30) ? 0 : 1;
+  b.x += dx/d*0.50*seekMul; b.y += dy/d*0.50*seekMul;
   b.x=Math.max(40,Math.min(WW-40,b.x)); b.y=Math.max(40,Math.min(WH-40,b.y));
   // boss can't enter the safe zone either
   const bsx=b.x-STATION.x, bsy=b.y-STATION.y, bsd=Math.hypot(bsx,bsy);
@@ -908,6 +1043,160 @@ function updateBoss(){
     SFX.missile();
     const base = b.phase===2 ? 110 : 160;
     b.missileCd=Math.max(50, base-Math.floor(prog*70));
+  }
+  // PHASE 2 only: aimed-laser. Telegraph (50f) → fire (10f) → cd (180f).
+  // Angle locks AT TELEGRAPH START so the player can dodge perpendicularly.
+  if(b.phase===2){
+    if(b.laserT>0){
+      b.laserT--;
+      if(b.laserT===0){ b.laserFire = 10; SFX.bosshit(); G.shake = Math.max(G.shake, 4); }
+    } else if(b.laserFire>0){
+      b.laserFire--;
+      if(G.invuln<=0){
+        const dxL=Math.cos(b.laserAng), dyL=Math.sin(b.laserAng);
+        const rxL=G.px-b.x, ryL=G.py-b.y;
+        const tAlong = rxL*dxL + ryL*dyL;
+        if(tAlong>0){
+          const perp = Math.abs(rxL*(-dyL) + ryL*dxL);
+          if(perp < 4) hurt();   // ~5px beam half-width + small player tolerance
+        }
+      }
+    } else {
+      b.laserCd--;
+      if(b.laserCd<=0){
+        b.laserT = 50;
+        b.laserAng = Math.atan2(G.py-b.y, G.px-b.x);  // lock now; telegraph is honest
+        b.laserCd = 180;
+        blip(220,.10,'sawtooth',.05);   // soft warning chirp
+      }
+    }
+  }
+
+  /* ---- per-boss signature behavior ---- */
+
+  // JUNK CORE (boss): orbiting junk satellites — passive (advance angle only; collision handled in update())
+  if(b.spr==='boss'){
+    b.orbCount = b.phase===2 ? 6 : 4;
+    b.orbAng += b.phase===2 ? 0.07 : 0.05;
+  }
+
+  // IRON HUSK (boss2): telegraphed dash charge
+  if(b.spr==='boss2'){
+    if(b.dashFire>0){
+      // dash in motion
+      b.x += Math.cos(b.dashAng)*b.dashSpd;
+      b.y += Math.sin(b.dashAng)*b.dashSpd;
+      b.x=Math.max(40,Math.min(WW-40,b.x)); b.y=Math.max(40,Math.min(WH-40,b.y));
+      // keep dasher out of safe zone too
+      const dsx=b.x-STATION.x, dsy=b.y-STATION.y, dsd=Math.hypot(dsx,dsy);
+      if(dsd<SAFE_R+80){ const f=(SAFE_R+80)/(dsd||1); b.x=STATION.x+dsx*f; b.y=STATION.y+dsy*f; b.dashFire=0; }
+      b.dashFire--;
+      if(b.dashFire<=0){ shockwave(b.x,b.y,'#fbbf24',24,16); }
+    } else if(b.dashT>0){
+      b.dashT--;
+      if(b.dashT<=0){
+        b.dashFire = 30;
+        sparks(b.x, b.y, '#fde047', 8, 2.2);
+        SFX.missile();
+      }
+    } else {
+      b.dashCd--;
+      if(b.dashCd<=0){
+        b.dashT = 40;
+        b.dashAng = Math.atan2(G.py-b.y, G.px-b.x);
+        b.dashCd = b.phase===2 ? 170 : 250;
+        blip(180,.10,'square',.05);
+      }
+    }
+  }
+
+  // GOMILLA (boss3): flame-wrapped junk orb (single straight projectile)
+  if(b.spr==='boss3'){
+    if(b.flameT>0){
+      b.flameT--;
+      if(b.flameT<=0){
+        const sp = 2.0;
+        G.flameOrbs.push({
+          x: b.x, y: b.y,
+          vx: Math.cos(b.flameAng)*sp,
+          vy: Math.sin(b.flameAng)*sp,
+          t: 0, life: 360, dead:false,
+        });
+        SFX.rebreak(); SFX.bosshit();
+      }
+    } else {
+      b.flameCd--;
+      if(b.flameCd<=0){
+        b.flameT = 30;
+        b.flameAng = Math.atan2(G.py-b.y, G.px-b.x);
+        b.flameCd = b.phase===2 ? 100 : 160;
+        blip(140,.12,'sawtooth',.06);
+      }
+    }
+  }
+
+  // VOID LEVIATHAN (boss4): short-range teleport
+  if(b.spr==='boss4'){
+    if(b.tpT>0){
+      if(b.tpT>30){
+        // vanishing — fade out, drop smoke
+        b.tpAlpha = Math.max(0, (b.tpT-30)/30);
+        if((G.t&3)===0) smoke(b.x, b.y, 2);
+      } else if(b.tpT===30){
+        // teleport moment
+        b.x = b.tpTX; b.y = b.tpTY;
+        shockwave(b.x, b.y, '#a78bfa', 36, 18);
+        sparks(b.x, b.y, '#c4b5fd', 12, 2.4);
+        SFX.bosshit();
+        b.tpAlpha = 0;
+      } else {
+        // re-appearing — fade in
+        b.tpAlpha = Math.min(1, (30-b.tpT)/30);
+      }
+      b.tpT--;
+      if(b.tpT<=0){ b.tpAlpha = 1; }
+    } else {
+      b.tpCd--;
+      if(b.tpCd<=0){
+        b.tpT = 60;
+        const ang = Math.random()*6.283;
+        const dist = 80 + Math.random()*30;
+        b.tpTX = Math.max(40, Math.min(WW-40, G.px + Math.cos(ang)*dist));
+        b.tpTY = Math.max(40, Math.min(WH-40, G.py + Math.sin(ang)*dist));
+        // avoid teleporting into safe zone
+        const tsx=b.tpTX-STATION.x, tsy=b.tpTY-STATION.y, tsd=Math.hypot(tsx,tsy);
+        if(tsd<SAFE_R+140){ const f=(SAFE_R+140)/(tsd||1); b.tpTX=STATION.x+tsx*f; b.tpTY=STATION.y+tsy*f; }
+        b.tpCd = b.phase===2 ? 210 : 340;
+        blip(280,.14,'sine',.06);
+      }
+    }
+  }
+
+  // PROGENITOR (boss5): minion summon
+  if(b.spr==='boss5'){
+    if(b.summonT>0){
+      b.summonT--;
+      if(b.summonT<=0){
+        // summon if mob count is reasonable
+        if((G.mobs||[]).filter(m=>!m.dead).length < 9){
+          const count = b.phase===2 ? 3 : 1;
+          for(let i=0;i<count;i++){
+            const ang = Math.random()*6.283;
+            const sx0 = b.x + Math.cos(ang)*22;
+            const sy0 = b.y + Math.sin(ang)*22;
+            spawnMob(sx0, sy0, 'split');
+            shockwave(sx0, sy0, '#fde047', 18, 12);
+          }
+        }
+      }
+    } else {
+      b.summonCd--;
+      if(b.summonCd<=0){
+        b.summonT = 40;
+        b.summonCd = b.phase===2 ? 250 : 380;
+        blip(440,.10,'triangle',.06);
+      }
+    }
   }
 }
 function hitBoss(dmg){
@@ -966,7 +1255,8 @@ function smoke(x,y,n){
 /* ---------- upgrade picking (pauses the game) ---------- */
 function openPick(){
   if(G.puPicks<=0 || G.puCards) return;
-  // exclude upgrades that have reached their cap
+  // exclude upgrades that hit their per-type cap (no absolute cap during stage —
+  // carryover to next stage is what's bounded, via BALANCE.puCarryByStage).
   const avail = PU_DEFS.filter(d => G.pu[d.k] < PU_MAX[d.k]);
   if(avail.length===0){
     // all upgrades maxed — drain remaining picks silently
@@ -979,10 +1269,10 @@ function openPick(){
 function choosePick(idx){
   if(G.state!=='pick' || !G.puCards) return;
   const def=G.puCards[idx]; if(!def) return;
-  G.pu[def.k]++; G.puName=def.name; G.puFlash=60;
+  G.pu[def.k]++; G.puPicksThisStage++; G.puName=def.name; G.puFlash=60;
   // HULL: bump hpMax and refill HP immediately
   if(def.k==='hull'){
-    G.hpMax = 3 + G.pu.hull;
+    G.hpMax = BALANCE.player.hp + G.pu.hull;
     G.hp = G.hpMax;
   }
   // SHIELD: spawn a new orbiting drone
@@ -1026,7 +1316,7 @@ function fire(){
   // can't fire from inside the safe zone — base is a sanctuary, not a turret
   if(Math.hypot(G.px-STATION.x, G.py-STATION.y) < SAFE_R){
     blip(140,.06,'square',.04);
-    G.fireCd = 14;
+    G.fireCd = BALANCE.shot.cdInSafeZone;
     return;
   }
   G.ammo--;
@@ -1039,10 +1329,17 @@ function fire(){
   }
   if(target){ tx=target.x; ty=target.y; }
   const dx=tx-G.px, dy=ty-G.py, d=Math.hypot(dx,dy)||1;
-  const vx=dx/d*4.8, vy=dy/d*4.8;
-  G.shots.push({ x:G.px, y:G.py, vx, vy, r:5, dmg:shotPower(), hits:0, life:90, trail:[] });
-  G.fireCd = 9;
-  SFX.fire(1.4);
+  const sp = BALANCE.shot.speed + G.pu.power * BALANCE.shot.speedPerPowerLv;
+  const vx=dx/d*sp, vy=dy/d*sp;
+  // PWR-scaled shot: bigger radius, optional piercing (Lv3+ = 1, Lv5 = 2).
+  // Stored on the shot so collision logic can read it.
+  const pLv = G.pu.power;
+  const shotR = BALANCE.shot.r + Math.floor(pLv/2);                  // 5 → 7 at Lv5
+  const pierce = pLv >= 5 ? 2 : pLv >= 3 ? 1 : 0;
+  G.shots.push({ x:G.px, y:G.py, vx, vy, r:shotR, dmg:shotPower(),
+                 hits:0, pierce, life:BALANCE.shot.life, trail:[], pLv });
+  G.fireCd = BALANCE.shot.fireCd;
+  SFX.fire(1.4 + pLv*0.08);
   burst(G.px,G.py,'c',6,1.5);
 }
 
@@ -1066,14 +1363,15 @@ function update(){
   // ship follows finger (relative drag). Heavier when cargo full, faster with speed PU.
   const heavy = (1 - (G.cargo/cargoCap())*0.4) * moveScale();
   if(pointer && anchor){
-    const SENS=1.5;
+    const SENS=1.2;
     const tx=anchor.sx+(pointer.x-anchor.fx)*SENS, ty=anchor.sy+(pointer.y-anchor.fy)*SENS;
-    G.px+=(tx-G.px)*0.5*heavy; G.py+=(ty-G.py)*0.5*heavy;
+    // smoothing: ship eases toward the finger/mouse target instead of snapping
+    G.px+=(tx-G.px)*0.15*heavy; G.py+=(ty-G.py)*0.15*heavy;
   }
   let kx=0,ky=0;
   if(keys.ArrowLeft||keys.a) kx-=1; if(keys.ArrowRight||keys.d) kx+=1;
   if(keys.ArrowUp||keys.w) ky-=1; if(keys.ArrowDown||keys.s) ky+=1;
-  G.px+=kx*2.8*heavy; G.py+=ky*2.8*heavy;
+  G.px+=kx*3.36*heavy; G.py+=ky*3.36*heavy;
   G.px=Math.max(6,Math.min(WW-6,G.px)); G.py=Math.max(6,Math.min(WH-6,G.py));
   // resolve collision with static obstacles (push player out)
   for(const o of G.obstacles){
@@ -1237,10 +1535,10 @@ function update(){
 
   // ---- CRATES: spawn occasionally; open on contact ----
   G.crateCd--;
-  if(G.crateCd<=0 && G.cratesSpawned<2 && G.state==='play' && !G.bossDowned){
+  if(G.crateCd<=0 && G.cratesSpawned<BALANCE.crate.maxPerStage && G.state==='play' && !G.bossDowned){
     spawnCrate();
     G.cratesSpawned++;
-    G.crateCd = 800 + Math.random()*600;  // next one in 13-23 seconds (spaced out since only 2)
+    G.crateCd = BALANCE.crate.nextCdMin + Math.random()*BALANCE.crate.nextCdSpread;  // next crate timer
   }
   for(const cr of G.crates){
     if(cr.opened) continue;
@@ -1274,6 +1572,21 @@ function update(){
   }
   G.missiles=G.missiles.filter(m=>!m.dead && m.x>-12 && m.x<WW+12 && m.y>-12 && m.y<WH+12 && m.t<400 && Math.hypot(m.x-STATION.x,m.y-STATION.y)>SAFE_R);
 
+  // ---- FLAME ORBS (GOMILLA): straight projectile, not suckable, contact damage ----
+  for(const f of G.flameOrbs){ f.t++; f.x+=f.vx; f.y+=f.vy; }
+  if(G.invuln<=0){
+    for(const f of G.flameOrbs){
+      if(f.dead) continue;
+      if(Math.abs(f.x-G.px)<10 && Math.abs(f.y-G.py)<10){
+        f.dead=true; hurt();
+        shockwave(f.x, f.y, '#fb923c', 36, 18);
+        sparks(f.x, f.y, '#fbbf24', 10, 2.4);
+        break;
+      }
+    }
+  }
+  G.flameOrbs=G.flameOrbs.filter(f=>!f.dead && f.t<f.life && f.x>-20 && f.x<WW+20 && f.y>-20 && f.y<WH+20 && Math.hypot(f.x-STATION.x,f.y-STATION.y)>SAFE_R);
+
   // ---- player hit by boss spit (not while sucking) ----
   if(G.invuln<=0 && !G.sucking){
     for(const e of G.ebullets){
@@ -1282,7 +1595,33 @@ function update(){
   }
   // contact with boss body
   if(G.boss && G.boss.awake && !G.boss.dead && G.invuln<=0 &&
-     Math.abs(G.boss.x-G.px)<G.boss.w/2 && Math.abs(G.boss.y-G.py)<G.boss.h/2){ hurt(); }
+     Math.abs(G.boss.x-G.px)<G.boss.w/2 && Math.abs(G.boss.y-G.py)<G.boss.h/2){
+    hurt();
+    // IRON HUSK dash: extra push back so player gets knocked aside
+    if(G.boss.spr==='boss2' && G.boss.dashFire>0){
+      const ka = G.boss.dashAng;
+      G.px += Math.cos(ka)*14; G.py += Math.sin(ka)*14;
+      G.px = Math.max(20, Math.min(WW-20, G.px));
+      G.py = Math.max(20, Math.min(WH-20, G.py));
+      shockwave(G.px, G.py, '#fbbf24', 28, 18);
+      G.shake = Math.max(G.shake, 6);
+    }
+  }
+  // JUNK CORE satellites: orbiting junk pieces deal contact damage
+  if(G.boss && G.boss.awake && !G.boss.dead && G.boss.spr==='boss' && G.invuln<=0){
+    const orbR = 22;
+    for(let i=0;i<G.boss.orbCount;i++){
+      const a = G.boss.orbAng + (i*Math.PI*2/G.boss.orbCount);
+      const ox = G.boss.x + Math.cos(a)*orbR;
+      const oy = G.boss.y + Math.sin(a)*orbR;
+      if(Math.abs(ox-G.px)<6 && Math.abs(oy-G.py)<6){
+        hurt();
+        shockwave(ox, oy, '#c084fc', 22, 14);
+        sparks(ox, oy, '#e879f9', 6, 2.0);
+        break;
+      }
+    }
+  }
 
   // ---- docking: unload cargo -> ammo. Upgrades come from a SEPARATE, slower meter. ----
   const onStation = Math.abs(G.px-STATION.x)<STATION.w/2 && Math.abs(G.py-STATION.y)<STATION.h/2+4;
@@ -1334,13 +1673,18 @@ function update(){
       }
     }
   }
-  // shot vs mobs
+  // shot vs mobs — damage scales with PWR, and pierce lets a shot hit multiple
   for(const sh of G.shots){
     if(sh.done) continue;
     for(const mo of G.mobs){
       if(mo.dead) continue;
       if(Math.abs(sh.x-mo.x)<mo.r+sh.r && Math.abs(sh.y-mo.y)<mo.r+sh.r){
-        sh.done=true; mo.hp-=(sh.dmg||10)>=10?2:1;
+        // PWR-scaled mob damage (was hardcoded 2-or-1).
+        const md = Math.max(1, Math.ceil((sh.dmg||10) / 6));
+        mo.hp -= md;
+        // Piercing: keep going for sh.pierce more hits before consuming the shot.
+        sh.hits = (sh.hits||0) + 1;
+        if(sh.hits > (sh.pierce||0)) sh.done = true;
         burst(sh.x,sh.y,'w',6,1.4); SFX.bosshit();
         if(mo.hp<=0){
           mo.dead=true;
@@ -1383,7 +1727,9 @@ function update(){
     if(sh.life<=0 && !sh.done){
       sh.done=true; G.missed++; SFX.rebreak();
       for(let i=0;i<3;i++) spawnJunk(sh.x+(Math.random()*30-15), sh.y+(Math.random()*30-15), 'scrap', 0);
-      burst(sh.x,sh.y,'r',8,1.5);
+      burst(sh.x,sh.y,'r',14,2.2);
+      shockwave(sh.x, sh.y, '#ef4444', 20, 12);
+      G.missFlash = 24;
     }
   }
   G.shots=G.shots.filter(sh=>!sh.done && sh.x>-10 && sh.x<WW+10 && sh.y>-10 && sh.y<WH+10);
@@ -1442,9 +1788,20 @@ function update(){
     }
   }
 
-  // ---- cleanliness rises as the boss loses HP ----
-  const bossProg = (G.boss && G.boss.awake) ? (1-G.boss.hp/G.boss.hpMax) : (G.boss?0:1);
-  G.cleanliness += (bossProg-G.cleanliness)*0.04;
+  // ---- cleanliness reflects how much of the world's junk is left ----
+  // initial = junk count at stage start. dirty counts both world junk AND
+  // boss-spit ebullets (which are suckable). Boss spit pushes % down; clears push it up.
+  // Clamped at 0% so heavy spit can't make the meter go negative.
+  {
+    const initial = G.totalJunkAtStart || 1;
+    let dirty = G.junk.length;
+    for(const e of G.ebullets){ if(!e.fromMob) dirty++; }
+    const target = Math.max(0, 1 - dirty / initial);
+    G.cleanliness += (target - G.cleanliness) * 0.05;
+  }
+  // brief HUD cue timers
+  if(G.missFlash>0) G.missFlash--;
+  if(G.healFlash>0) G.healFlash--;
 
   if(G.hp<=0 && G.state==='play'){ G.state='over'; G.t=0; stopBGM(); }
 }
@@ -1458,11 +1815,11 @@ function hurt(){
     shockwave(sxw, syw, '#5eead4', 22, 14);
     sparks(sxw, syw, '#a7ffd0', 8, 2.0);
     SFX.bosshit();
-    G.invuln = 30;   // brief i-frames so a swarm doesn't strip all shields at once
+    G.invuln = BALANCE.player.invulnShieldAbsorb;   // brief i-frames so a swarm doesn't strip all shields at once
     G.shake = Math.max(G.shake, 3);
     return;
   }
-  G.hp--; G.invuln=70; SFX.hurt();
+  G.hp--; G.invuln=BALANCE.player.invulnHit; SFX.hurt();
   G.shake = Math.max(G.shake, 6);
   burst(G.px,G.py,'r',16,1.8);
   shockwave(G.px, G.py, '#ef4444', 36, 18);
@@ -1470,7 +1827,7 @@ function hurt(){
   G.flashHp = 12;     // red screen flash on hit
   G.hitStop = 4;      // brief freeze for impact weight
   // dropping cargo on hit would be harsh for a proto; keep it but lose a little
-  G.cargo=Math.max(0, G.cargo-15);
+  G.cargo=Math.max(0, G.cargo-BALANCE.player.cargoLossOnHit);
   if(G.hp<=0){ G.state='over'; G.t=0; stopBGM(); }
 }
 
@@ -1644,29 +2001,38 @@ function drawScene(){
     ctx.save();
     for(const pl of G.planets){
       const x = pl.x - G.camX*pl.par, y = pl.y - G.camY*pl.par;
-      if(x+pl.r+8<0 || x-pl.r-8>LW || y+pl.r+8<0 || y-pl.r-8>LH) continue;
+      if(x+pl.r+10<0 || x-pl.r-10>LW || y+pl.r+10<0 || y-pl.r-10>LH) continue;
+      // pastel color: stage accent lerped 65% toward white so the body reads as
+      // distant, hazy atmosphere rather than a saturated foreground object.
+      // Cached per-planet so we don't recompute every frame.
+      const pastel = pl._pastel || (pl._pastel = lerpHex(pl.col, '#ffffff', 0.65));
+      // fake-blur halo: 2 oversized low-alpha discs (cheap, no ctx.filter cost).
+      ctx.globalAlpha = 0.04;
+      drawDisc(x|0, y|0, (pl.r+5)|0, pastel);
+      ctx.globalAlpha = 0.06;
+      drawDisc(x|0, y|0, (pl.r+2)|0, pastel);
       // back ring half (drawn behind body)
       if(pl.hasRing){
-        ctx.globalAlpha = 0.32;
-        ctx.strokeStyle = pl.col; ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.10;
+        ctx.strokeStyle = pastel; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.ellipse(x|0, y|0, pl.r+5, Math.max(2,pl.r*0.28), 0, 3.14, 6.28); ctx.stroke();
       }
-      // soft body (no hard outline, just tinted disc)
-      ctx.globalAlpha = 0.40;
-      drawDisc(x|0, y|0, pl.r|0, pl.col);
-      // shaded inner disc gives it some volume
-      ctx.globalAlpha = 0.45;
-      drawDisc((x-pl.r*0.25)|0, (y-pl.r*0.25)|0, (pl.r*0.7)|0, pl.col);
-      // small dim craters — read as "planet surface" not "rock chunk"
-      ctx.globalAlpha = 0.55;
+      // soft body — pastel and translucent, so it sits behind the action.
+      ctx.globalAlpha = 0.12;
+      drawDisc(x|0, y|0, pl.r|0, pastel);
+      // shaded inner disc — slight volume hint, still pastel
+      ctx.globalAlpha = 0.16;
+      drawDisc((x-pl.r*0.25)|0, (y-pl.r*0.25)|0, (pl.r*0.7)|0, pastel);
+      // craters — softened dark grey instead of pure black so they fit the haze
+      ctx.globalAlpha = 0.18;
       for(const cr of pl.craters||[]){
         const cx = x + Math.cos(cr.a)*pl.r*cr.r, cy = y + Math.sin(cr.a)*pl.r*cr.r;
-        px(cx|0, cy|0, cr.sz, cr.sz, '#000');
+        px(cx|0, cy|0, cr.sz, cr.sz, '#333');
       }
       // front ring half (over body)
       if(pl.hasRing){
-        ctx.globalAlpha = 0.42;
-        ctx.strokeStyle = pl.col; ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.14;
+        ctx.strokeStyle = pastel; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.ellipse(x|0, y|0, pl.r+5, Math.max(2,pl.r*0.28), 0, 0, 3.14); ctx.stroke();
       }
     }
@@ -1746,13 +2112,146 @@ function lerpHex(a,b,t){
   return 'rgb('+r+','+g+','+bl+')';
 }
 
+/* ---------- per-stage obstacle draw routines (dispatched by o.kind) ---------- */
+// ROCK — angular asteroid silhouette + craters (the "real" rock)
+function drawObstacleRock(ox, oy, o, sd, tint){
+  const N = 7, pts = [];
+  for(let i=0;i<N;i++){
+    const a = (i/N)*6.283 + sd;
+    const rr = o.r * (0.82 + ((sd*13 + i*7)%100)/100 * 0.35);
+    pts.push([ox + Math.cos(a)*rr, oy + Math.sin(a)*rr]);
+  }
+  // shadow (offset)
+  ctx.save(); ctx.globalAlpha=0.5; ctx.fillStyle='#000';
+  ctx.beginPath(); ctx.moveTo(pts[0][0]+2, pts[0][1]+2);
+  for(let i=1;i<N;i++) ctx.lineTo(pts[i][0]+2, pts[i][1]+2);
+  ctx.closePath(); ctx.fill(); ctx.restore();
+  // body + dark outline
+  ctx.fillStyle='#5a4a32'; ctx.strokeStyle='#1a1208'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for(let i=1;i<N;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // lit upper-left face
+  drawDisc((ox-o.r*0.35)|0, (oy-o.r*0.35)|0, Math.max(2,(o.r*0.4)|0), '#8a7048');
+  // craters
+  for(let i=0;i<2;i++){
+    const a=sd*3+i*2.4, cr=o.r*0.22;
+    const cx=ox+Math.cos(a)*o.r*0.35, cy=oy+Math.sin(a)*o.r*0.35;
+    drawDisc(cx|0, cy|0, cr|0, '#2a1c10');
+    px((cx+cr*0.5)|0, (cy+cr*0.4)|0, 2, 1, '#6a5238');
+  }
+  // accent glint (uses stage tint = amber)
+  const t2 = G.t*0.03 + sd;
+  if((Math.floor(t2)%6)===0){
+    px(ox+Math.cos(t2)*o.r*0.5|0, oy+Math.sin(t2)*o.r*0.5|0, 1, 1, tint);
+  }
+}
+// NEBULA — soft purple dust cloud, semi-transparent overlapping discs, slow drift phase
+function drawObstacleNebula(ox, oy, o, sd, tint){
+  const phase = G.t*0.01 + sd;
+  ctx.save();
+  // 3 stacked discs, low alpha, sized down toward center → gradient effect
+  const cols = ['#3a1a4a', '#6a2a8a', '#a855f7'];
+  const sizes = [1.0, 0.7, 0.45];
+  for(let i=0;i<3;i++){
+    ctx.globalAlpha = 0.35 - i*0.05;
+    const dx = Math.cos(phase + i*2.1)*1.5, dy = Math.sin(phase + i*2.1)*1.5;
+    drawDisc((ox+dx)|0, (oy+dy)|0, (o.r*sizes[i])|0, cols[i]);
+  }
+  // a few stars-in-dust accent pixels
+  ctx.globalAlpha = 0.9;
+  for(let i=0;i<3;i++){
+    const a = (sd*5+i*2.1)%6.283, rr = o.r*0.55*((sd*4+i)%1);
+    px((ox+Math.cos(a)*rr)|0, (oy+Math.sin(a)*rr)|0, 1, 1, i===0?tint:'#fde047');
+  }
+  ctx.restore();
+}
+// WRECK — broken ship hull: rectangle body + rivets + one antenna stick
+function drawObstacleWreck(ox, oy, o, sd, tint){
+  const tilt = ((sd*7)%1 - 0.5) * 0.4;  // small rotation
+  const w = o.r*1.6, h = o.r*1.0;
+  ctx.save();
+  ctx.translate(ox, oy); ctx.rotate(tilt);
+  // shadow
+  ctx.globalAlpha = 0.45; ctx.fillStyle='#000';
+  ctx.fillRect(-w/2+2, -h/2+2, w, h);
+  ctx.globalAlpha = 1;
+  // hull body — gray metal with darker outline
+  ctx.fillStyle='#1a2030'; ctx.fillRect(-w/2-1, -h/2-1, w+2, h+2);
+  ctx.fillStyle='#4a5060'; ctx.fillRect(-w/2, -h/2, w, h);
+  // top stripe (deck)
+  ctx.fillStyle='#6a7080'; ctx.fillRect(-w/2, -h/2, w, 2);
+  // rivets — 4 dots along the lower edge
+  ctx.fillStyle='#1a1a20';
+  for(let i=0;i<4;i++){
+    ctx.fillRect(-w/2 + 2 + i*(w-4)/3, h/2-2, 1, 1);
+  }
+  // gash — a dark diagonal slash so it reads as 'broken'
+  ctx.strokeStyle='#0a0a10'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-w/3, -h/4); ctx.lineTo(w/3, h/3); ctx.stroke();
+  // antenna — 1 thin vertical line poking up
+  ctx.fillStyle='#7a8090'; ctx.fillRect(((sd*11)%w - w/2)|0, -h/2-4, 1, 4);
+  ctx.fillStyle = tint; ctx.fillRect(((sd*11)%w - w/2)|0, -h/2-5, 1, 1);
+  ctx.restore();
+}
+// DANGER — dead satellite: dark body + pulsing red warning light
+function drawObstacleDanger(ox, oy, o, sd, tint){
+  const pulse = 0.5 + 0.5*Math.sin(G.t*0.08 + sd);
+  const w = o.r*1.4, h = o.r*1.4;
+  ctx.save();
+  // shadow
+  ctx.globalAlpha = 0.45; ctx.fillStyle='#000';
+  ctx.fillRect(ox-w/2+2, oy-h/2+2, w, h); ctx.globalAlpha=1;
+  // body — dark gray with outline
+  ctx.fillStyle='#0a0a0e'; ctx.fillRect(ox-w/2-1, oy-h/2-1, w+2, h+2);
+  ctx.fillStyle='#2a2a32'; ctx.fillRect(ox-w/2, oy-h/2, w, h);
+  // solar panels — wings on each side (dark blue)
+  ctx.fillStyle='#1a2848';
+  ctx.fillRect(ox-w/2-3, oy-1, 3, 3);
+  ctx.fillRect(ox+w/2,   oy-1, 3, 3);
+  // central warning beacon — red, glowing, pulses
+  ctx.shadowColor='#ef4444'; ctx.shadowBlur = 4 + pulse*4;
+  drawDisc(ox|0, oy|0, 2, pulse>0.5 ? '#ef4444' : '#fb7185');
+  ctx.shadowBlur=0;
+  // cracked panel dot — single dim accent
+  px((ox-w/4)|0, (oy+h/4)|0, 1, 1, tint);
+  ctx.restore();
+}
+// HIVE — pulsing alien egg / organic blob, magenta with rim glow
+function drawObstacleHive(ox, oy, o, sd, tint){
+  const pulse = 0.6 + 0.4*Math.sin(G.t*0.05 + sd);
+  // shadow
+  ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle='#000';
+  drawDisc((ox+2)|0, (oy+2)|0, (o.r*0.95)|0, '#000');
+  ctx.restore();
+  // base blob — 2 overlapping deep magenta discs (off-center for organic feel)
+  drawDisc(ox|0, oy|0, (o.r+1)|0, '#3a0a2a');
+  drawDisc((ox + Math.cos(sd*3)*o.r*0.2)|0, (oy + Math.sin(sd*3)*o.r*0.2)|0, o.r|0, '#7a1a5a');
+  // top body — bright magenta
+  drawDisc((ox-o.r*0.2)|0, (oy-o.r*0.2)|0, (o.r*0.7)|0, '#c026d3');
+  // rim glow accent — pulsing tint dot at the top
+  ctx.save(); ctx.shadowColor = tint; ctx.shadowBlur = 2 + pulse*4;
+  drawDisc((ox-o.r*0.3)|0, (oy-o.r*0.4)|0, Math.max(1,(o.r*0.25)|0), pulse>0.5 ? '#f0abfc' : tint);
+  ctx.restore();
+  // 2 dim 'cell' specks
+  px((ox+o.r*0.3)|0, (oy+o.r*0.1)|0, 1, 1, '#3a0a2a');
+  px((ox-o.r*0.1)|0, (oy+o.r*0.4)|0, 1, 1, '#3a0a2a');
+}
+const OBSTACLE_DRAW = {
+  NEBULA: drawObstacleNebula,
+  ROCK:   drawObstacleRock,
+  WRECK:  drawObstacleWreck,
+  DANGER: drawObstacleDanger,
+  HIVE:   drawObstacleHive,
+};
+
 function render(){
   drawScene();
 
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.1.0', rightAlign('v1.1.0', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.3.3', rightAlign('v1.3.3', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -1818,53 +2317,15 @@ function render(){
   }
 
   // ---- play / clear / over ---- (everything below is in WORLD space via sx()/sy())
-  // ---- OBSTACLES — static rocks/wreckage, stage-tinted ----
+  // ---- OBSTACLES — static, per-stage themed silhouette dispatched by kind ----
   (function(){
     const theme = (STAGES[Math.min(G.stage||1,TOTAL_STAGES)-1] || {}).theme;
     const tint = theme ? theme.accent : '#9aa0a6';
     for(const o of G.obstacles){
-      if(!onScreen(o.x,o.y,o.r+4)) continue;
-      const ox=sx(o.x), oy=sy(o.y);
-      const sd = o.seed;
-      // 3 overlapping lumps from the seed → asymmetric silhouette
-      // (was a single perfect circle, which read as a bowling ball).
-      const lumps = [
-        [0, 0, o.r],
-        [Math.cos(sd*7)*o.r*0.35, Math.sin(sd*7)*o.r*0.35, o.r*0.65],
-        [Math.cos(sd*5+1.5)*o.r*0.3, Math.sin(sd*5+1.5)*o.r*0.3, o.r*0.55],
-      ];
-      // cast shadow — same lumpy shape, slightly offset
-      ctx.save(); ctx.globalAlpha=0.5;
-      for(const L of lumps) drawDisc((ox+L[0]+2)|0, (oy+L[1]+2)|0, (L[2]*0.95)|0, '#000');
-      ctx.restore();
-      // dark outline (each lump's outer edge)
-      for(const L of lumps) drawDisc((ox+L[0])|0, (oy+L[1])|0, (L[2]+1)|0, '#1a1812');
-      // body fill
-      for(const L of lumps) drawDisc((ox+L[0])|0, (oy+L[1])|0, L[2]|0, '#52503e');
-      // single-source highlight — small, offset upper-left, NOT a smooth gradient
-      drawDisc((ox-o.r*0.4)|0, (oy-o.r*0.4)|0, Math.max(2, (o.r*0.35)|0), '#7a7560');
-      px((ox-o.r*0.5)|0, (oy-o.r*0.5)|0, 2, 2, '#a39a82');
-      // cracks — 3 thin dark lines radiating from center, seed-rotated
-      ctx.save(); ctx.strokeStyle='#1a1812'; ctx.lineWidth=1;
-      for(let i=0;i<3;i++){
-        const a = sd*4 + i*2.1;
-        ctx.beginPath();
-        ctx.moveTo(ox+Math.cos(a)*o.r*0.2, oy+Math.sin(a)*o.r*0.2);
-        ctx.lineTo(ox+Math.cos(a)*o.r*0.85, oy+Math.sin(a)*o.r*0.85);
-        ctx.stroke();
-      }
-      ctx.restore();
-      // pits — 7 darker pixels scattered, asymmetric
-      for(let i=0;i<7;i++){
-        const a = (sd*7+i*1.7)%6.283;
-        const rr = o.r*0.6*((sd*3+i*2)%1);
-        px((ox+Math.cos(a)*rr)|0, (oy+Math.sin(a)*rr)|0, 2, 2, '#2a2820');
-      }
-      // a couple bright pixels (mineral glints) — kept from old version
-      const t2 = G.t*0.03 + sd;
-      if((Math.floor(t2)%5)===0){
-        px(ox+Math.cos(t2)*o.r*0.5|0, oy+Math.sin(t2)*o.r*0.5|0, 1, 1, tint);
-      }
+      if(!onScreen(o.x,o.y,o.r+6)) continue;
+      const ox=sx(o.x), oy=sy(o.y), sd=o.seed;
+      const draw = OBSTACLE_DRAW[o.kind] || OBSTACLE_DRAW.ROCK;
+      draw(ox, oy, o, sd, tint);
     }
   })();
 
@@ -1964,10 +2425,68 @@ function render(){
     px(mx-1,my-1,2,2,'#fde047');
     if(m.warn>0 && (m.warn>>1&1)){ ctx.save(); ctx.globalAlpha=0.7; px(mx-3,my-3,6,6,'#fca5a5'); ctx.restore(); }
   }
+  // FLAME ORBS (GOMILLA) — compressed junk core wrapped in orange flame
+  for(const f of G.flameOrbs){
+    if(!onScreen(f.x,f.y,12)) continue;
+    const fx=sx(f.x), fy=sy(f.y);
+    const pulse = (G.t + (f.t|0))*0.3;
+    ctx.save();
+    ctx.shadowColor='#fb923c'; ctx.shadowBlur=10;
+    // outer flame
+    px(fx-4, fy-4, 8, 8, '#ef4444');
+    px(fx-3, fy-3, 6, 6, '#fb923c');
+    // junk core
+    px(fx-1, fy-1, 2, 2, '#94a3b8');
+    // flicker sparks orbiting around the orb
+    for(let i=0;i<3;i++){
+      const a = pulse + i*2.1;
+      px((fx+Math.cos(a)*7)|0, (fy+Math.sin(a)*7)|0, 1, 1, '#fde047');
+    }
+    ctx.restore();
+  }
 
   // boss
   if(G.boss){
     const b=G.boss, bx=sx(b.x), by=sy(b.y);
+    // PHASE 2 aimed-laser: telegraph line then bright lance
+    if(b.phase===2 && !b.dead && (b.laserT>0 || b.laserFire>0)){
+      const ang = b.laserAng;
+      const endX = bx + Math.cos(ang)*800;
+      const endY = by + Math.sin(ang)*800;
+      if(b.laserT>0){
+        // Telegraph: fade-in red guide line, blink fast in last 8 frames
+        let a = 0.15 + 0.55*(1 - b.laserT/50);
+        if(b.laserT<=8 && (b.laserT>>1&1)) a = 0.9;
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(endX,endY); ctx.stroke();
+        ctx.restore();
+      } else {
+        // Fire: outer red + inner white-pink core, with glow
+        ctx.save();
+        ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 8;
+        ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(endX,endY); ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = '#fee2e2'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(endX,endY); ctx.stroke();
+        ctx.restore();
+      }
+    }
+    // IRON HUSK dash telegraph: red guide line shown during dashT charge
+    if(!b.dead && b.spr==='boss2' && b.dashT>0){
+      const aDash = b.dashAng;
+      const endX = bx + Math.cos(aDash)*900;
+      const endY = by + Math.sin(aDash)*900;
+      let a = 0.18 + 0.6*(1 - b.dashT/40);
+      if(b.dashT<=8 && (b.dashT>>1&1)) a = 0.95;
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(endX,endY); ctx.stroke();
+      ctx.restore();
+    }
     if(b.dead && (b.dieT>>1&1)){}
     else if(onScreen(b.x,b.y,24)){
       // per-boss theme glow color, then phase 2 overrides with angry red pulse
@@ -1975,9 +2494,153 @@ function render(){
       const isP2 = b.phase===2;
       const glowCol = b.awake ? (isP2 ? '#ef4444' : (themeGlow[b.spr]||'#e879f9')) : '#3a4a55';
       const blur = b.awake ? (isP2 ? 16+4*Math.sin(G.t*0.3) : 14) : 6;
-      ctx.save(); ctx.shadowColor=glowCol; ctx.shadowBlur=blur;
-      blit(SPR[b.spr]||SPR.boss, bx, by); ctx.restore();
+
+      /* ---- Phase 1 ambient flair (drawn UNDER the sprite for layering) ---- */
+      if(b.awake){
+        ctx.save();
+        // JUNK CORE: 3-5 small junk pieces orbiting (damage-dealing satellites)
+        if(b.spr==='boss'){
+          const orbR = 22;
+          for(let i=0;i<b.orbCount;i++){
+            const a = b.orbAng + (i*Math.PI*2/b.orbCount);
+            const ox = bx + Math.cos(a)*orbR;
+            const oy = by + Math.sin(a)*orbR;
+            ctx.shadowColor='#e879f9'; ctx.shadowBlur=6;
+            px((ox-2)|0, (oy-2)|0, 4, 4, '#94a3b8');
+            px((ox-1)|0, (oy-1)|0, 2, 2, '#c084fc');
+          }
+        }
+        // IRON HUSK: random yellow glints on armor seams
+        if(b.spr==='boss2'){
+          if((G.t & 3) === 0){
+            const gx = bx + (Math.random()-0.5)*22;
+            const gy = by + (Math.random()-0.5)*16;
+            ctx.shadowColor='#fde047'; ctx.shadowBlur=6;
+            px((gx-1)|0, (gy-1)|0, 2, 2, '#fde047');
+          }
+        }
+        // GOMILLA: dorsal fin pulse (green)
+        if(b.spr==='boss3'){
+          const p = 0.5 + 0.5*Math.sin(G.t*0.18);
+          ctx.globalAlpha = 0.35 + 0.45*p;
+          ctx.shadowColor='#84cc16'; ctx.shadowBlur=8;
+          px(bx-1, by-18, 2, 4, '#84cc16');
+          px(bx-1, by-22, 2, 3, '#bef264');
+          ctx.globalAlpha = 1;
+          // flame charging telegraph: red glow on mouth while flameT>0
+          if(b.flameT>0){
+            const fp = (b.flameT>>1) & 1;
+            ctx.shadowColor='#ef4444'; ctx.shadowBlur=10;
+            const fa = 0.5 + 0.5*(1 - b.flameT/30);
+            ctx.globalAlpha = fp ? Math.min(1, fa+0.3) : fa;
+            px(bx-2, by+2, 4, 4, '#ef4444');
+            px(bx-1, by+3, 2, 2, '#fbbf24');
+            ctx.globalAlpha = 1;
+          }
+        }
+        // VOID LEVIATHAN: trailing tendril dots (orbiting + drift)
+        if(b.spr==='boss4'){
+          const tcount = b.phase===2 ? 6 : 3;
+          ctx.shadowColor='#a78bfa'; ctx.shadowBlur=6;
+          for(let i=0;i<tcount;i++){
+            const phase = (G.t*0.05) + i*0.9;
+            const tr = 14 + Math.sin(phase)*4;
+            const ta = i*1.7 + G.t*0.03;
+            const tx = bx + Math.cos(ta)*tr;
+            const ty = by + Math.sin(ta)*tr;
+            ctx.globalAlpha = 0.5 + 0.3*Math.sin(phase);
+            px((tx-1)|0, (ty-1)|0, 2, 2, i&1 ? '#a78bfa' : '#7c3aed');
+          }
+          ctx.globalAlpha = 1;
+        }
+        // PROGENITOR: 2 golden glyphs slowly orbiting
+        if(b.spr==='boss5'){
+          for(let i=0;i<2;i++){
+            const a = G.t*0.025 + i*Math.PI;
+            const gr = 26;
+            const gx = bx + Math.cos(a)*gr;
+            const gy = by + Math.sin(a)*gr;
+            ctx.shadowColor='#fde047'; ctx.shadowBlur=8;
+            px((gx-1)|0, (gy-1)|0, 2, 2, '#fde047');
+            px((gx)|0, (gy)|0, 1, 1, '#fff');
+          }
+          // summon telegraph: golden ring pulse during summonT
+          if(b.summonT>0){
+            const sp = 1 - b.summonT/40;
+            ctx.globalAlpha = 0.4 + 0.4*Math.sin(b.summonT*0.6);
+            ctx.shadowColor='#fde047'; ctx.shadowBlur=10;
+            ctx.strokeStyle='#fde047'; ctx.lineWidth=1;
+            ctx.beginPath(); ctx.arc(bx, by, 20 + sp*8, 0, Math.PI*2); ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+        ctx.restore();
+      }
+
+      // Sprite blit with optional teleport fade (VOID LEVIATHAN)
+      const spriteAlpha = (b.spr==='boss4') ? (b.tpAlpha != null ? b.tpAlpha : 1) : 1;
+      ctx.save();
+      if(spriteAlpha < 1) ctx.globalAlpha = spriteAlpha;
+      ctx.shadowColor=glowCol; ctx.shadowBlur=blur;
+      blit(SPR[b.spr]||SPR.boss, bx, by);
+      ctx.restore();
       if(!b.awake){ ctx.save(); ctx.globalAlpha=0.5+0.3*Math.sin(G.t*0.1); glowText('?', bx-2, by-22, UI.amber,1,6); ctx.restore(); }
+
+      /* ---- Phase 2 transformation overlays (drawn OVER the sprite) ---- */
+      if(b.awake && isP2 && spriteAlpha > 0.2){
+        ctx.save();
+        // JUNK CORE: red cracks across the core
+        if(b.spr==='boss'){
+          ctx.shadowColor='#ef4444'; ctx.shadowBlur=6;
+          ctx.strokeStyle='#ef4444'; ctx.lineWidth=1;
+          const cseed = (G.t>>4) & 3;
+          for(let k=0;k<3;k++){
+            const ang = (cseed*1.7 + k*2.094);
+            const r1 = 4, r2 = 10;
+            ctx.beginPath();
+            ctx.moveTo(bx+Math.cos(ang)*r1, by+Math.sin(ang)*r1);
+            ctx.lineTo(bx+Math.cos(ang)*r2, by+Math.sin(ang)*r2);
+            ctx.stroke();
+          }
+        }
+        // IRON HUSK: dark cracks with red core peeking through
+        if(b.spr==='boss2'){
+          ctx.strokeStyle='#1f1f1f'; ctx.lineWidth=1;
+          for(let k=0;k<5;k++){
+            const ax = (Math.sin(G.t*0.03 + k*1.2))*10;
+            ctx.beginPath();
+            ctx.moveTo(bx-12+k*5, by-8); ctx.lineTo(bx-12+k*5+ax, by+8); ctx.stroke();
+          }
+          // red glow flickers from inside cracks
+          if((G.t>>2)&1){
+            ctx.shadowColor='#ef4444'; ctx.shadowBlur=8;
+            px(bx-1, by-1, 2, 2, '#ef4444');
+            px(bx+3, by+1, 2, 2, '#ef4444');
+          }
+        }
+        // GOMILLA: red smoke rising from eyes
+        if(b.spr==='boss3'){
+          if((G.t & 7) === 0){
+            smoke(b.x-3, b.y-12, 1);
+            smoke(b.x+3, b.y-12, 1);
+          }
+        }
+        // VOID LEVIATHAN: tendrils doubled (already handled via tcount in ambient)
+        // (no extra overlay needed — ambient adapts)
+
+        // PROGENITOR: dual golden aura rings
+        if(b.spr==='boss5'){
+          ctx.shadowColor='#fde047'; ctx.shadowBlur=10;
+          ctx.strokeStyle='#fde047'; ctx.lineWidth=1;
+          for(let r=0;r<2;r++){
+            const pul = 1 + 0.15*Math.sin(G.t*0.12 + r*Math.PI);
+            ctx.globalAlpha = 0.35 + 0.25*Math.cos(G.t*0.1 + r*1.3);
+            ctx.beginPath(); ctx.arc(bx, by, (16 + r*8)*pul, 0, Math.PI*2); ctx.stroke();
+          }
+          ctx.globalAlpha = 1;
+        }
+        ctx.restore();
+      }
     }
     // HP bar with phase-2 half marker
     if(b.awake && !b.dead){
@@ -2044,7 +2707,8 @@ function render(){
     glowText('FULL', sx(G.px)-9, sy(G.py)-22, UI.red, 1, 8);
   }
 
-  // player compressed shots — with a fading amber streak trail
+  // player compressed shots — with a fading amber streak trail.
+  // Visual scales with PWR level (pLv): bigger glow, brighter ring at high Lv.
   for(const sh of G.shots){
     for(let i=0;i<sh.trail.length;i++){
       const t=sh.trail[i], a=(i+1)/sh.trail.length;
@@ -2053,7 +2717,17 @@ function render(){
       ctx.restore();
     }
     const x=sx(sh.x), y=sy(sh.y);
-    ctx.save(); ctx.shadowColor=UI.amberHi; ctx.shadowBlur=14;
+    const pLv = sh.pLv || 0;
+    // Lv3+ outer "force-ring" ahead of the shot — alpha grows with PWR
+    if(pLv >= 3){
+      const ringR = sh.r + 3 + Math.min(3, pLv-2);
+      ctx.save(); ctx.globalAlpha = 0.18 + (pLv-3)*0.10;
+      ctx.strokeStyle = UI.amberHi; ctx.lineWidth = 1;
+      ctx.shadowColor = UI.amberHi; ctx.shadowBlur = 6;
+      ctx.beginPath(); ctx.arc(x, y, ringR, 0, 6.283); ctx.stroke();
+      ctx.restore();
+    }
+    ctx.save(); ctx.shadowColor=UI.amberHi; ctx.shadowBlur = 14 + pLv*2;
     drawDisc(x,y, sh.r+1, UI.amberHi);
     drawDisc(x,y, sh.r-1, UI.amber);
     ctx.restore();
@@ -2123,17 +2797,22 @@ function render(){
     ctx.save(); ctx.globalAlpha=0.5; ctx.strokeStyle=UI.green; ctx.lineWidth=1;
     ctx.beginPath(); ctx.arc(bx,by,safePx,0,6.283); ctx.stroke();
     ctx.restore();
-    // junk — very faint pinpricks (gives a sense of how messy the area is)
+    // junk — bright amber pinpricks (1×1, sharp). The "lootable" reading: bright = pick this up.
     if(G.junk.length){
-      ctx.save(); ctx.globalAlpha=0.45;
+      ctx.save(); ctx.globalAlpha=0.75;
       for(let i=0;i<G.junk.length;i++){
-        const j=G.junk[i]; px(sx_(j.x)|0, sy_(j.y)|0, 1, 1, UI.amberDim);
+        const j=G.junk[i]; px(sx_(j.x)|0, sy_(j.y)|0, 1, 1, UI.amberHi);
       }
       ctx.restore();
     }
-    // obstacles — faint dim dots on the minimap
-    for(const o of G.obstacles){
-      px(sx_(o.x)|0, sy_(o.y)|0, 1, 1, UI.textDim);
+    // obstacles — 2×2 themed pastel blocks. Bigger + duller than junk so they read
+    // unmistakably as "do-not-touch" geometry rather than collectibles.
+    {
+      const _theme = (STAGES[Math.min(G.stage||1,TOTAL_STAGES)-1] || {}).theme;
+      const obsCol = _theme ? lerpHex(_theme.accent, '#000000', 0.45) : UI.textDim;
+      for(const o of G.obstacles){
+        px((sx_(o.x)-1)|0, (sy_(o.y)-1)|0, 2, 2, obsCol);
+      }
     }
     // mobs — purple dots
     for(const mo of G.mobs){
@@ -2141,12 +2820,21 @@ function render(){
       const k=MOB_KIND[mo.kind]||MOB_KIND.base;
       px(sx_(mo.x)-1|0, sy_(mo.y)-1|0, 2, 2, k.glow);
     }
-    // CRATES — bright pulsing gold dot, very visible
+    // CRATES — bright pulsing gold dot + expanding ring so it's actually noticed
     for(const cr of G.crates){
       if(cr.opened) continue;
       const cx_=sx_(cr.x), cy_=sy_(cr.y);
-      ctx.save(); ctx.shadowColor='#fde047'; ctx.shadowBlur=4;
-      px(cx_-1|0, cy_-1|0, (G.t>>2)&1?3:2, (G.t>>2)&1?3:2, '#fde047');
+      // expanding ring: 0..6px radius, fades alpha as it grows (1Hz-ish pulse)
+      const ringR = (G.t % 30) / 30 * 6;
+      const ringA = 1 - (G.t % 30) / 30;
+      ctx.save();
+      ctx.strokeStyle = '#fde047'; ctx.globalAlpha = ringA * 0.8; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(cx_, cy_, ringR, 0, 6.283); ctx.stroke();
+      ctx.restore();
+      // core dot with glow — bigger than before
+      ctx.save(); ctx.shadowColor='#fde047'; ctx.shadowBlur=6;
+      const s = (G.t>>2)&1 ? 4 : 3;
+      px(cx_-(s>>1)|0, cy_-(s>>1)|0, s, s, '#fde047');
       ctx.restore();
     }
     // base — amber dot, pulses slightly so it's findable
@@ -2181,17 +2869,49 @@ function render(){
     text('MAP', MX, MY+MH+1, UI.amberDim, 1);
   })();
 
-  // ---- radar arrows pointing to STATION and (once found) the BOSS ----
+  // ---- radar arrows pointing to STATION (HOME marker) and BOSS (alarm marker) ----
+  // Differentiated by SHAPE, not just color: home = square house silhouette with
+  // a pointed roof; boss = pulsing red ring + dot. Far harder to confuse at a glance.
   (function(){
-    function arrow(tx,ty,col){
-      if(onScreen(tx,ty,10)) return; // visible, no arrow needed
+    function edgePos(tx,ty){
       const dx=tx-G.px, dy=ty-G.py, a=Math.atan2(dy,dx);
-      const ex=LW/2+Math.cos(a)*(LW/2-12), ey=LH/2+Math.sin(a)*(LH/2-16);
-      ctx.save(); ctx.globalAlpha=0.85; px(ex-2,ey-2,4,4,col);
-      px(ex+Math.cos(a)*3-1, ey+Math.sin(a)*3-1, 2,2, col); ctx.restore();
+      const ex=LW/2+Math.cos(a)*(LW/2-14), ey=LH/2+Math.sin(a)*(LH/2-18);
+      return {ex, ey, a};
     }
-    arrow(STATION.x, STATION.y, UI.amber);                                                          // amber = base
-    if(G.boss && !G.boss.dead) arrow(G.boss.x, G.boss.y, G.bossFound?UI.red:UI.amberDim);          // red once found, dim hint before
+    // HOME marker — solid amber square with a tiny roof chevron pointing back toward base
+    if(!onScreen(STATION.x, STATION.y, 10)){
+      const p = edgePos(STATION.x, STATION.y);
+      ctx.save(); ctx.globalAlpha=0.95;
+      ctx.shadowColor=UI.amber; ctx.shadowBlur=3;
+      // house body
+      px((p.ex-3)|0, (p.ey-2)|0, 6, 5, UI.amber);
+      // small darker window
+      px((p.ex-1)|0, (p.ey)|0, 2, 2, UI.amberDark);
+      // roof chevron pointing toward STATION
+      const rx = p.ex + Math.cos(p.a)*4, ry = p.ey + Math.sin(p.a)*4;
+      px((rx-1)|0, (ry-1)|0, 2, 2, UI.amberHi);
+      ctx.restore();
+    }
+    // BOSS marker — pulsing red ring + center dot, distinctly round and alarming
+    if(G.boss && !G.boss.dead && !onScreen(G.boss.x, G.boss.y, 10)){
+      const p = edgePos(G.boss.x, G.boss.y);
+      const found = G.bossFound;
+      const col = found ? UI.red : UI.amberDim;
+      const pulse = found ? (0.5 + 0.5*Math.sin(G.t*0.2)) : 0.4;
+      ctx.save();
+      // outer pulsing ring (drawn as stroked circle, varying alpha)
+      ctx.globalAlpha = 0.4 + 0.5*pulse;
+      ctx.strokeStyle = col; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(p.ex, p.ey, 5 + pulse*2, 0, 6.283); ctx.stroke();
+      // bright center dot
+      ctx.globalAlpha = 0.95;
+      ctx.shadowColor = col; ctx.shadowBlur = 4;
+      px((p.ex-1)|0, (p.ey-1)|0, 3, 3, col);
+      // tiny chevron pointing toward boss (just outside the ring)
+      const rx = p.ex + Math.cos(p.a)*7, ry = p.ey + Math.sin(p.a)*7;
+      px((rx-1)|0, (ry-1)|0, 2, 2, col);
+      ctx.restore();
+    }
   })();
 
   // ---- HUD: ship's internal console panels (amber CRT) ----
@@ -2200,10 +2920,25 @@ function render(){
   ctx.fillStyle=UI.bg1; ctx.fillRect(0,0,LW,14);
   ctx.fillStyle=UI.amberDark; ctx.fillRect(0,14,LW,1);
   ctx.restore();
+  // MISS flash — pops in the bottom-right when a shot's compressed junk re-breaks
+  if(G.missFlash>0){
+    const a = Math.min(1, G.missFlash/12);
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.shadowColor='#ef4444'; ctx.shadowBlur=6;
+    text('MISS', LW-28, LH-36, '#ef4444', 1);
+    ctx.restore();
+  }
+  // HEAL flash — quick green pulse across the HP bar zone when crate restores HP
+  if(G.healFlash>0){
+    const a = Math.min(1, G.healFlash/30);
+    ctx.save(); ctx.globalAlpha = a*0.5;
+    ctx.fillStyle = '#22ff88'; ctx.fillRect(0, 0, LW, 14);
+    ctx.restore();
+  }
   // top status bar — chained via measureText so labels never overlap values.
   // layout: HULL [♥♥♥]  AMMO 00  CLEAN 00%               AREA-N (right-aligned)
   const HUD_Y = 4, HUD_GAP = 5;
-  const pct = G.junkMass>0 ? Math.floor(100*G.collectedMass/G.junkMass) : 0;
+  const pct = cleanPercent();
   const pctCol = pct>=80?UI.green : pct>=40?UI.amber : UI.red;
   const ammoStr = String(G.ammo).padStart(2,'0');
   const pctStr  = String(pct).padStart(2,'0')+'%';
@@ -2284,13 +3019,42 @@ function render(){
     center('> '+G.puName, LH/2-2, UI.green, 1);
     ctx.restore();
   }
-  // crate-opened banner — quick floating text
+  // crate banner — spawn alert (long, top) or reward toast (short, center)
   if(G.crateMsgT>0){
-    ctx.save(); ctx.globalAlpha=Math.min(1,G.crateMsgT/30);
-    const cy = LH/2 + 30 - (90-G.crateMsgT)*0.4;  // floats up
-    glowCenter('[ SUPPLY CRATE ]', cy-10, '#fde047', 1, 6);
-    glowCenter(G.crateMsg, cy+2, '#fbbf24', 1, 8);
-    ctx.restore();
+    if(G.crateMsgKind === 'spawn'){
+      // top-positioned alert that holds steady, fades in/out
+      const a = G.crateMsgT > 90 ? (120-G.crateMsgT)/30 : Math.min(1, G.crateMsgT/30);
+      ctx.save(); ctx.globalAlpha = a;
+      const by = 28;
+      // dim backdrop strip so text reads on any background
+      ctx.fillStyle = 'rgba(8,16,12,0.7)';
+      ctx.fillRect(0, by-8, LW, 22);
+      glowCenter('[ SUPPLY CRATE ]', by-2, '#fde047', 1, 6);
+      glowCenter(G.crateMsg, by+9, '#fbbf24', 1, 6);
+      ctx.restore();
+    } else {
+      // reward banner — bold and centered, fades in fast then drifts out.
+      // colored by reward type so it reads at a glance even from peripheral vision.
+      const msg = G.crateMsg || '';
+      const isHull   = msg.indexOf('HULL') >= 0;
+      const isShield = msg.indexOf('SHIELD') >= 0;
+      const accent = isHull ? '#22ff88' : isShield ? '#5eead4' : '#fde047';
+      const icon   = isHull ? '+'      : isShield ? 'O'        : '*';
+      const phase = 1 - G.crateMsgT/100;     // 0 at start → 1 at end
+      const a = Math.min(1, G.crateMsgT/20);
+      const cy = LH/2 - 8 - phase*16;        // floats up while it's on screen
+      ctx.save(); ctx.globalAlpha = a;
+      // dim full-width strip so it pops on busy backgrounds
+      ctx.fillStyle = 'rgba(8,16,12,0.78)';
+      ctx.fillRect(0, cy-8, LW, 36);
+      ctx.strokeStyle = accent; ctx.globalAlpha = a*0.7;
+      ctx.strokeRect(0, cy-8, LW, 36);
+      ctx.globalAlpha = a;
+      glowCenter('[ '+icon+' SUPPLY CRATE '+icon+' ]', cy-2, accent, 1, 6);
+      // reward text at 2x scale so it's unmistakable
+      glowCenter(msg, cy+10, accent, 2, 10);
+      ctx.restore();
+    }
   }
   // BOSS REVEAL BANNER — full-width dramatic reveal when the boss wakes
   if(G.bossIntro>0 && G.boss){
@@ -2316,8 +3080,12 @@ function render(){
       // boss name appears slightly delayed (typewriter-ish: scale by reveal amount)
       const nameReveal = Math.min(1, (1-p)*3);
       const nameStr = (G.boss.name||'BOSS').slice(0, Math.ceil((G.boss.name||'BOSS').length * nameReveal));
-      glowCenter(nameStr, LH/2 - 4, UI.amberHi, 2, 14);
-      if(nameReveal>=1) glowCenter('▽ HOSTILE DETECTED ▽', LH/2 + 22, UI.amber, 1, 6);
+      glowCenter(nameStr, LH/2 - 8, UI.amberHi, 2, 14);
+      // JP reading subtitle, fades in just after the english name finishes typing
+      if(nameReveal>=1 && G.boss.nameJp){
+        glowCenter(G.boss.nameJp, LH/2 + 10, UI.amber, 1, 6);
+      }
+      if(nameReveal>=1) glowCenter('▽ HOSTILE DETECTED ▽', LH/2 + 26, UI.amber, 1, 6);
     }
   } else if(G.bossFound && G.boss && G.boss.awake && !G.boss.dead && G.boss.t<60 && (G.t>>2&1)){
     // post-intro lingering threat tag
@@ -2459,7 +3227,7 @@ function render(){
     const stageCfg = STAGES[Math.min(G.stage,TOTAL_STAGES)-1];
     center('▼ '+(stageCfg.bossName||'BOSS')+' ▼', 64, UI.red, 1);
     // status info
-    const cpct = G.junkMass>0 ? Math.floor(100*G.collectedMass/G.junkMass) : 0;
+    const cpct = cleanPercent();
     text('AREA: '+stageCfg.name, 30, 88, UI.amberDim, 1);
     text('CLEAN: '+cpct+'%', 30, 100, UI.green, 1);
     text('STAGE: '+G.stage+'/'+TOTAL_STAGES, 30, 112, UI.amberDim, 1);
@@ -2541,7 +3309,7 @@ function render(){
     ctx.save(); ctx.globalAlpha=0.18; ctx.fillStyle='#ff8080'; ctx.fillRect(0, sweepY, LW, 2); ctx.restore();
     center('> ロボ大破', 96, UI.text, 1);
     px(0,116,LW,1,UI.redDim);
-    const cpct = G.junkMass>0 ? Math.floor(100*G.collectedMass/G.junkMass) : 0;
+    const cpct = cleanPercent();
     const lx=40;
     // stats appear with stagger
     if(G.t>=20){ text('FINAL CLEAN..', lx, 140, UI.amberDim, 1); text(String(cpct).padStart(3,'0')+'%', lx+90, 140, UI.red, 1); }
@@ -2561,7 +3329,27 @@ function render(){
 // re-fit once after all UI constants (FIRE_BTN/CARD/PB_BTN) are declared,
 // so applyCanvasSize can sync them to the (possibly expanded) LW
 fit();
-function loop(){ update(); render(); requestAnimationFrame(loop); }
+// fixed-timestep loop: simulation runs at 60Hz regardless of display refresh rate
+// (so 120Hz/144Hz monitors don't double/triple game speed).
+const TICK_MS = 1000/60;
+const MAX_CATCHUP = 5;          // cap update steps per frame (avoid spiral-of-death on tab-resume)
+let _lastT = performance.now();
+let _acc = 0;
+function loop(now){
+  if(now == null) now = performance.now();
+  let dt = now - _lastT; _lastT = now;
+  if(dt > 250) dt = 250;        // clamp huge gaps (tab inactive)
+  _acc += dt;
+  let steps = 0;
+  while(_acc >= TICK_MS && steps < MAX_CATCHUP){
+    update();
+    _acc -= TICK_MS;
+    steps++;
+  }
+  if(steps >= MAX_CATCHUP) _acc = 0;  // drop residue if we hit the cap
+  render();
+  requestAnimationFrame(loop);
+}
 requestAnimationFrame(loop);
 </script>
 </body>
