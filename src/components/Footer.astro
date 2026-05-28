@@ -5,16 +5,76 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <hr class="retro-hr" />
   <div class="container" style="text-align: center;">
+    <div class="visit-counter" aria-label="アクセスカウンター">
+      <span class="visit-label">VISITORS</span>
+      <span class="visit-count" id="visit-count">······</span>
+    </div>
     <p class="copy">
       © {year} Y.M Apps / PINO
     </p>
   </div>
 </footer>
 
+<script>
+  // ホスト名が「y-m-apps-site.pages.dev」または本番カスタムドメインのときだけカウント。
+  // ローカル開発・プレビュー環境では水増し防止のため動かさない。
+  const host = location.hostname;
+  const isProd = host.endsWith(".pages.dev") || host === "y-m-apps.com" || host === "www.y-m-apps.com";
+  const el = document.getElementById("visit-count");
+  if (el) {
+    if (isProd) {
+      fetch("https://api.counterapi.dev/v1/y-m-apps-site/visits/up")
+        .then((r) => r.json())
+        .then((d) => {
+          if (d && typeof d.count === "number") {
+            el.textContent = String(d.count).padStart(6, "0");
+          }
+        })
+        .catch(() => {
+          // ネット失敗時はそっと諦める（カウンタは飾りなので落とさない）
+          el.textContent = "······";
+        });
+    } else {
+      // 開発・テスト環境ではダミー表示
+      el.textContent = "DEV";
+    }
+  }
+</script>
+
 <style>
   .site-footer {
     margin-top: 46px;
     padding-bottom: 34px;
+  }
+  /* レトロな7セグ風カウンタ。Press Start 2P が読み込まれていなければ
+     monospace にフォールバックしてもそれっぽい見た目に。 */
+  .visit-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 8px 14px;
+    background: #1a1612;
+    border: 1px solid var(--cream-5, #c5b89c);
+    border-radius: 6px;
+    box-shadow:
+      0 2px 0 rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .visit-label {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    color: #c5b89c;
+  }
+  .visit-count {
+    font-family: var(--font-pixel, "Press Start 2P", ui-monospace, monospace);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: #ffd84d;
+    text-shadow: 0 0 8px rgba(255, 216, 77, 0.45);
+    min-width: 88px;
+    text-align: center;
   }
   .copy {
     font-size: 11px;
