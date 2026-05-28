@@ -1,6 +1,6 @@
 ---
 title: COSMO CLEANER
-tagline: 宇宙のゴミ掃除ロボがエイリアンと戦うアクションゲーム。
+tagline: 宇宙ゴミを集めて、基地で強化。圧縮弾を作って敵とボスに挑む、CRT風の宇宙清掃シューティングゲーム。
 world: cosmo-cleaner
 platform: Webゲーム
 badges: ["Web", "HTML5", "Pixel Art", "ミニジャム"]
@@ -13,19 +13,21 @@ coverImage: /assets/apps/cosmo-cleaner-screenshot-1.png
 screenshots:
   - /assets/apps/cosmo-cleaner-screenshot-1.png
 features:
-  - title: SUCK / SHOOT / DODGE
-    body: ドラッグで移動、長押しでゴミを吸引、FIRE ボタンで圧縮弾を発射。タンクが満タンになったらベースに戻って弾薬に変換。
+  - title: COLLECT / RETURN / POWER UP
+    body: 宇宙ゴミを吸い込み、基地へ持ち帰って自機を強化。戻るタイミングと強化の判断が攻略のカギになります。
+  - title: COMPRESSED SHOT
+    body: 回収したゴミから圧縮弾を生成。集めたものを武器に変えて、敵やボスに立ち向かいます。
   - title: 5 STAGES & BOSSES
-    body: ネビュラ外縁、隕石帯、難破船帯、デッドゾーン、そして母艦。各エリア固有のボスと、Phase 2 突入のヤバさ。
-  - title: SUB-1.44MB MINIJAM
-    body: 単一 HTML ファイル、フロッピーディスク 1.44MB 制約のミニジャム作品。インストール不要、ブラウザでこの場で。
+    body: 5つのエリアを探索し、どこかに潜むボスを発見して撃破。ゴミ回収と戦闘をくり返しながら、宇宙のクリーンアップを進めます。
+  - title: SUB-1.44MB MINI JAM
+    body: 単一HTMLファイルで動く、1.44MB未満のミニゲーム。インストール不要で、ブラウザからすぐに遊べます。
 ---
 
-E-Ink端末向け読書アプリ InkPress を作る合間に、Claude Code と一緒に
-作った CRT モニタ風のアーケードゲームです。
+COSMO CLEANER は、宇宙ゴミを回収しながら戦うミニシューティングゲームです。
+フィールドに漂うゴミを吸い込み、基地へ持ち帰ることで、自機のパワーアップや圧縮弾の生成ができます。
 
-宇宙のゴミ問題を、ロボット掃除機の視点で。
-スマホでもPCでも遊べます。
+ゴミを集める、基地に戻る、強化する、再び出撃する。
+そのサイクルをくり返しながら、雑魚敵を倒し、エリアのどこかに潜むボスの撃破を目指します。
 
 ## 🎮 操作方法
 
