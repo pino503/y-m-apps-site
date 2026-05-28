@@ -1859,7 +1859,25 @@ function render(){
     }
   }
   // boss spit (suckable, red-tinted)
-  for(const e of G.ebullets){ if(onScreen(e.x,e.y)){ px(sx(e.x)-3,sy(e.y)-3,6,6,'rgba(248,113,113,0.18)'); blit(SPR[JUNK[e.key].spr], sx(e.x), sy(e.y)); } }
+  // ebullets: boss spit (junk-looking, suckable hazard) vs gunner shot
+  // (clearly hostile red projectile so the player can read the threat instantly)
+  for(const e of G.ebullets){
+    if(!onScreen(e.x,e.y)) continue;
+    const ex = sx(e.x), ey = sy(e.y);
+    if(e.fromMob){
+      // GUNNER bullet — red core + yellow center + pulsing red ring, no junk sprite
+      const pulse = ((G.t + (e.t|0)) & 3) === 0;
+      ctx.save(); ctx.shadowColor = '#ef4444'; ctx.shadowBlur = 6;
+      px(ex-2, ey-2, 4, 4, '#ef4444');
+      px(ex-1, ey-1, 2, 2, '#fde047');
+      ctx.restore();
+      if(pulse){ ctx.save(); ctx.globalAlpha=0.6; px(ex-3, ey-3, 6, 6, '#fca5a5'); ctx.restore(); }
+    } else {
+      // boss spit — still looks like junk because it IS suckable cargo
+      px(ex-3, ey-3, 6, 6, 'rgba(248,113,113,0.18)');
+      blit(SPR[JUNK[e.key].spr], ex, ey);
+    }
+  }
   // MISSILES — red warhead + flame tail (drawn in screen space)
   for(const m of G.missiles){
     if(!onScreen(m.x,m.y,12)) continue;
