@@ -506,7 +506,7 @@ const G = {
   sucking:false,
   collected:0, unloaded:0, hitsOnBoss:0, missed:0,
   junkMass:0, collectedMass:0,
-  hp:3, invuln:0,
+  hp:3, hpMax:3, invuln:0, shields:[],
   cleanliness:0,
   stars:[],
   fireCd:0, dockCd:0, shake:0,
@@ -516,7 +516,7 @@ const G = {
   obstacles:[],
   showStageBanner:false,
   // power-up levels
-  pu:{ suck:0, tank:0, power:0 },
+  pu:{ suck:0, tank:0, power:0, hull:0, shield:0 },
   puFlash:0, puName:'',
   puPicks:0, puProgress:0,
   puCards:null,
@@ -526,7 +526,9 @@ for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+
 
 /* ---------- derived stats from power-ups ---------- */
 /* ---------- derived stats from power-ups (all capped at Lv5) ---------- */
-const PU_MAX = { suck:5, tank:5, power:5 };               // every upgrade caps at Lv5
+const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones
+const SHIELD_R = 18;    // orbit radius around player
+const SHIELD_HIT = 5;   // bullet vs shield collision radius
 function suckRange(){ return 14 + G.pu.suck*14; }         // 14 -> 84 at Lv5
 function cargoCap(){  return 100 + G.pu.tank*36; }        // 100 -> 280 at Lv5
 function shipMk(){
@@ -551,21 +553,23 @@ const UNLOAD_PER_AMMO = 20;
 function puNeedNow(){
   const cfg = STAGES[Math.min(G.stage||1, TOTAL_STAGES)-1];
   // PUs reset per stage; "taken" is picks within this stage only
-  const taken = (G.pu.suck + G.pu.tank + G.pu.power) + G.puPicks;
+  const taken = (G.pu.suck + G.pu.tank + G.pu.power + G.pu.hull + G.pu.shield) + G.puPicks;
   return cfg.puBase + taken*cfg.puStep;
 }
 // the upgrades, drawn as cards when choosing
 const PU_DEFS = [
-  {k:'suck',  name:'INTAKE.RNG',  desc:'吸引レンジ拡張',    col:'#22ff88'},  // neon green
-  {k:'tank',  name:'TANK.CAP',    desc:'タンク容量増加',    col:'#aaff33'},  // lime
-  {k:'power', name:'COMPRESS.DMG',desc:'圧縮弾の威力上昇',  col:'#ff3050'},  // neon red
+  {k:'suck',   name:'INTAKE.RNG',  desc:'吸引レンジ拡張',    col:'#22ff88'},  // neon green
+  {k:'tank',   name:'TANK.CAP',    desc:'タンク容量増加',    col:'#aaff33'},  // lime
+  {k:'power',  name:'COMPRESS.DMG',desc:'圧縮弾の威力上昇',  col:'#ff3050'},  // neon red
+  {k:'hull',   name:'HULL.CAP',    desc:'体力上限+1 (即時回復)', col:'#fb7185'}, // pink
+  {k:'shield', name:'SHIELD.DRN',  desc:'護衛ドローン+1',    col:'#5eead4'},  // cyan
 ];
 
 /* ---------- input ---------- */
 let pointer=null, anchor=null, moveId=null, keys={};
 const FIRE_BTN={ x:LW-22, y:LH-24, r:18 };
 // upgrade card layout (4 cards stacked, centered)
-const CARD={ w:150, h:34, gap:8, top:96 };
+const CARD={ w:150, h:32, gap:4, top:58 };  // tight enough to fit all 5 PU cards on screen
 function cardRect(i){ return { x:(LW-CARD.w)/2, y:CARD.top+i*(CARD.h+CARD.gap), w:CARD.w, h:CARD.h }; }
 function inRect(p,r){ return p.x>=r.x && p.x<=r.x+r.w && p.y>=r.y && p.y<=r.y+r.h; }
 function ptFromClient(cx,cy){ const r=cv.getBoundingClientRect(); return {x:(cx-r.left)/r.width*LW, y:(cy-r.top)/r.height*LH}; }
@@ -665,11 +669,12 @@ function reset(stage){
   G.crateCd = 360 + Math.random()*240;  // next crate spawn (frames). First crate ~6-10 sec in.
   G.cratesSpawned = 0;  // count of crates spawned this stage (max 2)
   G.crateMsg = '';  G.crateMsgT = 0;  // pop-up message after opening
-  G.hp=3; G.invuln=0; G.cleanliness=0;
+  G.hp=3; G.hpMax=3; G.invuln=0; G.cleanliness=0;
+  G.shields=[];
   G.bossFound=false; G.bossDowned=false; G.postBossMenuShown=false;
   G.showStageBanner=true;  // shows until the player taps to dismiss
   // PUs reset every stage — each area is its own self-contained mission
-  G.pu={suck:0,tank:0,power:0}; G.puPicks=0; G.puProgress=0;
+  G.pu={suck:0,tank:0,power:0,hull:0,shield:0}; G.puPicks=0; G.puProgress=0;
   G.puFlash=0; G.puName=''; G.puCards=null;
   // junk count from stage config
   for(let i=0;i<cfg.junk;i++){
@@ -766,12 +771,19 @@ function openCrate(cr){
   const r = Math.random();
   let msg='';
   if(r<0.60){
-    // HEAL — if already at max HP, give the upgrade instead (no wasted crates)
-    if(G.hp<3){
-      G.hp = Math.min(3, G.hp+1); msg='+1 HULL';
+    // HEAL chain: HP first, then SHIELD recharge if HP is full, then UPGRADE.
+    if(G.hp < G.hpMax){
+      G.hp = Math.min(G.hpMax, G.hp+1); msg='+1 HULL';
       burst(cr.x,cr.y,'r',16,1.8);
       shockwave(cr.x, cr.y, '#fb7185', 28, 18);
       sparks(cr.x, cr.y, '#fb7185', 10, 2.0);
+    } else if(G.shields.length < G.pu.shield){
+      // shields can only be revived manually — this is one of those routes
+      G.shields.push({angle: Math.random()*Math.PI*2});
+      msg='+1 SHIELD';
+      burst(cr.x,cr.y,'c',16,1.8);
+      shockwave(cr.x, cr.y, '#5eead4', 28, 18);
+      sparks(cr.x, cr.y, '#a7ffd0', 10, 2.0);
     } else {
       G.puPicks+=1; msg='+1 UPGRADE';
       burst(cr.x,cr.y,'y',20,2.0);
@@ -968,6 +980,15 @@ function choosePick(idx){
   if(G.state!=='pick' || !G.puCards) return;
   const def=G.puCards[idx]; if(!def) return;
   G.pu[def.k]++; G.puName=def.name; G.puFlash=60;
+  // HULL: bump hpMax and refill HP immediately
+  if(def.k==='hull'){
+    G.hpMax = 3 + G.pu.hull;
+    G.hp = G.hpMax;
+  }
+  // SHIELD: spawn a new orbiting drone
+  if(def.k==='shield'){
+    G.shields.push({angle: Math.random()*Math.PI*2});
+  }
   SFX.dock();
   G.puPicks--;
   G.puCards=null;
@@ -1380,6 +1401,36 @@ function update(){
   }
   G.parts=G.parts.filter(p=>p.life>0);
 
+  // ---- shields: orbit + intercept any enemy projectile that touches them ----
+  if(G.shields && G.shields.length){
+    // orbit
+    for(const s of G.shields){
+      s.angle += 0.06;
+      if(s.angle > Math.PI*2) s.angle -= Math.PI*2;
+    }
+    // intercept ebullets (boss spit AND gunner red) and missiles
+    const tryBlock = (arr) => {
+      for(const e of arr){
+        if(e.dead) continue;
+        for(let i=G.shields.length-1; i>=0; i--){
+          const s = G.shields[i];
+          const sxw = G.px + Math.cos(s.angle)*SHIELD_R;
+          const syw = G.py + Math.sin(s.angle)*SHIELD_R;
+          if(Math.abs(e.x-sxw)<SHIELD_HIT && Math.abs(e.y-syw)<SHIELD_HIT){
+            e.dead = true;
+            G.shields.splice(i,1);
+            burst(sxw, syw, 'c', 8, 1.5);
+            shockwave(sxw, syw, '#5eead4', 14, 12);
+            SFX.bosshit();
+            break;
+          }
+        }
+      }
+    };
+    tryBlock(G.ebullets);
+    tryBlock(G.missiles);
+  }
+
   // ---- drifting nebula clouds (slow ambient motion) ----
   if(G.clouds){
     for(const cl of G.clouds){
@@ -1399,6 +1450,18 @@ function update(){
 }
 
 function hurt(){
+  // Shield consumes the hit instead of HP (no damage at all to the player)
+  if(G.shields && G.shields.length > 0){
+    const s = G.shields.pop();
+    const sxw = G.px + Math.cos(s.angle)*SHIELD_R, syw = G.py + Math.sin(s.angle)*SHIELD_R;
+    burst(sxw, syw, 'c', 12, 1.6);
+    shockwave(sxw, syw, '#5eead4', 22, 14);
+    sparks(sxw, syw, '#a7ffd0', 8, 2.0);
+    SFX.bosshit();
+    G.invuln = 30;   // brief i-frames so a swarm doesn't strip all shields at once
+    G.shake = Math.max(G.shake, 3);
+    return;
+  }
   G.hp--; G.invuln=70; SFX.hurt();
   G.shake = Math.max(G.shake, 6);
   burst(G.px,G.py,'r',16,1.8);
@@ -1525,7 +1588,7 @@ function glowDisc(cx,cy,r,col,glow){
   ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=glow||6; drawDisc(cx,cy,r,col); ctx.restore();
 }
 
-const SIZE_KB = 99; // filled after build
+const SIZE_KB = 101; // filled after build
 function drawBudget(x,y){
   const cells=20, used=Math.max(1,Math.round(cells*SIZE_KB/1440)), cw=3, ch=4, gap=1;
   for(let i=0;i<cells;i++) px(x+i*(cw+gap), y, cw, ch, i<used?UI.amber:UI.amberDark);
@@ -1762,31 +1825,42 @@ function render(){
     for(const o of G.obstacles){
       if(!onScreen(o.x,o.y,o.r+4)) continue;
       const ox=sx(o.x), oy=sy(o.y);
-      // cast shadow (offset down-right) — sets the rock apart from flat background
-      ctx.save(); ctx.globalAlpha=0.55;
-      drawDisc(ox+2|0, oy+2|0, o.r+1, '#000');
-      ctx.restore();
-      // dark outline ring
-      drawDisc(ox,oy, o.r+1, '#1c1a14');
-      // body — much lighter than before so it reads as a SOLID rock
-      drawDisc(ox,oy, o.r, '#52503e');
-      // lit highlight on upper-left (single light source)
-      drawDisc((ox-o.r*0.35)|0, (oy-o.r*0.35)|0, Math.max(2, (o.r*0.55)|0), '#7a7560');
-      // craggy darker pits for texture
       const sd = o.seed;
-      for(let i=0;i<5;i++){
-        const a = (sd*7+i*1.3)%6.283;
-        const rr = o.r*0.55*((sd*3+i*2)%1);
-        px(ox+Math.cos(a)*rr|0, oy+Math.sin(a)*rr|0, 2, 2, '#2a2820');
-      }
-      // bright AMBER tactical rim — distinct UI color so obstacles read as
-      // hazards, not background features (planets use the stage tint instead)
-      ctx.save(); ctx.globalAlpha=0.85;
-      ctx.shadowColor=UI.amberHi; ctx.shadowBlur=5;
-      ctx.strokeStyle=UI.amber; ctx.lineWidth=1;
-      ctx.beginPath(); ctx.arc(ox,oy,o.r,0,6.283); ctx.stroke();
+      // 3 overlapping lumps from the seed → asymmetric silhouette
+      // (was a single perfect circle, which read as a bowling ball).
+      const lumps = [
+        [0, 0, o.r],
+        [Math.cos(sd*7)*o.r*0.35, Math.sin(sd*7)*o.r*0.35, o.r*0.65],
+        [Math.cos(sd*5+1.5)*o.r*0.3, Math.sin(sd*5+1.5)*o.r*0.3, o.r*0.55],
+      ];
+      // cast shadow — same lumpy shape, slightly offset
+      ctx.save(); ctx.globalAlpha=0.5;
+      for(const L of lumps) drawDisc((ox+L[0]+2)|0, (oy+L[1]+2)|0, (L[2]*0.95)|0, '#000');
       ctx.restore();
-      // a couple bright pixels (mineral glints)
+      // dark outline (each lump's outer edge)
+      for(const L of lumps) drawDisc((ox+L[0])|0, (oy+L[1])|0, (L[2]+1)|0, '#1a1812');
+      // body fill
+      for(const L of lumps) drawDisc((ox+L[0])|0, (oy+L[1])|0, L[2]|0, '#52503e');
+      // single-source highlight — small, offset upper-left, NOT a smooth gradient
+      drawDisc((ox-o.r*0.4)|0, (oy-o.r*0.4)|0, Math.max(2, (o.r*0.35)|0), '#7a7560');
+      px((ox-o.r*0.5)|0, (oy-o.r*0.5)|0, 2, 2, '#a39a82');
+      // cracks — 3 thin dark lines radiating from center, seed-rotated
+      ctx.save(); ctx.strokeStyle='#1a1812'; ctx.lineWidth=1;
+      for(let i=0;i<3;i++){
+        const a = sd*4 + i*2.1;
+        ctx.beginPath();
+        ctx.moveTo(ox+Math.cos(a)*o.r*0.2, oy+Math.sin(a)*o.r*0.2);
+        ctx.lineTo(ox+Math.cos(a)*o.r*0.85, oy+Math.sin(a)*o.r*0.85);
+        ctx.stroke();
+      }
+      ctx.restore();
+      // pits — 7 darker pixels scattered, asymmetric
+      for(let i=0;i<7;i++){
+        const a = (sd*7+i*1.7)%6.283;
+        const rr = o.r*0.6*((sd*3+i*2)%1);
+        px((ox+Math.cos(a)*rr)|0, (oy+Math.sin(a)*rr)|0, 2, 2, '#2a2820');
+      }
+      // a couple bright pixels (mineral glints) — kept from old version
       const t2 = G.t*0.03 + sd;
       if((Math.floor(t2)%5)===0){
         px(ox+Math.cos(t2)*o.r*0.5|0, oy+Math.sin(t2)*o.r*0.5|0, 1, 1, tint);
@@ -2015,6 +2089,17 @@ function render(){
   // roomba (blink while invulnerable)
   if(G.state!=='play' || G.invuln<=0 || (G.t>>2&1)) blit(shipMk(), sx(G.px), sy(G.py));
   if(G.sucking && !tankIsFull && G.state==='play'){ const x=sx(G.px),y=sy(G.py); px(x-1,y-1,2,2,(G.t>>1&1)?UI.amberHi:UI.amber); }
+  // shield drones — orbit the player, cyan dots with glow
+  if(G.shields){
+    for(const s of G.shields){
+      const sxw = G.px + Math.cos(s.angle)*SHIELD_R;
+      const syw = G.py + Math.sin(s.angle)*SHIELD_R;
+      ctx.save(); ctx.shadowColor='#5eead4'; ctx.shadowBlur=4;
+      drawDisc(sx(sxw)|0, sy(syw)|0, 2, '#a7ffd0');
+      ctx.restore();
+      px(sx(sxw)|0, sy(syw)|0, 1, 1, '#ffffff');
+    }
+  }
 
   // ---- MINIMAP: top-right, shows the whole world in miniature ----
   (function(){
@@ -2123,15 +2208,17 @@ function render(){
   const ammoStr = String(G.ammo).padStart(2,'0');
   const pctStr  = String(pct).padStart(2,'0')+'%';
   const areaStr = 'AREA-'+G.stage;
-  // HULL + 3 hp boxes
+  // HULL + hp boxes (1..5 depending on G.hpMax). Slightly smaller hearts +
+  // tighter stride than the 3-heart version so 5 still fits on a 200px HUD.
   text('HULL', 4, HUD_Y, UI.amberDim, 1);
   let cx = rightOf('HULL', 4, 1, 4);
-  for(let i=0;i<3;i++){
-    const hx = cx + i*7;
-    if(i<G.hp){ ctx.save(); ctx.shadowColor=UI.red; ctx.shadowBlur=4; px(hx,HUD_Y,5,5,UI.red); ctx.restore(); }
-    else px(hx,HUD_Y,5,5,UI.redDim);
+  const hpMax = G.hpMax || 3;
+  for(let i=0;i<hpMax;i++){
+    const hx = cx + i*5;
+    if(i<G.hp){ ctx.save(); ctx.shadowColor=UI.red; ctx.shadowBlur=4; px(hx,HUD_Y,4,5,UI.red); ctx.restore(); }
+    else px(hx,HUD_Y,4,5,UI.redDim);
   }
-  cx += 3*7 + HUD_GAP;
+  cx += hpMax*5 + HUD_GAP;
   // AMMO value
   text('AMMO', cx, HUD_Y, UI.amberDim, 1);
   cx = rightOf('AMMO', cx, 1, 3);
@@ -2165,23 +2252,30 @@ function render(){
   text('CARGO', gx-3, gy+gh+4, UI.amberDim, 1);
   text(String(Math.floor(100*G.cargo/CAP)).padStart(3,'0'), gx-2, gy+gh+13, full?UI.red:UI.amberDim, 1);
 
-  // power-up status panel (bottom-left)
-  const puY=LH-46;
+  // power-up status panel (bottom-left). 5 stat rows + TUNE label + LOAD bar.
+  // tighter 7px stride so we still fit above the FIRE button.
+  const puY = LH-58;
   text('TUNE', 4, puY, UI.amberDim, 1);
-  // tiny level bars for each PU
-  const puList=[['SUC',G.pu.suck],['CAP',G.pu.tank],['PWR',G.pu.power]];
-  for(let i=0;i<3;i++){
-    const py=puY+10+i*8;
+  const puList = [
+    ['SUC', G.pu.suck,   5, UI.amber],
+    ['CAP', G.pu.tank,   5, UI.green],
+    ['PWR', G.pu.power,  5, UI.red],
+    ['HUL', G.pu.hull,   2, '#fb7185'],
+    ['SHD', G.pu.shield, 3, '#5eead4'],
+  ];
+  for(let i=0;i<puList.length;i++){
+    const py = puY + 10 + i*7;
     text(puList[i][0], 4, py, UI.amberDark, 1);
-    // 5 segments
-    for(let s=0;s<5;s++){ px(22+s*4, py+2, 3, 3, s<puList[i][1]?UI.amber:UI.amberDark); }
+    const max = puList[i][2], val = puList[i][1], col = puList[i][3];
+    for(let s=0;s<max;s++){ px(22+s*4, py+2, 3, 3, s<val ? col : UI.amberDark); }
   }
-  // progress meter
+  // progress meter (one row below the last stat row)
   const pw=46, pf=Math.round(pw*G.puProgress/puNeedNow());
-  text('LOAD', 4, puY+36, UI.amberDim, 1);
-  px(22,puY+36,pw,4,UI.bg1);
+  const loadY = puY + 10 + puList.length*7 + 2;
+  text('LOAD', 4, loadY, UI.amberDim, 1);
+  px(22, loadY, pw, 4, UI.bg1);
   ctx.save(); ctx.shadowColor=UI.green; ctx.shadowBlur=4;
-  px(22,puY+36,pf,4,UI.green); ctx.restore();
+  px(22, loadY, pf, 4, UI.green); ctx.restore();
   // power-up gained banner
   if(G.puFlash>0){
     ctx.save(); ctx.globalAlpha=Math.min(1,G.puFlash/20);
@@ -2319,7 +2413,7 @@ function render(){
       const q = 'QUEUE: '+G.puPicks;
       text(q, rightAlign(q, LW-8, 1), 32, UI.amber, 1);
     }
-    const lv={suck:G.pu.suck,tank:G.pu.tank,power:G.pu.power};
+    const lv = G.pu;   // covers all PU keys including hull, shield
     for(let i=0;i<G.puCards.length;i++){
       const d=G.puCards[i], r=cardRect(i);
       const hot=(G.t>>3&1);
