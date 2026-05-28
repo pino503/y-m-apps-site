@@ -75,14 +75,19 @@ function buildVignette(){
 }
 buildAura();
 buildVignette();
-// recompute UI constants that depend on LW / LH (called whenever LW changes)
+// recompute UI constants that depend on LW / LH (called whenever LW changes).
+// Wrapped in try-catch because in strict mode, `typeof` on a const-in-TDZ
+// (i.e. FIRE_BTN/CARD/PB_BTN, which are declared later in the file) throws
+// ReferenceError, NOT returns "undefined". The first fit() call at load time
+// runs before those consts are initialised; the final fit() call at the
+// bottom of the script runs after they exist and updates them correctly.
 function applyCanvasSize(){
   cv.width = LW; cv.height = LH;
   ctx.imageSmoothingEnabled = false;
   buildVignette();
-  if(typeof FIRE_BTN !== 'undefined'){ FIRE_BTN.x = LW-22; FIRE_BTN.y = LH-24; }
-  if(typeof CARD !== 'undefined'){ CARD.w = Math.min(150, LW-20); }
-  if(typeof PB_BTN !== 'undefined'){ PB_BTN.w = Math.min(160, LW-24); }
+  try { FIRE_BTN.x = LW-22; FIRE_BTN.y = LH-24; } catch(e){}
+  try { CARD.w = Math.min(150, LW-20); } catch(e){}
+  try { PB_BTN.w = Math.min(160, LW-24); } catch(e){}
 }
 
 function fit(){
