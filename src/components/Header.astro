@@ -1,3 +1,11 @@
+<!-- レトロな上部バナー：90年代風アクセスカウンター -->
+<div class="top-strip">
+  <div class="container top-strip-inner">
+    <span class="strip-label">VISITORS</span>
+    <span class="strip-count" id="visit-count">······</span>
+  </div>
+</div>
+
 <header class="site-header">
   <div class="container">
     <a href="/" class="brand" aria-label="Y.M Apps トップへ">
@@ -14,7 +22,59 @@
   </div>
 </header>
 
+<script>
+  // ホスト名が「*.pages.dev」または本番カスタムドメインのときだけカウント。
+  // ローカル開発・プレビュー環境では水増し防止のため動かさない。
+  const host = location.hostname;
+  const isProd = host.endsWith(".pages.dev") || host === "y-m-apps.com" || host === "www.y-m-apps.com";
+  const el = document.getElementById("visit-count");
+  if (el) {
+    if (isProd) {
+      fetch("https://api.counterapi.dev/v1/y-m-apps-site/visits/up")
+        .then((r) => r.json())
+        .then((d) => {
+          if (d && typeof d.count === "number") {
+            el.textContent = String(d.count).padStart(6, "0");
+          }
+        })
+        .catch(() => { el.textContent = "······"; });
+    } else {
+      el.textContent = "DEV";
+    }
+  }
+</script>
+
 <style>
+  /* ===== Top retro strip — 90年代風アクセスカウンター ===== */
+  .top-strip {
+    background: #1a1612;
+    border-bottom: 1px solid rgba(255,216,77,0.18);
+  }
+  .top-strip-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+  .strip-label {
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    color: #c5b89c;
+  }
+  .strip-count {
+    font-family: var(--font-pixel, "Press Start 2P", ui-monospace, monospace);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: #ffd84d;
+    text-shadow: 0 0 6px rgba(255, 216, 77, 0.5);
+  }
+  @media (max-width: 360px) {
+    .strip-label { font-size: 8px; letter-spacing: 0.18em; }
+    .strip-count { font-size: 11px; }
+  }
+
   .site-header {
     position: sticky;
     top: 0;
