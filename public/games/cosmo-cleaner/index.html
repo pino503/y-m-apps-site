@@ -872,7 +872,7 @@ function updateBoss(){
   b.x=Math.max(40,Math.min(WW-40,b.x)); b.y=Math.max(40,Math.min(WH-40,b.y));
   // boss can't enter the safe zone either
   const bsx=b.x-STATION.x, bsy=b.y-STATION.y, bsd=Math.hypot(bsx,bsy);
-  const bossSafeR = SAFE_R + 50;  // wide buffer so the big boss can't loom at the perimeter
+  const bossSafeR = SAFE_R + 130;  // wide buffer so the boss never looms near the base perimeter (v1.1.0)
   if(bsd<bossSafeR){
     const f=bossSafeR/(bsd||1);
     b.x = STATION.x + bsx*f; b.y = STATION.y + bsy*f;
@@ -1752,7 +1752,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.0.1', rightAlign('v1.0.1', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.1.0', rightAlign('v1.1.0', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
