@@ -54,10 +54,32 @@ const ctx = cv.getContext('2d');
 cv.width = LW; cv.height = LH;
 ctx.imageSmoothingEnabled = false;
 
+// pre-baked offscreen canvases — building createRadialGradient every frame
+// was a major mobile FPS hit. Bake once, then drawImage per frame.
+let _aura = null, _vig = null;
+function buildAura(){
+  _aura = document.createElement('canvas');
+  _aura.width = 240; _aura.height = 240;
+  const x = _aura.getContext('2d');
+  const g = x.createRadialGradient(120, 120, 2, 120, 120, 120);
+  g.addColorStop(0, 'rgba(34,255,136,0.10)'); g.addColorStop(1, 'rgba(34,255,136,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 240, 240);
+}
+function buildVignette(){
+  _vig = document.createElement('canvas');
+  _vig.width = LW; _vig.height = LH;
+  const x = _vig.getContext('2d');
+  const g = x.createRadialGradient(LW/2, LH/2, LH*0.25, LW/2, LH/2, LH*0.65);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.75)');
+  x.fillStyle = g; x.fillRect(0, 0, LW, LH);
+}
+buildAura();
+buildVignette();
 // recompute UI constants that depend on LW / LH (called whenever LW changes)
 function applyCanvasSize(){
   cv.width = LW; cv.height = LH;
   ctx.imageSmoothingEnabled = false;
+  buildVignette();
   if(typeof FIRE_BTN !== 'undefined'){ FIRE_BTN.x = LW-22; FIRE_BTN.y = LH-24; }
   if(typeof CARD !== 'undefined'){ CARD.w = Math.min(150, LW-20); }
   if(typeof PB_BTN !== 'undefined'){ PB_BTN.w = Math.min(160, LW-24); }
@@ -1428,9 +1450,12 @@ const UI = {
 };
 
 function glowText(str,x,y,col,sc,glow){
+  // shadowBlur is one of the most expensive 2D canvas ops on mobile.
+  // Cap the blur radius and skip the duplicate fillText that we used for
+  // extra brightness — one fillText with a moderate blur already glows fine.
   sc=sc||1; ctx.font=fontFor(str,sc); ctx.textBaseline='top';
-  ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=glow||8; ctx.fillStyle=col;
-  ctx.fillText(str,x|0,y|0); ctx.fillText(str,x|0,y|0); ctx.restore();
+  ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=Math.min(glow||6, 6); ctx.fillStyle=col;
+  ctx.fillText(str,x|0,y|0); ctx.restore();
 }
 function glowCenter(str,y,col,sc,glow){
   sc=sc||1; ctx.font=fontFor(str,sc); const w=ctx.measureText(str).width;
@@ -1473,8 +1498,8 @@ function logoText(str,x,y,mainCol,outlineCol,shadowCol,sc){
       ctx.fillText(str,(x+dx)|0,(y+dy)|0);
     }
   }
-  ctx.save(); ctx.shadowColor=mainCol; ctx.shadowBlur=14;
-  ctx.fillStyle=mainCol; ctx.fillText(str,x|0,y|0); ctx.fillText(str,x|0,y|0);
+  ctx.save(); ctx.shadowColor=mainCol; ctx.shadowBlur=6;
+  ctx.fillStyle=mainCol; ctx.fillText(str,x|0,y|0);
   ctx.restore();
 }
 function logoCenter(str,y,mainCol,outlineCol,shadowCol,sc){
@@ -1493,7 +1518,7 @@ function glowDisc(cx,cy,r,col,glow){
   ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=glow||6; drawDisc(cx,cy,r,col); ctx.restore();
 }
 
-const SIZE_KB = 98; // filled after build
+const SIZE_KB = 99; // filled after build
 function drawBudget(x,y){
   const cells=20, used=Math.max(1,Math.round(cells*SIZE_KB/1440)), cw=3, ch=4, gap=1;
   for(let i=0;i<cells;i++) px(x+i*(cw+gap), y, cw, ch, i<used?UI.amber:UI.amberDark);
@@ -1511,21 +1536,22 @@ function drawScene(){
   // base black with a slight stage-tinted overlay (sets the area's "mood")
   ctx.fillStyle = UI.bg0; ctx.fillRect(-4,-4,LW+8,LH+8);
   ctx.save(); ctx.globalAlpha=0.35; ctx.fillStyle=theme.tint; ctx.fillRect(-4,-4,LW+8,LH+8); ctx.restore();
-  // soft neon-green afterglow around the player — pulses subtly
-  ctx.save();
-  const pgx=sx(G.px), pgy=sy(G.py);
-  const aPulse = 0.09 + 0.05*Math.sin(G.t*0.08);
-  const rPulse = 120 + 14*Math.sin(G.t*0.05);
-  const pg=ctx.createRadialGradient(pgx,pgy,2, pgx,pgy,rPulse);
-  pg.addColorStop(0,'rgba(34,255,136,'+aPulse.toFixed(3)+')'); pg.addColorStop(1,'rgba(34,255,136,0)');
-  ctx.fillStyle=pg; ctx.fillRect(0,0,LW,LH);
-  ctx.restore();
+  // soft neon-green afterglow around the player — pulses subtly.
+  // pre-baked offscreen aura (_aura, built at init) drawn at player pos;
+  // pulse is just a globalAlpha mod so we avoid createRadialGradient every frame.
+  if(_aura){
+    const pgx = sx(G.px), pgy = sy(G.py);
+    const pulse = 0.7 + 0.3 * Math.sin(G.t * 0.08);
+    ctx.save(); ctx.globalAlpha = pulse;
+    ctx.drawImage(_aura, (pgx - 120)|0, (pgy - 120)|0);
+    ctx.restore();
+  }
   const accent = theme.accent;
   // animated nebula clouds — soft radial gradients drifting through the void
-  // (blurred so they read as out-of-focus background, distinct from gameplay elements)
+  // (low alpha + multi-layered concentric discs gives "soft background" feel
+  // without needing ctx.filter blur, which is GPU-expensive on mobile)
   if(G.clouds){
     ctx.save();
-    ctx.filter = 'blur(2.5px)';
     for(const cl of G.clouds){
       const par=0.30, x=cl.x-G.camX*par, y=cl.y-G.camY*par;
       if(x+cl.r<-4||x-cl.r>LW+4||y+cl.r<-4||y-cl.r>LH+4) continue;
@@ -1540,14 +1566,12 @@ function drawScene(){
       ctx.globalAlpha = pulse*0.4;
       drawDisc(x|0, y|0, (cl.r*0.35)|0, cl.col);
     }
-    ctx.filter = 'none';
     ctx.restore();
   }
   // distant planets — slow parallax, dim glow body, optional ring
-  // (slightly blurred so they read as far-away background, not foreground hazards)
+  // (alpha layering replaces ctx.filter blur which was a mobile FPS killer)
   if(G.planets){
     ctx.save();
-    ctx.filter = 'blur(1.5px)';
     for(const pl of G.planets){
       const x = pl.x - G.camX*pl.par, y = pl.y - G.camY*pl.par;
       if(x+pl.r+8<0 || x-pl.r-8>LW || y+pl.r+8<0 || y-pl.r-8>LH) continue;
@@ -1576,7 +1600,6 @@ function drawScene(){
         ctx.beginPath(); ctx.ellipse(x|0, y|0, pl.r+5, Math.max(2,pl.r*0.28), 0, 0, 3.14); ctx.stroke();
       }
     }
-    ctx.filter = 'none';
     ctx.restore();
   }
   // sparse stars — phosphor pinpricks
@@ -1618,11 +1641,8 @@ function drawScene(){
     ctx.moveTo(cn[0], cn[1]+bl*cn[3]); ctx.lineTo(cn[0],cn[1]); ctx.lineTo(cn[0]+bl*cn[2], cn[1]);
   }
   ctx.stroke(); ctx.restore();
-  // strong vignette — darker corners for the CRT look
-  ctx.save();
-  const vg=ctx.createRadialGradient(LW/2,LH/2,LH*0.25, LW/2,LH/2,LH*0.65);
-  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.75)');
-  ctx.fillStyle=vg; ctx.fillRect(0,0,LW,LH); ctx.restore();
+  // strong vignette — pre-baked once per LW change, then just drawImage'd
+  if(_vig) ctx.drawImage(_vig, 0, 0);
 }
 // CRT scanlines + subtle flicker, drawn over EVERYTHING at the end
 function drawCRTOverlay(){
