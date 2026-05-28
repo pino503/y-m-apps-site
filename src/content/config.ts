@@ -11,6 +11,7 @@ const apps = defineCollection({
       "rainwiper",
       "sidewalk-defender",
       "pinokun-stamps",
+      "cosmo-cleaner",
     ]),
     platform: z.string(),
     badges: z.array(z.string()).default([]),
