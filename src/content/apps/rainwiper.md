@@ -6,7 +6,8 @@ platform: Chrome拡張
 badges: ["Chrome拡張", "v1.0.3", "実天気連動"]
 storeUrl: https://chromewebstore.google.com/detail/rainwiper/idmfgbdnebcjmndcmnfllhfidaakccmh
 storeLabel: Chrome Web Store
-order: 3
+order: 2
+category: tool
 features:
   - title: 雫の屈折と、ワイパーの円弧
     body: 単に雨を降らせるだけじゃない。ガラスを伝う水滴の屈折と、ワイパーの解剖学的な円弧スイープ。見ているだけでちょっと落ち着く演出を狙っています。

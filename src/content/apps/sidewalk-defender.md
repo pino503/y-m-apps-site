@@ -7,6 +7,7 @@ badges: ["Web", "HTML5", "Pixel Art"]
 storeUrl: https://pinopino503.itch.io/sidewalk-defender
 storeLabel: itch.io
 order: 4
+category: game
 embedPath: /games/sidewalk-defender/index.html
 coverImage: /assets/apps/sidewalk-defender-cover.png
 screenshots:

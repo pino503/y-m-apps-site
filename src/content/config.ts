@@ -26,6 +26,8 @@ const apps = defineCollection({
     color: z.string().optional(),
     order: z.number().default(99),
     embedPath: z.string().optional(),
+    // 種類グルーピング — Works section で見出しに使う
+    category: z.enum(["tool", "game", "sticker"]).default("tool"),
   }),
 });
 

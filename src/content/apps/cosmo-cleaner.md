@@ -6,7 +6,8 @@ platform: Webゲーム
 badges: ["Web", "HTML5", "Pixel Art", "ミニジャム"]
 storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
-order: 6
+order: 5
+category: game
 embedPath: /games/cosmo-cleaner/index.html
 features:
   - title: SUCK / SHOOT / DODGE

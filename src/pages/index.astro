@@ -8,6 +8,21 @@ const apps = (await getCollection("apps")).sort(
   (a, b) => a.data.order - b.data.order
 );
 
+// 種類でまとめる。表示順は tool → game → sticker。
+const CATEGORY_ORDER = ["tool", "game", "sticker"] as const;
+const CATEGORY_LABELS: Record<(typeof CATEGORY_ORDER)[number], { title: string; lede: string }> = {
+  tool:    { title: "Tools",    lede: "毎日のちょっとした不便から生まれた道具。" },
+  game:    { title: "Games",    lede: "息抜きと挑戦のための、ちいさな遊び。" },
+  sticker: { title: "Stickers", lede: "トークの温度を、ちょっとだけ上げる。" },
+};
+const groupedApps = CATEGORY_ORDER.map((cat) => ({
+  cat,
+  label: CATEGORY_LABELS[cat],
+  items: apps.filter((a) => a.data.category === cat),
+})).filter((g) => g.items.length > 0);
+// グローバル通し番号: sort 済 apps の中での index を引きたい
+const indexOf = new Map(apps.map((a, i) => [a.slug, i]));
+
 const writings = (await getCollection("writings")).sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
@@ -16,12 +31,12 @@ const recentWritings = writings.slice(0, 5);
 const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
 ---
 
-<BaseLayout title="Y.M Apps — 暮らしに溶ける、小さな道具">
+<BaseLayout title="Y.M Apps — 小さなアイデアを、かたちに。">
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="hero-kicker">Solo software studio by PINO</p>
-        <h1>暮らしに溶ける、小さな道具をつくっています。</h1>
+        <h1>小さなアイデアを、かたちに。</h1>
         <p class="hero-lede">
           Android アプリ、Chrome 拡張、Web ゲーム、LINE スタンプ。読書や野球、日々のちょっとした不便から生まれたプロダクトをまとめています。
         </p>
@@ -95,23 +110,34 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
       />
 
       <div class="works-card">
-        <ul class="works-list">
-          {apps.map((app, i) => (
-            <li data-reveal data-reveal-delay={Math.min(i, 5)}>
-              <a class="work-row" href={`/works/${app.slug}`}>
-                <span class="work-no">{String(i + 1).padStart(2, "0")}</span>
-                <div class="work-body">
-                  <div class="work-head">
-                    <span class="work-title">{app.data.title}</span>
-                    <span class="work-platform">{app.data.platform}</span>
-                  </div>
-                  <p class="work-tag">{app.data.tagline}</p>
-                </div>
-                <span class="work-more" aria-hidden="true">→</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        {groupedApps.map((group) => (
+          <div class="work-group">
+            <div class="work-group-head">
+              <h3 class="work-group-title">{group.label.title}</h3>
+              <p class="work-group-lede">{group.label.lede}</p>
+            </div>
+            <ul class="works-list">
+              {group.items.map((app) => {
+                const gi = indexOf.get(app.slug) ?? 0;
+                return (
+                  <li data-reveal data-reveal-delay={Math.min(gi, 5)}>
+                    <a class="work-row" href={`/works/${app.slug}`}>
+                      <span class="work-no">{String(gi + 1).padStart(2, "0")}</span>
+                      <div class="work-body">
+                        <div class="work-head">
+                          <span class="work-title">{app.data.title}</span>
+                          <span class="work-platform">{app.data.platform}</span>
+                        </div>
+                        <p class="work-tag">{app.data.tagline}</p>
+                      </div>
+                      <span class="work-more" aria-hidden="true">→</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -462,7 +488,28 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
 
   .works-card {
     margin-top: 16px;
+  }
+  .work-group + .work-group {
+    margin-top: 26px;
+  }
+  .work-group-head {
+    padding: 14px 0 10px;
     border-top: 1px solid var(--line-strong);
+    border-bottom: 1px dashed var(--line);
+  }
+  .work-group-title {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 2px;
+  }
+  .work-group-lede {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+    letter-spacing: 0.02em;
   }
   .works-list {
     list-style: none;

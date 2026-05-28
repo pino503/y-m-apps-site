@@ -6,7 +6,8 @@ platform: Android
 badges: ["Android", "NPB / MLB", "キャリアシム"]
 storeUrl: https://play.google.com/store/apps/details?id=com.pino.playcord
 storeLabel: Google Play
-order: 2
+order: 3
+category: game
 features:
   - title: ドラフトから引退まで、選手視点で
     body: 月次進行で1シーズンずつ。1軍と2軍を行き来しながら、契約更改、国際大会、移籍、そして引退まで。1 人の選手として「自分の野球史」を最後まで追えます。

@@ -7,6 +7,7 @@ badges: ["Android", "v1.1.7", "BOOX対応"]
 storeUrl: https://play.google.com/store/apps/details?id=com.pino.inkpress
 storeLabel: Google Play
 order: 1
+category: tool
 iconImage: /assets/apps/inkpress-icon.png
 coverImage: /assets/apps/inkpress-reader-controls.png
 screenshots:

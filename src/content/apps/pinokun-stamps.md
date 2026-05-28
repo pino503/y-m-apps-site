@@ -6,7 +6,8 @@ platform: LINE
 badges: ["LINE", "スタンプ", "絵文字"]
 storeUrl: https://store.line.me/stickershop/author/1039160/ja
 storeLabel: LINE STORE クリエイターページ
-order: 5
+order: 6
+category: sticker
 features:
   - title: 日常会話の温度を上げる
     body: 喜怒哀楽から軽いツッコミまで、ふだんのトークに使いやすい表情を揃えています。
