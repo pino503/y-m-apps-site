@@ -3,7 +3,7 @@ title: COSMO CLEANER
 tagline: 宇宙ゴミを集めて、基地で強化。圧縮弾を作って敵とボスに挑む、CRT風の宇宙清掃シューティングゲーム。
 world: cosmo-cleaner
 platform: Webゲーム
-badges: ["Web", "HTML5", "Pixel Art", "v1.3.3"]
+badges: ["Web", "HTML5", "Pixel Art", "v1.3.4"]
 storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
 order: 5

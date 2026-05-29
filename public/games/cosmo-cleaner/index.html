@@ -7,6 +7,26 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>COSMO CLEANER</title>
+
+<!-- PWA: installable app metadata -->
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#22ff88">
+<meta name="description" content="宇宙ゴミを吸い込んで圧縮ショットで撃ち返す、レトロアーケード掃除シューター。">
+<!-- iOS Safari: web app capable + status bar style -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cosmo Cleaner">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
+<!-- Register Service Worker on load (no-op if served via file://) -->
+<script>
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -502,8 +522,8 @@ const BALANCE = {
     cargoMax: 100,              // base cargo capacity (overridden by cargoCap() once TANK > 0)
     invulnHit: 70,              // i-frames after losing HP
     invulnShieldAbsorb: 30,     // i-frames after a shield drone absorbs a hit
-    shieldR: 18,                // shield drone orbit radius around player
-    shieldHit: 5,               // shield collision radius vs bullets
+    shieldR: 22,                // shield drone orbit radius around player
+    shieldHit: 7,               // shield collision radius vs bullets
     cargoLossOnHit: 15,         // cargo dropped when player takes HP damage
   },
   // ---- SHOT (compressed shot fired with FIRE) ----
@@ -1775,6 +1795,7 @@ function update(){
     };
     tryBlock(G.ebullets);
     tryBlock(G.missiles);
+    tryBlock(G.flameOrbs);   // GOMILLA 炎弾もシールドで弾き落とせる
   }
 
   // ---- drifting nebula clouds (slow ambient motion) ----
@@ -2251,7 +2272,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.3.3', rightAlign('v1.3.3', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.3.4', rightAlign('v1.3.4', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
