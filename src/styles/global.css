@@ -457,3 +457,136 @@ section { position: relative; z-index: 2; }
   .sticky { font-size: 11px; padding: 7px 10px 9px; }
   .btn { padding: 8px 14px; font-size: 12px; }
 }
+
+/* ============================================================
+   Interaction polish — hover micro-interactions, page-transition
+   animations, and the floating sound toggle. Tuned to feel
+   "気持ちいい" without being noisy. All motion respects
+   prefers-reduced-motion (handled globally above).
+   ============================================================ */
+
+/* --- buttons: springy press --- */
+.btn { will-change: transform; }
+.btn:active { transform: translateY(1px) scale(0.97); }
+.btn-primary:active { transform: translateY(0) scale(0.97); }
+
+/* --- in-page anchor / inline links: underline that draws in --- */
+a:not(.btn):not(.work-row):not(.featured-card):not(.work-card) {
+  background-image: linear-gradient(var(--accent-deep), var(--accent-deep));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 0.28s var(--ease-out-quint), color 0.2s var(--ease-out-cubic);
+}
+a:not(.btn):not(.work-row):not(.featured-card):not(.work-card):hover {
+  background-size: 100% 1.5px;
+  text-decoration: none;
+}
+
+/* --- works list rows: accent bar grows + arrow springs --- */
+.work-row { position: relative; border-radius: 6px; }
+.work-row::before {
+  content: "";
+  position: absolute;
+  left: -10px; top: 14%;
+  width: 3px; height: 72%;
+  background: var(--orange);
+  border-radius: 3px;
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.26s var(--ease-out-quint);
+}
+.work-row:hover { background: rgba(255, 255, 255, 0.5); }
+.work-row:hover::before { transform: scaleY(1); }
+.work-row:hover .work-no { transform: translateY(-1px); }
+.work-no { transition: transform 0.2s var(--ease-out-quint), color 0.2s; }
+.work-row:hover .work-more { transform: translateX(5px); }
+
+/* --- writings rows: arrow hint slides in --- */
+.ruled-list li { position: relative; padding-left: 8px; border-radius: 6px; }
+.ruled-list a { position: relative; }
+.ruled-list li::after {
+  content: "→";
+  position: absolute;
+  left: -6px; top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  color: var(--orange);
+  font-weight: 900;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.24s var(--ease-out-quint);
+}
+.ruled-list li:hover { padding-left: 16px; }
+.ruled-list li:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+/* --- tag chips: tiny pop --- */
+.tag { transition: transform 0.18s var(--ease-out-quint), background 0.18s; }
+.tag:hover { transform: translateY(-1px) rotate(-1deg); background: rgba(255, 216, 77, 0.3); }
+
+/* --- featured card: pointer-follow sheen (driven by --mx/--my from JS) --- */
+.featured-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(280px circle at var(--mx, 70%) var(--my, 20%), rgba(255, 255, 255, 0.4), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out-cubic);
+  z-index: 1;
+}
+.featured-card:hover::after { opacity: 1; }
+.featured-card > * { position: relative; z-index: 2; }
+.featured-card:hover .featured-pino { animation: pinoWave 0.9s var(--ease-out-quint); }
+@keyframes pinoWave {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(-8deg) translateY(-2px); }
+  60% { transform: rotate(6deg); }
+}
+
+/* --- mascot: gentle hover bounce anywhere --- */
+.pino-friend { transition: transform 0.3s var(--ease-out-quint); }
+a:hover > .pino-friend, .pino-friend:hover { transform: translateY(-3px) rotate(-3deg); }
+
+/* ============================================================
+   Floating sound toggle
+   ============================================================ */
+.sound-toggle {
+  position: fixed;
+  right: 16px; bottom: 16px;
+  z-index: 60;
+  width: 42px; height: 42px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 18px;
+  line-height: 1;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -10px rgba(38, 52, 74, 0.5);
+  transition: transform 0.2s var(--ease-out-quint), box-shadow 0.2s, background 0.2s;
+}
+.sound-toggle:hover { transform: translateY(-2px) scale(1.05); background: #fff; }
+.sound-toggle:active { transform: scale(0.92); }
+.sound-toggle .st-off { display: none; }
+.sound-toggle.is-muted .st-on { display: none; }
+.sound-toggle.is-muted .st-off { display: inline; }
+@media (max-width: 520px) {
+  .sound-toggle { width: 38px; height: 38px; font-size: 16px; right: 12px; bottom: 12px; }
+}
+
+/* ============================================================
+   Page transition animations (Astro ClientRouter)
+   A soft lift + fade for the main content on navigation.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ym-slide-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes ym-slide-out {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-8px); }
+  }
+  ::view-transition-old(root) { animation: ym-slide-out 0.22s var(--ease-out-cubic) both; }
+  ::view-transition-new(root) { animation: ym-slide-in 0.32s var(--ease-out-quint) both; }
+}

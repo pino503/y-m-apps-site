@@ -3,7 +3,7 @@ title: 雨ふりブラウザ
 tagline: ブラウザに、雨を降らせる。
 world: rainwiper
 platform: Chrome拡張
-badges: ["Chrome拡張", "v1.0.3", "実天気連動"]
+badges: ["Chrome拡張", "v1.0.5", "実天気連動"]
 storeUrl: https://chromewebstore.google.com/detail/rainwiper/idmfgbdnebcjmndcmnfllhfidaakccmh
 storeLabel: Chrome Web Store
 order: 2

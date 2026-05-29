@@ -1,0 +1,205 @@
+---
+// ものづくりおみくじ — a playful fortune draw. ぴのくん occasionally tells you
+// today's "making luck" + recommends one of the apps. Pure client-side fun.
+interface AppRef { slug: string; title: string; }
+interface Props { apps: AppRef[]; }
+const { apps } = Astro.props;
+---
+
+<section id="omikuji" class="omikuji-section">
+  <div class="container">
+    <div class="omikuji-card" data-sheen data-apps={JSON.stringify(apps)} data-reveal>
+      <span class="omikuji-tape" aria-hidden="true"></span>
+      <img class="pino-friend omikuji-pino" src="/assets/pinokun/pinokun-laptop.png" alt="" loading="lazy" decoding="async" />
+      <div class="omikuji-body">
+        <p class="omikuji-kicker">Fun · おまけ</p>
+        <h2>ものづくりおみくじ</h2>
+        <p class="omikuji-lede">今日の「つくる運勢」を、ぴのくんが占います。1 日のはじまりに、軽い気持ちでどうぞ。</p>
+
+        <div class="omikuji-stage">
+          <button class="btn btn-primary omikuji-draw" type="button" data-sfx>
+            <span class="od-icon" aria-hidden="true">🎴</span> おみくじを引く
+          </button>
+
+          <div class="omikuji-result" hidden aria-live="polite">
+            <span class="omikuji-level"></span>
+            <p class="omikuji-msg"></p>
+            <p class="omikuji-rec"></p>
+            <button class="omikuji-again btn" type="button" data-sfx>もう一度引く</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .omikuji-section { padding: 4px 0; }
+  .omikuji-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 22px;
+    padding: 28px 30px;
+    background:
+      linear-gradient(135deg, rgba(255, 216, 77, 0.22), transparent 46%),
+      var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 26px 70px -52px rgba(38, 52, 74, 0.55);
+  }
+  /* masking-tape accent (craft-desk vibe) */
+  .omikuji-tape {
+    position: absolute;
+    top: -10px; left: 30px;
+    width: 92px; height: 26px;
+    background: repeating-linear-gradient(45deg, rgba(255,213,79,0.65) 0 7px, rgba(255,224,130,0.65) 7px 14px);
+    transform: rotate(-4deg);
+    box-shadow: 0 2px 6px -3px rgba(120,90,50,0.4);
+    pointer-events: none;
+  }
+  .omikuji-pino {
+    width: 96px;
+    align-self: end;
+    transition: transform 0.35s var(--ease-out-quint);
+  }
+  .omikuji-card.is-shaking .omikuji-pino { animation: omiShake 0.5s ease-in-out; }
+  .omikuji-kicker {
+    color: var(--accent-deep);
+    font-size: 11px; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .omikuji-body h2 { font-size: clamp(22px, 3.4vw, 30px); line-height: 1.1; margin-bottom: 8px; }
+  .omikuji-lede { color: var(--muted); font-size: 13.5px; line-height: 1.9; max-width: 460px; margin-bottom: 16px; }
+  .omikuji-stage { min-height: 52px; }
+  .od-icon { font-size: 16px; }
+
+  .omikuji-result {
+    margin-top: 4px;
+    animation: omiPop 0.45s var(--ease-out-quint) both;
+  }
+  .omikuji-level {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 1;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: #fff;
+    transform: rotate(-2deg);
+    box-shadow: 0 8px 0 rgba(0,0,0,0.08);
+    margin-bottom: 12px;
+  }
+  .lv-daikichi { background: linear-gradient(135deg, #ff8a3d, #e5392f); }
+  .lv-chukichi { background: linear-gradient(135deg, #ffb43d, #e59f43); }
+  .lv-kichi    { background: linear-gradient(135deg, #4fb286, #2f8f6b); }
+  .lv-shokichi { background: linear-gradient(135deg, #6aa9d6, #3d7d8e); }
+  .lv-suekichi { background: linear-gradient(135deg, #a98fc4, #7e5fa8); }
+  .omikuji-msg { font-size: 14px; line-height: 1.95; color: var(--ink); max-width: 480px; margin-bottom: 8px; }
+  .omikuji-rec { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+  .omikuji-rec a { font-weight: 900; color: var(--accent-deep); }
+  .omikuji-again { font-size: 12px; padding: 7px 14px; }
+
+  @keyframes omiShake {
+    0%,100% { transform: translateX(0) rotate(0); }
+    20% { transform: translateX(-3px) rotate(-3deg); }
+    40% { transform: translateX(3px) rotate(3deg); }
+    60% { transform: translateX(-2px) rotate(-2deg); }
+    80% { transform: translateX(2px) rotate(2deg); }
+  }
+  @keyframes omiPop {
+    from { opacity: 0; transform: translateY(8px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @media (max-width: 600px) {
+    .omikuji-card { grid-template-columns: 1fr; gap: 12px; padding: 22px 18px; text-align: left; }
+    .omikuji-pino { width: 72px; justify-self: start; }
+    .omikuji-tape { left: 18px; }
+  }
+</style>
+
+<script>
+  type Level = { label: string; cls: string; good: number; weight: number; msgs: string[] };
+  const LEVELS: Level[] = [
+    { label: "大吉", cls: "lv-daikichi", good: 2, weight: 8, msgs: [
+      "手を動かすほど、世界がやさしく応えてくれる日。思いついたこと、ひとつ形にしてみては。",
+      "詰まっていたあの処理、ふっとほどける予感。お茶を一杯いれてから、もう一度のぞいてみて。",
+    ]},
+    { label: "中吉", cls: "lv-chukichi", good: 1, weight: 22, msgs: [
+      "小さく出して、小さく直す。その積み重ねが、いちばん遠くまで連れて行ってくれます。",
+      "誰かの「助かった」が、そっと届く日。気にかけていたあの人に、ひとこと送ってみては。",
+    ]},
+    { label: "吉", cls: "lv-kichi", good: 1, weight: 30, msgs: [
+      "完璧じゃなくて大丈夫。今日の「とりあえず動く」が、明日のしっかりした土台になります。",
+      "迷ったら、いちばん小さい一歩から。転がりはじめれば、あとは流れがはこんでくれます。",
+    ]},
+    { label: "小吉", cls: "lv-shokichi", good: 0, weight: 25, msgs: [
+      "うまくいかない時は、休むのも作業のうち。少し離れると、答えのほうから近づいてきます。",
+      "今日は仕込みの日。芽が出るのはもう少し先でも、たねは確かにまかれています。",
+    ]},
+    { label: "末吉", cls: "lv-suekichi", good: 0, weight: 15, msgs: [
+      "派手さはなくても、ちゃんと前に進んでいます。今日のバグは、きっとあなたの味方になる。",
+      "うまくいかない日も、明日の自分への置き手紙。気負わず、できるところまでで充分です。",
+    ]},
+  ];
+
+  function pickLevel(): Level {
+    const total = LEVELS.reduce((s, l) => s + l.weight, 0);
+    let r = Math.random() * total;
+    for (const l of LEVELS) { if ((r -= l.weight) <= 0) return l; }
+    return LEVELS[LEVELS.length - 1];
+  }
+  function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function initOmikuji() {
+    const card = document.querySelector<HTMLElement>(".omikuji-card");
+    if (!card || (card as any)._omiInit) return;
+    (card as any)._omiInit = true;
+
+    const drawBtn = card.querySelector<HTMLButtonElement>(".omikuji-draw")!;
+    const result = card.querySelector<HTMLElement>(".omikuji-result")!;
+    const levelEl = card.querySelector<HTMLElement>(".omikuji-level")!;
+    const msgEl = card.querySelector<HTMLElement>(".omikuji-msg")!;
+    const recEl = card.querySelector<HTMLElement>(".omikuji-rec")!;
+    const againBtn = card.querySelector<HTMLButtonElement>(".omikuji-again")!;
+    let apps: { slug: string; title: string }[] = [];
+    try { apps = JSON.parse(card.dataset.apps || "[]"); } catch {}
+
+    let busy = false;
+    function draw() {
+      if (busy) return; busy = true;
+      const sfx = (window as any).ymSfx;
+      result.hidden = true;
+      card.classList.add("is-shaking");
+      // little shake-ticks while it "rattles"
+      if (sfx) { sfx.tick(); setTimeout(() => sfx.tick(), 130); setTimeout(() => sfx.tick(), 280); }
+      setTimeout(() => {
+        card.classList.remove("is-shaking");
+        const lv = pickLevel();
+        levelEl.textContent = lv.label;
+        levelEl.className = `omikuji-level ${lv.cls}`;
+        msgEl.textContent = pick(lv.msgs);
+        if (apps.length) {
+          const app = pick(apps);
+          recEl.innerHTML = `今日のおすすめ：<a href="/works/${app.slug}">${app.title} を見る →</a>`;
+        } else { recEl.textContent = ""; }
+        // re-trigger pop animation
+        result.hidden = false;
+        result.style.animation = "none"; void result.offsetWidth; result.style.animation = "";
+        if (sfx) sfx.chime(lv.good);
+        busy = false;
+      }, 520);
+    }
+
+    drawBtn.addEventListener("click", draw);
+    againBtn.addEventListener("click", draw);
+  }
+
+  document.addEventListener("astro:page-load", initOmikuji);
+  if (document.readyState !== "loading") initOmikuji();
+  else document.addEventListener("DOMContentLoaded", initOmikuji);
+</script>

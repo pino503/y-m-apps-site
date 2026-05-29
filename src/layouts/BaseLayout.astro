@@ -1,6 +1,7 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import "../styles/world-themes.css";
 
@@ -12,8 +13,8 @@ interface Props {
 
 const {
   title = "Y.M Apps — 暮らしに溶ける、小さな道具",
-  description = "PINO が個人で作っているアプリ・拡張機能・Webゲーム・LINEスタンプの公式サイト。InkPress / PLAYCORD / RainWiper / Sidewalk Defender / ぴのくんスタンプ。",
-  ogImage = "/assets/ogp/default.png",
+  description = "PINO が個人で作っているアプリ・拡張機能・Webゲーム・LINEスタンプの公式サイト。InkPress / PLAYCORD / RainWiper / Sidewalk Defender / COSMO CLEANER / LINEスタンプと絵文字。",
+  ogImage = "/assets/hero/poster-1120.png",
 } = Astro.props;
 
 const siteName = "Y.M Apps";
@@ -34,39 +35,155 @@ const siteName = "Y.M Apps";
     <meta property="og:site_name" content={siteName} />
     <meta name="twitter:card" content="summary_large_image" />
     <title>{title}</title>
+    <ClientRouter />
   </head>
   <body>
     <Header />
     <main id="main"><slot /></main>
     <Footer />
 
-    <script>
-      // Reveal-on-scroll
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("is-visible");
-              observer.unobserve(entry.target);
-            }
-          }
-        },
-        { rootMargin: "0px 0px -6% 0px", threshold: 0.01 }
-      );
-      document.querySelectorAll("[data-reveal]").forEach((el) => observer.observe(el));
+    <!-- sound toggle (persists across page transitions) -->
+    <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="true" aria-label="効果音の切り替え" transition:persist>
+      <span class="st-on" aria-hidden="true">🔊</span>
+      <span class="st-off" aria-hidden="true">🔇</span>
+    </button>
 
-      // Smooth scroll for in-page anchors
-      document.querySelectorAll('a[href^="#"]').forEach((a) => {
-        a.addEventListener("click", (e) => {
-          const id = (a as HTMLAnchorElement).getAttribute("href")?.slice(1);
-          if (!id) return;
-          const target = document.getElementById(id);
-          if (target) {
-            e.preventDefault();
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
+    <script>
+      // ============================================================
+      // Y.M Apps — interaction layer: tasteful UI sound + reveal + nav.
+      // Built for Astro <ClientRouter />: delegated listeners live on
+      // `document` (persists across view transitions); per-page setup
+      // re-runs on `astro:page-load`.
+      // ============================================================
+
+      const Sound = (() => {
+        let ctx: AudioContext | null = null;
+        let muted = false;
+        try { muted = localStorage.getItem("ym-sound") === "off"; } catch {}
+
+        function ac(): AudioContext | null {
+          if (muted) return null;
+          if (!ctx) {
+            try { ctx = new (window.AudioContext || (window as any).webkitAudioContext)(); } catch { return null; }
           }
-        });
+          if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+          return ctx;
+        }
+
+        // a soft, short voiced blip through a gentle lowpass
+        function blip(freq: number, dur: number, type: OscillatorType, gain: number, slideTo?: number, when = 0) {
+          const c = ac(); if (!c) return;
+          const t = c.currentTime + when;
+          const o = c.createOscillator(), g = c.createGain();
+          const lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 5200;
+          o.type = type; o.frequency.setValueAtTime(freq, t);
+          if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(gain, t + 0.008);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+          o.connect(g).connect(lp).connect(c.destination);
+          o.start(t); o.stop(t + dur + 0.02);
+        }
+
+        let lastTick = 0;
+        return {
+          tick() { const now = performance.now(); if (now - lastTick < 45) return; lastTick = now; blip(1760 + Math.random() * 120, 0.03, "triangle", 0.018, 2100); },
+          pop()  { blip(420, 0.10, "sine", 0.05, 680); blip(880, 0.07, "triangle", 0.022, 1180, 0.01); },
+          chime(good = 0) {
+            const base = [523.25, 659.25, 783.99, 1046.5];
+            const n = good >= 2 ? 4 : good >= 1 ? 3 : 2;
+            for (let i = 0; i < n; i++) blip(base[i], 0.22, "triangle", 0.05, base[i] * 1.5, i * 0.085);
+          },
+          enabled() { return !muted; },
+          toggle() {
+            muted = !muted;
+            try { localStorage.setItem("ym-sound", muted ? "off" : "on"); } catch {}
+            if (!muted) this.pop();
+            return !muted;
+          },
+        };
+      })();
+
+      (window as any).ymSfx = Sound;
+
+      // elements that should feel "alive" (hover tick + click pop)
+      const INTERACTIVE = "a, button, .work-row, .featured-card, .tag, summary, [data-sfx]";
+      function isInteractive(el: Element | null): Element | null {
+        return el ? ((el as HTMLElement).closest?.(INTERACTIVE) ?? null) : null;
+      }
+
+      // --- delegated listeners (attach once; survive view transitions) ---
+      let hoverLast: Element | null = null;
+      document.addEventListener("pointerover", (e) => {
+        if ((e as PointerEvent).pointerType === "touch") return;
+        const el = isInteractive(e.target as Element);
+        if (el && el !== hoverLast) { hoverLast = el; Sound.tick(); }
       });
+      document.addEventListener("pointerout", (e) => {
+        const el = isInteractive(e.target as Element);
+        if (el === hoverLast) hoverLast = null;
+      });
+      document.addEventListener("pointerdown", (e) => {
+        if ((e.target as Element)?.closest?.("#sound-toggle")) return;
+        if (isInteractive(e.target as Element)) Sound.pop();
+      });
+
+      // sound toggle
+      function syncToggle() {
+        const btn = document.getElementById("sound-toggle");
+        if (!btn) return;
+        const on = Sound.enabled();
+        btn.setAttribute("aria-pressed", String(on));
+        btn.classList.toggle("is-muted", !on);
+      }
+      document.addEventListener("click", (e) => {
+        const btn = (e.target as Element)?.closest?.("#sound-toggle");
+        if (!btn) return;
+        Sound.toggle();
+        syncToggle();
+      });
+
+      // smooth scroll for in-page anchors (delegated)
+      document.addEventListener("click", (e) => {
+        const a = (e.target as Element)?.closest?.('a[href^="#"]') as HTMLAnchorElement | null;
+        if (!a) return;
+        const id = a.getAttribute("href")?.slice(1);
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      });
+
+      // --- per-page setup (re-runs after every view transition) ---
+      let revealObserver: IntersectionObserver | null = null;
+      function setupReveals() {
+        if (revealObserver) revealObserver.disconnect();
+        revealObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) { entry.target.classList.add("is-visible"); revealObserver!.unobserve(entry.target); }
+            }
+          },
+          { rootMargin: "0px 0px -6% 0px", threshold: 0.01 }
+        );
+        document.querySelectorAll("[data-reveal]:not(.is-visible)").forEach((el) => revealObserver!.observe(el));
+      }
+
+      // pointer-follow sheen on cards (sets --mx/--my for a soft highlight)
+      function setupSheen() {
+        document.querySelectorAll<HTMLElement>("[data-sheen]").forEach((card) => {
+          if ((card as any)._sheen) return; (card as any)._sheen = true;
+          card.addEventListener("pointermove", (ev) => {
+            const r = card.getBoundingClientRect();
+            card.style.setProperty("--mx", `${((ev.clientX - r.left) / r.width) * 100}%`);
+            card.style.setProperty("--my", `${((ev.clientY - r.top) / r.height) * 100}%`);
+          });
+        });
+      }
+
+      function onPageLoad() { setupReveals(); setupSheen(); syncToggle(); }
+      document.addEventListener("astro:page-load", onPageLoad);
+      if (document.readyState !== "loading") onPageLoad();
+      else document.addEventListener("DOMContentLoaded", onPageLoad);
     </script>
   </body>
 </html>
