@@ -680,7 +680,7 @@ const BALANCE = {
 const WW = BALANCE.world.W, WH = BALANCE.world.H;  // world size (much bigger than the 200x320 screen)
 const STATION = { x:WW/2, y:WH/2, w:54, h:18 }; // docking bay sits at the centre of the world
 const SAFE_R = BALANCE.world.safeR;  // radius of the "safe zone" around the station — enemies can't enter
-const TOTAL_STAGES = BALANCE.world.totalStages;
+const STAGE_COUNT = BALANCE.world.totalStages;   // distinct stages per loop (5)
 // per-stage tuning: composition, boss HP, junk count, PU rate, boss visual, area name
 // theme = accent hue for bg/grid (overlays on the neon-green base palette)
 // obstacles = number of static rock/wreckage obstacles in the area
@@ -691,8 +691,18 @@ const STAGES = [
   { name:'DEAD ZONE',        bossName:'VOID LEVIATHAN',bossNameJp:'ヴォイド・リヴァイアサン',bossSpr:'boss4', junk:100, bossHp:740, mobs:{base:4,gunner:3,split:2,rush:3}, puBase:280, puStep:65, theme:{tint:'#3a0a14', accent:'#ef4444', name:'DANGER'},   obstacles:10 },
   { name:'THE HIVE',         bossName:'PROGENITOR',    bossNameJp:'プロジェニター',         bossSpr:'boss5', junk:120, bossHp:950, mobs:{base:6,gunner:3,split:3,rush:4}, puBase:320, puStep:70, theme:{tint:'#2a0a3a', accent:'#e879f9', name:'HIVE'},     obstacles:22 },
 ];
+// ---- NG+ loops: clearing all STAGE_COUNT stages starts a harder 2nd loop ----
+const LOOP_COUNT = 2;
+const TOTAL_STAGES = STAGE_COUNT * LOOP_COUNT;            // 10 total (2 loops of 5)
+function stageCfg(s){ return STAGES[((((s|0)-1) % STAGE_COUNT) + STAGE_COUNT) % STAGE_COUNT]; }
+function loopOf(s){ return Math.max(0, Math.floor(((s|0)-1) / STAGE_COUNT)); }  // 0 = first run, 1 = NG+ (激ムズ)
+function loopMul(s){ return loopOf(s) >= 1 ? 1.6 : 1; }  // generic difficulty scalar for the hard loop
+// NG+ bosses feel powered-up: 「真・◯◯」 / 「◯◯ Ω」
+function bossNameFor(cfg, loop){ return (loop>=1 ? cfg.bossName + ' Ω' : cfg.bossName); }
+function bossNameJpFor(cfg, loop){ return (loop>=1 ? '真・' + cfg.bossNameJp : cfg.bossNameJp); }
 const G = {
   state:'title', t:0,
+  loop:0,                            // NG+ loop index (0 = first run, 1 = 激ムズ)
   px:WW/2, py:WH/2+40,               // player in WORLD coords
   camX:0, camY:0,                    // top-left of camera in world coords
   junk:[], shots:[], ebullets:[], missiles:[], flameOrbs:[], mobs:[], parts:[],
@@ -759,7 +769,7 @@ const JUNK = {
 const JUNK_KEYS = ['scrap','scrap','sat','sludge'];
 const UNLOAD_PER_AMMO = BALANCE.unloadPerAmmo;
 function puNeedNow(){
-  const cfg = STAGES[Math.min(G.stage||1, TOTAL_STAGES)-1];
+  const cfg = stageCfg(G.stage||1);
   // "taken" = picks this stage + pending queued picks. Carried PUs are NOT counted,
   // so each stage's first PU costs cfg.puBase (same feel as Stage 1).
   const taken = G.puPicksThisStage + G.puPicks;
@@ -886,8 +896,9 @@ function begin(){
 }
 function reset(stage){
   stage = stage || 1;
-  const cfg = STAGES[Math.min(stage,TOTAL_STAGES)-1];
+  const cfg = stageCfg(stage);
   G.stage = stage;
+  G.loop = loopOf(stage);   // 0 = first run, 1 = NG+ (激ムズ)
   G.t=0; G.px=WW/2; G.py=WH/2+40; G.camX=0; G.camY=0;
   G.junk=[]; G.shots=[]; G.ebullets=[]; G.missiles=[]; G.flameOrbs=[]; G.mobs=[]; G.parts=[]; G.crates=[]; G.obstacles=[];
   G.planets=[]; G.clouds=[];
@@ -922,22 +933,25 @@ function reset(stage){
   for(let i=0;i<G.pu.shield;i++) G.shields.push({ angle: (i/Math.max(1,G.pu.shield))*Math.PI*2 });
   G.cleanDrones = [];
   for(let i=0;i<(G.pu.drone||0);i++) G.cleanDrones.push({ angle: (i/Math.max(1,G.pu.drone))*Math.PI*2, x:G.px, y:G.py, cargo:0 });
-  // junk count from stage config
-  for(let i=0;i<cfg.junk;i++){
+  // junk count from stage config (NG+ loop = more litter to keep clean)
+  const junkN = Math.round(cfg.junk * (G.loop>=1 ? 1.4 : 1));
+  for(let i=0;i<junkN;i++){
     const k=JUNK_KEYS[Math.floor(Math.random()*JUNK_KEYS.length)];
     spawnJunk(120+Math.random()*(WW-240), 120+Math.random()*(WH-240), k, 0);
   }
   // mobs from stage config — must spawn well away from the base (not near start)
   const MIN_FROM_BASE = BALANCE.world.minMobFromBase;  // > SAFE_R * 3, keeps spawn out of the comfort zone
   for(const kind of Object.keys(cfg.mobs)){
-    for(let i=0;i<cfg.mobs[kind];i++){
+    const mobN = Math.ceil(cfg.mobs[kind] * (G.loop>=1 ? 1.6 : 1));
+    for(let i=0;i<mobN;i++){
       let mx,my,tr=0;
       do{ mx=60+Math.random()*(WW-120); my=60+Math.random()*(WH-120); tr++; }
       while(tr<30 && Math.hypot(mx-STATION.x,my-STATION.y)<MIN_FROM_BASE);
       spawnMob(mx,my,kind);
     }
   }
-  spawnBoss(cfg.bossHp, cfg.bossSpr, cfg.bossName, cfg.bossNameJp);
+  // NG+ boss is far tankier (player carries full upgrades in) + powered-up name
+  spawnBoss(Math.round(cfg.bossHp * (G.loop>=1 ? 2.4 : 1)), cfg.bossSpr, bossNameFor(cfg, G.loop), bossNameJpFor(cfg, G.loop));
   // place static obstacles — far from base, varied sizes for visual variety
   const nObs = cfg.obstacles || 0;
   for(let i=0;i<nObs;i++){
@@ -1161,12 +1175,14 @@ function updateBoss(){
     const f=bossSafeR/(bsd||1);
     b.x = STATION.x + bsx*f; b.y = STATION.y + bsy*f;
   }
+  // NG+ (激ムズ) cranks attack tempo + projectile speed
+  const hardCd = G.loop>=1 ? 0.72 : 1, hardSp = G.loop>=1 ? 1.28 : 1;
   // spit junk (suckable) — p1 random ring; p2/p3 a rotating SPIRAL with one aimed shot
   b.spitCd--;
   if(b.spitCd<=0){
     const p3=b.phase>=3, p2=b.phase>=2;
     const baseN = p3 ? 9 : p2 ? 6 : 3;
-    const n=baseN+Math.floor(Math.random()*2);
+    const n=baseN+Math.floor(Math.random()*2) + (G.loop>=1?2:0);
     const spitSp = p3 ? 1.7 : p2 ? 1.4 : 1.0;
     b.spitBase = (b.spitBase||0) + 0.4;             // advance base angle each volley → spiral
     const aimed = Math.atan2(G.py-b.y, G.px-b.x);   // first shot tracks the player in p2/p3
@@ -1174,14 +1190,14 @@ function updateBoss(){
       const ang = p2
         ? ((i===0) ? aimed : b.spitBase + i*(6.283/n))   // spiral + aimed lead shot
         : Math.random()*6.283;                            // p1 stays a loose random ring
-      const sp=spitSp+Math.random()*0.5;
+      const sp=(spitSp+Math.random()*0.5)*hardSp;
       const key=JUNK_KEYS[Math.floor(Math.random()*JUNK_KEYS.length)];
       G.ebullets.push({ x:b.x, y:b.y, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp, key, t:0, danger:true });
       G.junkMass += JUNK[key].weight;
     }
     SFX.rebreak();
     const base = p3 ? 30 : p2 ? 50 : 70;
-    b.spitCd=Math.max(p3?14:24, base-Math.floor((1-b.hp/b.hpMax)*40));
+    b.spitCd=Math.round(Math.max(p3?14:24, base-Math.floor((1-b.hp/b.hpMax)*40))*hardCd);
   }
   // missiles: aimed, unsuckable, must dodge — phase 2 fires extra
   b.missileCd--;
@@ -1192,12 +1208,12 @@ function updateBoss(){
       const mdx=G.px-b.x, mdy=G.py-b.y, md=Math.hypot(mdx,mdy)||1;
       const spread=(count>1)?(i-(count-1)/2)*0.16:0;
       const ca=Math.cos(spread), sa=Math.sin(spread);
-      const nx=mdx/md, ny=mdy/md, sp=p3?3.4:b.phase>=2?3.0:2.6;
+      const nx=mdx/md, ny=mdy/md, sp=(p3?3.4:b.phase>=2?3.0:2.6)*hardSp;
       G.missiles.push({ x:b.x, y:b.y, vx:(nx*ca-ny*sa)*sp, vy:(nx*sa+ny*ca)*sp, t:0, warn:18 });
     }
     SFX.missile();
     const base = p3 ? 80 : b.phase>=2 ? 110 : 160;
-    b.missileCd=Math.max(p3?40:50, base-Math.floor(prog*70));
+    b.missileCd=Math.round(Math.max(p3?40:50, base-Math.floor(prog*70))*hardCd);
   }
   // PHASE 2 only: aimed-laser. Telegraph (50f) → fire (10f) → cd (180f).
   // Angle locks AT TELEGRAPH START so the player can dodge perpendicularly.
@@ -1221,7 +1237,7 @@ function updateBoss(){
       if(b.laserCd<=0){
         b.laserT = 50;
         b.laserAng = Math.atan2(G.py-b.y, G.px-b.x);  // lock now; telegraph is honest
-        b.laserCd = b.phase>=3 ? 120 : 180;
+        b.laserCd = Math.round((b.phase>=3 ? 120 : 180) * hardCd);
         blip(220,.10,'sawtooth',.05);   // soft warning chirp
       }
     }
@@ -2234,7 +2250,7 @@ function onScreen(wx,wy,m){ m=m||16; const x=wx-G.camX, y=wy-G.camY; return x>-m
 
 function drawScene(){
   const c=G.cleanliness;
-  const theme = (STAGES[Math.min(G.stage||1,TOTAL_STAGES)-1] || {}).theme || {tint:'#02100a',accent:'#22ff88'};
+  const theme = (stageCfg(G.stage||1) || {}).theme || {tint:'#02100a',accent:'#22ff88'};
   // base black with a slight stage-tinted overlay (sets the area's "mood")
   ctx.fillStyle = UI.bg0; ctx.fillRect(-4,-4,LW+8,LH+8);
   ctx.save(); ctx.globalAlpha=0.35; ctx.fillStyle=theme.tint; ctx.fillRect(-4,-4,LW+8,LH+8); ctx.restore();
@@ -2526,7 +2542,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.7.0', rightAlign('v1.7.0', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.8.0', rightAlign('v1.8.0', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -2594,7 +2610,7 @@ function render(){
   // ---- play / clear / over ---- (everything below is in WORLD space via sx()/sy())
   // ---- OBSTACLES — static, per-stage themed silhouette dispatched by kind ----
   (function(){
-    const theme = (STAGES[Math.min(G.stage||1,TOTAL_STAGES)-1] || {}).theme;
+    const theme = (stageCfg(G.stage||1) || {}).theme;
     const tint = theme ? theme.accent : '#9aa0a6';
     for(const o of G.obstacles){
       if(!onScreen(o.x,o.y,o.r+6)) continue;
@@ -2857,9 +2873,12 @@ function render(){
       ctx.save();
       if(spriteAlpha < 1) ctx.globalAlpha = spriteAlpha;
       ctx.shadowColor=glowCol; ctx.shadowBlur=blur;
+      // NG+ bosses are a menacing palette-swap (色違い)
+      if(G.loop>=1) ctx.filter='hue-rotate(165deg) saturate(1.3) brightness(1.05)';
       // phase 2 swaps in the enraged variant (bossE / boss2E / ...) when one exists
       const bossSpr = (isP2 && SPR[b.spr+'E']) ? SPR[b.spr+'E'] : (SPR[b.spr]||SPR.boss);
       blit(bossSpr, bx, by);
+      ctx.filter='none';
       ctx.restore();
       if(!b.awake){ ctx.save(); ctx.globalAlpha=0.5+0.3*Math.sin(G.t*0.1); glowText('?', bx-2, by-22, UI.amber,1,6); ctx.restore(); }
 
@@ -3130,7 +3149,7 @@ function render(){
     // obstacles — 2×2 themed pastel blocks. Bigger + duller than junk so they read
     // unmistakably as "do-not-touch" geometry rather than collectibles.
     {
-      const _theme = (STAGES[Math.min(G.stage||1,TOTAL_STAGES)-1] || {}).theme;
+      const _theme = (stageCfg(G.stage||1) || {}).theme;
       const obsCol = _theme ? lerpHex(_theme.accent, '#000000', 0.45) : UI.textDim;
       for(const o of G.obstacles){
         px((sx_(o.x)-1)|0, (sy_(o.y)-1)|0, 2, 2, obsCol);
@@ -3434,7 +3453,7 @@ function render(){
   }
   // STAGE START banner — animated reveal, holds until the player taps to dismiss
   if(G.state==='play' && G.showStageBanner){
-    const cfg=STAGES[Math.min(G.stage,TOTAL_STAGES)-1];
+    const cfg=stageCfg(G.stage);
     // dim the world behind
     px(0,0,LW,LH,'rgba(0,0,0,0.6)');
     // banner box — slides in from collapsed (h=0) to full height in 14 frames
@@ -3453,8 +3472,9 @@ function render(){
     // typewriter reveal: each line appears in sequence
     if(grow>=1){
       const tt = G.t - 14;     // frames since banner finished growing
-      // Line 1: STAGE X / Y  — instant
-      glowCenter('STAGE '+G.stage+' / '+TOTAL_STAGES, by+10, UI.amberDim, 1, 4);
+      // Line 1: STAGE X / Y  — instant (NG+ loop flagged 激ムズ)
+      const ngp = loopOf(G.stage)>=1;
+      glowCenter('STAGE '+G.stage+' / '+TOTAL_STAGES+(ngp?'  ［激ムズ］':''), by+10, ngp?UI.red:UI.amberDim, 1, 4);
       // Line 2: area name — typewriter
       const name = cfg.name;
       if(tt>=4){
@@ -3464,7 +3484,7 @@ function render(){
       // Line 3: boss preview — typewriter after name finishes
       const nameDone = 4 + name.length/0.7;
       if(tt>=nameDone){
-        const bn = cfg.bossName||'BOSS';
+        const bn = bossNameFor(cfg, G.loop)||'BOSS';
         const bossStr = '▽ '+bn+' awaits';
         const rev = Math.min(bossStr.length, Math.floor((tt-nameDone)*0.7));
         center(bossStr.slice(0,rev), by+50, UI.red, 1);
@@ -3578,11 +3598,11 @@ function render(){
     text('THREAT_NEUTRALIZED', rightOf('> ALERT', 8, 1, 4), 32, UI.green, 1);
     glowCenter('BOSS DOWN', 46, UI.amberHi, 2, 14);
     // boss name (the defeated one)
-    const stageCfg = STAGES[Math.min(G.stage,TOTAL_STAGES)-1];
-    center('▼ '+(stageCfg.bossName||'BOSS')+' ▼', 64, UI.red, 1);
+    const sc = stageCfg(G.stage);
+    center('▼ '+(bossNameFor(sc, G.loop)||'BOSS')+' ▼', 64, UI.red, 1);
     // status info
     const cpct = cleanPercent();
-    text('AREA: '+stageCfg.name, 30, 88, UI.amberDim, 1);
+    text('AREA: '+(G.loop>=1?'NG+ ':'')+sc.name, 30, 88, UI.amberDim, 1);
     text('CLEAN: '+cpct+'%', 30, 100, UI.green, 1);
     text('STAGE: '+G.stage+'/'+TOTAL_STAGES, 30, 112, UI.amberDim, 1);
     // two big console buttons
@@ -3604,19 +3624,49 @@ function render(){
     }
     px(r1.x,r1.y,3,r1.h,UI.amber);
     const isFinal = G.stage >= TOTAL_STAGES;
-    const nextCfg = !isFinal ? STAGES[G.stage] : null;
-    glowText(isFinal?'[2] RETURN':'[2] WARP', r1.x+12, r1.y+10, UI.amber, 1, hot?6:3);
-    text(isFinal?'> 帰還 / 任務完了':('> '+(nextCfg?nextCfg.name:'')), r1.x+12, r1.y+26, UI.amberDim, 1);
+    const nextStage = G.stage + 1;
+    const nextCfg = !isFinal ? stageCfg(nextStage) : null;
+    const intoNGplus = !isFinal && loopOf(nextStage) >= 1 && loopOf(G.stage) === 0;  // crossing 5 → 6
+    const nextLabel = isFinal ? '> 帰還 / 任務完了'
+                    : intoNGplus ? '> 2周目 — 激ムズ突入'
+                    : ('> '+(loopOf(nextStage)>=1?'NG+ ':'')+(nextCfg?nextCfg.name:''));
+    glowText(isFinal?'[2] RETURN':(intoNGplus?'[2] NG+':'[2] WARP'), r1.x+12, r1.y+10, intoNGplus?UI.red:UI.amber, 1, hot?6:3);
+    text(nextLabel, r1.x+12, r1.y+26, UI.amberDim, 1);
     center('> TAP TO SELECT', PB_BTN.top+2*(PB_BTN.h+PB_BTN.gap)+10, UI.amberDim, 1);
   }
   if(G.state==='clear'){
     px(0,0,LW,LH,'rgba(12,10,6,0.92)');
+    // 🎉 confetti rain — celebratory, falls continuously behind the panel
+    {
+      const CC=['#fde047','#22ff88','#5eead4','#ff6b8e','#fbbf24','#a78bfa','#ffffff'];
+      ctx.save();
+      for(let i=0;i<48;i++){
+        const seed=i*129+7;
+        const cx=(seed*1.7)%LW;
+        const fall=(G.t*1.7 + (seed%97)*1.3);
+        const cy=((fall + seed) % (LH+24)) - 12;
+        const sway=Math.sin((G.t*0.06)+seed)*6;
+        const col=CC[i%CC.length];
+        ctx.globalAlpha=0.85;
+        const w=(i%3)?3:2, h=(i%2)?3:5;
+        px((cx+sway)|0, cy|0, w, h, col);
+      }
+      ctx.restore();
+    }
     // header
     px(0,28,LW,1,UI.amberDark);
     text('> SYS', 8, 32, UI.amberDim, 1);
     text('FINAL_LOG', rightOf('> SYS', 8, 1, 4), 32, UI.green, 1);
+    // big celebratory burst pulses out from the title on entry
+    if(G.t < 40){
+      ctx.save();
+      const pr=(G.t/40);
+      ctx.globalAlpha=(1-pr)*0.5; ctx.strokeStyle=UI.amberHi; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(LW/2, 60, 20+pr*120, 0, 6.283); ctx.stroke();
+      ctx.restore();
+    }
     fitCenter('ALL CLEAR', 52, UI.amberHi, 2, LW-12, 14);
-    center('> 全任務完了', 86, UI.amber, 1);
+    center('★ 2周目制覇 — 完全クリア ★', 86, UI.amber, 1);
     px(0,102,LW,1,UI.amberDark);
     // total cleanup across all 5 stages (carried + current)
     const totMass = (G.totalMass||0) + G.junkMass;
