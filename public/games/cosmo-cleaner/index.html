@@ -217,6 +217,14 @@ const S = {
     "..yywwwyy..",
     "....yyy....",
   ],
+  // CLEANER drone — tiny lime buddy with two dot eyes (5x5, ~half the ship)
+  cleaner: [
+    ".mmm.",
+    "mKmKm",
+    "mmmmm",
+    "mMMMm",
+    ".mmm.",
+  ],
   // junk: scrap metal chunk (7x7)
   scrap: [
     "..GgG..",
@@ -3020,14 +3028,14 @@ function render(){
   if(G.cleanDrones){
     const dcap=droneCap();
     for(const dr of G.cleanDrones){
-      const x=sx(dr.x)|0, y=sy(dr.y)|0;
-      if((dr.cargo||0) < dcap){   // intake ring shown while this drone still has room
+      const x=sx(dr.x)|0, y=sy(dr.y)|0, full=(dr.cargo||0)>=dcap;
+      if(!full){   // intake ring shown while this drone still has room
         ctx.save(); ctx.globalAlpha=0.18; ctx.strokeStyle='#a3e635';
         ctx.beginPath(); ctx.arc(x,y,DRONE_RANGE,0,6.283); ctx.stroke(); ctx.restore();
       }
-      ctx.save(); ctx.shadowColor='#a3e635'; ctx.shadowBlur=5;
-      drawDisc(x,y,2, (dr.cargo||0)>=dcap ? '#fbbf24' : '#caff70'); ctx.restore();   // amber when its buffer is full
-      px(x,y,1,1,'#f4ffd0');
+      ctx.save(); ctx.shadowColor='#a3e635'; ctx.shadowBlur=4;
+      blit(SPR.cleaner, x, y); ctx.restore();
+      if(full) px(x, y-4, 1, 1, '#fbbf24');   // amber "full" pip above when its buffer is maxed
     }
   }
   // shield drones — orbit the player, cyan dots with glow
