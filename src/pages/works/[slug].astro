@@ -79,6 +79,42 @@ const { data } = app;
         </>
       )}
 
+      {data.controls.length > 0 && (
+        <>
+          <h2 class="section-title">How to Play / 操作方法</h2>
+          <div class="controls-grid">
+            {data.controls.map((c, i) => (
+              <article class="card control-card" data-reveal data-reveal-delay={Math.min(i, 5)}>
+                {c.icon && <div class="control-icon" aria-hidden="true">{c.icon}</div>}
+                <h3 class="control-title">{c.title}</h3>
+                {c.common ? (
+                  <div class="control-common">
+                    <span class="control-platform-label">共通</span>
+                    <span class="control-platform-body">{c.common}</span>
+                  </div>
+                ) : (
+                  <div class="control-platforms">
+                    {c.mobile && (
+                      <div class="control-platform">
+                        <span class="control-platform-label">スマホ</span>
+                        <span class="control-platform-body">{c.mobile}</span>
+                      </div>
+                    )}
+                    {c.pc && (
+                      <div class="control-platform">
+                        <span class="control-platform-label">PC</span>
+                        <span class="control-platform-body">{c.pc}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {c.note && <p class="control-note">💡 {c.note}</p>}
+              </article>
+            ))}
+          </div>
+        </>
+      )}
+
       {data.world === "pinokun-stamps" && (
         <>
           <h2 class="section-title">Gallery</h2>
@@ -251,6 +287,84 @@ const { data } = app;
      左端に細い赤線（ノートのマージン罫）、左マージンに通し番号。
      紙の上にメモを取った感じを目指す。 */
   .features { display: grid; gap: 12px; }
+
+  /* ---------- How to Play / 操作方法 ---------- */
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .control-card {
+    position: relative;
+    padding: 20px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 3px solid var(--accent, #ef4444);
+  }
+  .control-icon {
+    font-size: 30px;
+    line-height: 1;
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    opacity: 0.9;
+  }
+  .control-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--brown-1);
+    margin: 0;
+    padding-right: 40px; /* avoid overlap with icon */
+    letter-spacing: 0.02em;
+  }
+  .control-platforms {
+    display: grid;
+    gap: 10px;
+  }
+  .control-platform,
+  .control-common {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 10px;
+    align-items: start;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  .control-platform-label {
+    display: inline-block;
+    padding: 2px 0;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--muted);
+    background: var(--surface-soft, #f4eedd);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+  }
+  .control-platform-body {
+    color: var(--brown-2, var(--brown-3));
+  }
+  .control-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin: 4px 0 0;
+    padding: 8px 10px;
+    background: var(--surface-soft, #faf5e5);
+    border-left: 2px solid var(--line);
+    border-radius: 4px;
+    line-height: 1.7;
+  }
+  @media (max-width: 520px) {
+    .control-card { padding: 16px 16px 14px; }
+    .control-icon { font-size: 24px; top: 12px; right: 12px; }
+    .control-title { font-size: 14px; }
+    .control-platform,
+    .control-common { grid-template-columns: 48px 1fr; gap: 8px; font-size: 12px; }
+    .control-note { font-size: 11px; }
+  }
   .feature {
     position: relative;
     padding: 18px 20px 18px 56px;
