@@ -765,6 +765,7 @@ const PU_DEFS = [
 
 /* ---------- input ---------- */
 let pointer=null, anchor=null, moveId=null, keys={};
+let pointerIsTouch=false;   // true while the active pointer came from touch (enables ぷにコン virtual-stick movement)
 const FIRE_BTN={ x:LW-22, y:LH-24, r:18 };
 // upgrade card layout (4 cards stacked, centered)
 const CARD={ w:150, h:32, gap:4, top:58 };  // tight enough to fit all 5 PU cards on screen
@@ -804,12 +805,12 @@ function press(e){
     for(const t of e.changedTouches){
       const p=ptFrom(t);
       if(inFire(p)){ fire(); continue; }      // tap fire button = shoot
-      if(moveId===null){ moveId=t.identifier; pointer=p; anchor={fx:p.x,fy:p.y,sx:G.px,sy:G.py}; G.sucking=true; }
+      if(moveId===null){ moveId=t.identifier; pointer=p; anchor={fx:p.x,fy:p.y,sx:G.px,sy:G.py}; pointerIsTouch=true; G.sucking=true; }
     }
   } else {
     const p=ptFromClient(e.clientX,e.clientY);
     if(inFire(p)){ fire(); return; }
-    pointer=p; anchor={fx:p.x,fy:p.y,sx:G.px,sy:G.py}; G.sucking=true;
+    pointer=p; anchor={fx:p.x,fy:p.y,sx:G.px,sy:G.py}; pointerIsTouch=false; G.sucking=true;
   }
 }
 function move(e){
@@ -1475,13 +1476,32 @@ function update(){
   // hold the world frozen while the stage-intro banner is up — player taps to dismiss
   if(G.showStageBanner) return;
 
-  // ship follows finger (relative drag). Heavier when cargo full, faster with speed PU.
+  // Heavier when cargo full, faster with speed PU.
   const heavy = (1 - (G.cargo/cargoCap())*0.4) * moveScale();
   if(pointer && anchor){
-    const SENS=1.2;
-    const tx=anchor.sx+(pointer.x-anchor.fx)*SENS, ty=anchor.sy+(pointer.y-anchor.fy)*SENS;
-    // smoothing: ship eases toward the finger/mouse target instead of snapping
-    G.px+=(tx-G.px)*0.15*heavy; G.py+=(ty-G.py)*0.15*heavy;
+    if(pointerIsTouch){
+      // ぷにコン (floating virtual stick): velocity from how far the finger is
+      // tilted off the touch-origin. Direction = where you push, speed scales
+      // with tilt distance (dead zone near centre, capped at STICK_MAX).
+      const DEAD=5, STICK_MAX=34, MAXSPD=3.36;   // MAXSPD matches keyboard feel
+      let dx=pointer.x-anchor.fx, dy=pointer.y-anchor.fy, dist=Math.hypot(dx,dy);
+      // follow-thumb: when dragged past the rim, recentre the stick under the
+      // thumb so the player can keep pushing without running out of finger room.
+      if(dist>STICK_MAX){
+        anchor.fx=pointer.x-dx/dist*STICK_MAX; anchor.fy=pointer.y-dy/dist*STICK_MAX;
+        dx=pointer.x-anchor.fx; dy=pointer.y-anchor.fy; dist=STICK_MAX;
+      }
+      if(dist>DEAD){
+        const mag=Math.min(1,(dist-DEAD)/(STICK_MAX-DEAD));   // 0 at dead zone -> 1 at rim
+        const sp=MAXSPD*mag*heavy;
+        G.px+=dx/dist*sp; G.py+=dy/dist*sp;
+      }
+    } else {
+      // mouse: relative drag — ship eases toward the dragged offset, then holds.
+      const SENS=1.2;
+      const tx=anchor.sx+(pointer.x-anchor.fx)*SENS, ty=anchor.sy+(pointer.y-anchor.fy)*SENS;
+      G.px+=(tx-G.px)*0.15*heavy; G.py+=(ty-G.py)*0.15*heavy;
+    }
   }
   let kx=0,ky=0;
   if(keys.ArrowLeft||keys.a) kx-=1; if(keys.ArrowRight||keys.d) kx+=1;
@@ -2367,7 +2387,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.4.0', rightAlign('v1.4.0', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.4.1', rightAlign('v1.4.1', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -3258,6 +3278,25 @@ function render(){
         glowCenter('> TAP TO START', by+72, UI.green, 1, 6);
       }
     }
+  }
+
+  // ぷにコン virtual stick — base ring at the touch origin + knob at the tilt.
+  // anchor/pointer are already in screen space, so draw directly (no sx/sy).
+  if(pointerIsTouch && pointer && anchor && G.state==='play' && !G.showStageBanner){
+    const STICK_MAX=34;
+    let dx=pointer.x-anchor.fx, dy=pointer.y-anchor.fy, dist=Math.hypot(dx,dy)||1;
+    const kr=Math.min(dist,STICK_MAX);
+    const kx=(anchor.fx+dx/dist*kr)|0, ky=(anchor.fy+dy/dist*kr)|0;
+    ctx.save();
+    // base ring
+    ctx.globalAlpha=0.22; ctx.strokeStyle='#5eead4'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.arc(anchor.fx, anchor.fy, STICK_MAX, 0, 6.283); ctx.stroke();
+    // dead-zone centre pip
+    ctx.globalAlpha=0.35; px((anchor.fx-1)|0,(anchor.fy-1)|0,2,2,'#5eead4');
+    // knob
+    ctx.globalAlpha=0.85; ctx.shadowColor='#fbbf24'; ctx.shadowBlur=6;
+    drawDisc(kx,ky,5,'#fbbf24'); drawDisc(kx,ky,3,'#fde047');
+    ctx.restore();
   }
 
   // fire button — physical-looking amber arcade button
