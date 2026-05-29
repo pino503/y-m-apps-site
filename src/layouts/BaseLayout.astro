@@ -180,7 +180,34 @@ const siteName = "Y.M Apps";
         });
       }
 
-      function onPageLoad() { setupReveals(); setupSheen(); syncToggle(); }
+      // Japanese-aware wrapping: only allow line breaks AFTER punctuation so a
+      // phrase like 「軽い気持ちでどうぞ。」 never splits into a lonely 「ぞ」.
+      // (text-wrap:pretty doesn't fix short CJK orphans.) word-break:keep-all
+      // blocks arbitrary CJK breaks; <wbr> after 、。!? re-adds phrase breaks.
+      function phraseWrap(el: Element | null) {
+        if (!el || (el as any)._pw) return;
+        const t = el.textContent || "";
+        if (t.length < 4) return;
+        (el as any)._pw = true;
+        (el as HTMLElement).style.wordBreak = "keep-all";
+        (el as HTMLElement).style.overflowWrap = "anywhere"; // safety: break a too-long phrase if needed
+        const parts = t.split(/(?<=[、。，．！？!?])/);
+        if (parts.length < 2) { (el as any)._pw = false; return; }
+        const frag = document.createDocumentFragment();
+        parts.forEach((p, i) => {
+          if (p) frag.appendChild(document.createTextNode(p));
+          if (i < parts.length - 1) frag.appendChild(document.createElement("wbr"));
+        });
+        el.textContent = "";
+        el.appendChild(frag);
+      }
+      (window as any).ymNoOrphan = (el: Element) => { if (el) { (el as any)._pw = false; phraseWrap(el); } };
+      function bindOrphans() {
+        document.querySelectorAll(".hero-lede, .lede, .omikuji-lede, .featured-copy p, .work-tag, .about-body p")
+          .forEach((el) => phraseWrap(el));
+      }
+
+      function onPageLoad() { setupReveals(); setupSheen(); syncToggle(); bindOrphans(); }
       document.addEventListener("astro:page-load", onPageLoad);
       if (document.readyState !== "loading") onPageLoad();
       else document.addEventListener("DOMContentLoaded", onPageLoad);

@@ -227,6 +227,7 @@
         levelEl.textContent = lv.label;
         levelEl.className = `omikuji-level ${lv.cls}`;
         msgEl.textContent = pick(lv.msgs);
+        (window as any).ymNoOrphan?.(msgEl);
         itemEl.textContent = pick(ITEMS);
         const col = pick(COLORS);
         swatchEl.style.background = col.c;

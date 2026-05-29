@@ -109,8 +109,15 @@ h1, h2, h3, h4, h5 {
 h1 { font-size: clamp(22px, 5.5vw, 30px); }
 h2 { font-size: 16px; }
 h3 { font-size: 14px; }
+/* avoid lonely orphans (e.g. a single 「ぞ」 wrapping alone) */
+h1, h2, h3, h4, h5 { text-wrap: balance; }
 
 p { color: var(--ink); font-size: 14px; line-height: 1.85; }
+/* nicer Japanese wrapping: kinsoku rules + avoid lonely orphan characters */
+p, li, dd, .lede, .hero-lede, .work-tag, .omikuji-lede, .omikuji-msg, .section-head .lede {
+  text-wrap: pretty;
+  line-break: strict;
+}
 small { font-size: 12px; color: var(--muted); }
 
 a {
@@ -157,6 +164,16 @@ section { position: relative; z-index: 2; }
   background-image: none;
   font-family: var(--font-display);
   position: relative;
+}
+/* small hand-drawn accent under each section title */
+.section-title::after {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 4px;
+  margin-top: 9px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--orange));
 }
 /* 旧 .sparkle 互換（もう使わないが残す） */
 .section-title .sparkle {
@@ -358,6 +375,20 @@ section { position: relative; z-index: 2; }
   font-size: 14px;
 }
 .ruled-list a:hover { color: var(--accent-deep); text-decoration: none; }
+/* related-app tag on a writing row */
+.ruled-list .w-main { display: inline-flex; align-items: baseline; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.w-app {
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--c, var(--accent-deep));
+  background: color-mix(in srgb, var(--c, #999) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c, #999) 30%, transparent);
+  border-radius: 999px;
+  padding: 2px 8px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 .ruled-list .meta {
   font-size: 11px;
   color: var(--muted);
@@ -490,7 +521,7 @@ a:not(.btn):not(.work-row):not(.featured-card):not(.work-card):hover {
   position: absolute;
   left: -10px; top: 14%;
   width: 3px; height: 72%;
-  background: var(--orange);
+  background: var(--row-accent, var(--orange));
   border-radius: 3px;
   transform: scaleY(0);
   transform-origin: center;

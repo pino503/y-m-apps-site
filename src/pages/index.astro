@@ -30,6 +30,18 @@ const writings = (await getCollection("writings")).sort(
 
 const recentWritings = writings.slice(0, 5);
 const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
+
+// per-app accent color — gives each Works row / Writings tag its own identity
+const APP_ACCENT: Record<string, string> = {
+  inkpress: "#3d7d8e",
+  rainwiper: "#5b8fd6",
+  playcord: "#2f8f6b",
+  "sidewalk-defender": "#e59f43",
+  "cosmo-cleaner": "#0d9488",
+  "pinokun-stamps": "#e0608a",
+};
+const appAccent = (slug: string) => APP_ACCENT[slug] ?? "var(--accent-deep)";
+const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
 ---
 
 <BaseLayout title="Y.M Apps — 小さなアイデアを、かたちに。">
@@ -122,7 +134,7 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
                 const gi = indexOf.get(app.slug) ?? 0;
                 return (
                   <li data-reveal data-reveal-delay={Math.min(gi, 5)}>
-                    <a class="work-row" href={`/works/${app.slug}`}>
+                    <a class="work-row" href={`/works/${app.slug}`} style={`--row-accent:${appAccent(app.slug)}`}>
                       <span class="work-no">{String(gi + 1).padStart(2, "0")}</span>
                       <div class="work-body">
                         <div class="work-head">
@@ -159,7 +171,12 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
         <ul class="ruled-list">
           {recentWritings.map((w, i) => (
             <li data-reveal data-reveal-delay={Math.min(i, 5)}>
-              <a href={w.data.url} target="_blank" rel="noopener noreferrer">{w.data.title}</a>
+              <span class="w-main">
+                <a href={w.data.url} target="_blank" rel="noopener noreferrer">{w.data.title}</a>
+                {w.data.relatedApp && appTitle.get(w.data.relatedApp) && (
+                  <span class="w-app" style={`--c:${appAccent(w.data.relatedApp)}`}>{appTitle.get(w.data.relatedApp)}</span>
+                )}
+              </span>
               <span class="meta">{w.data.date.replace(/-/g, "/").slice(2)}</span>
             </li>
           ))}
@@ -555,11 +572,11 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
     transform: translateX(4px);
     text-decoration: none;
   }
-  .work-row:hover .work-more { color: var(--accent-deep); transform: translateX(3px); }
+  .work-row:hover .work-more { color: var(--row-accent, var(--accent-deep)); transform: translateX(3px); }
   .work-no {
     font-size: 12px;
     font-weight: 900;
-    color: var(--accent-deep);
+    color: var(--row-accent, var(--accent-deep));
     letter-spacing: 0.08em;
   }
   .work-body { min-width: 0; }
