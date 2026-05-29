@@ -3,7 +3,7 @@ title: COSMO CLEANER
 tagline: 宇宙ゴミを集めて、基地で強化。圧縮弾を作って敵とボスに挑む、CRT風の宇宙清掃シューティングゲーム。
 world: cosmo-cleaner
 platform: Webゲーム
-badges: ["Web", "HTML5", "Pixel Art", "v1.7.0"]
+badges: ["Web", "HTML5", "Pixel Art", "v1.8.0"]
 storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
 order: 5
@@ -21,6 +21,8 @@ features:
     body: 敵弾を物理ブロックする護衛ドローン（最大3機）と、近くのゴミを自動回収する掃除ドローン（最大2機・自機タンクの50%ぶんを運搬）。どちらも自機の周りを等間隔で周回します。
   - title: 5 STAGES & 3-PHASE BOSSES
     body: ジャンク・コア／アイアン・ハスク／ゴミラ／ヴォイド・リヴァイアサン／プロジェニター。固有の攻撃に加え、HP 50% で Phase 2（ENRAGED）、25% で Phase 3（OVERDRIVE）へと激化します。
+  - title: NEW GAME+ (HARD MODE)
+    body: 全5ステージを制覇すると、難度を上げた2周目「ハードモード」へ突入。ボスは色違い＆パワーアップ（真・◯◯ ／ ◯◯ Ω）、HP も攻撃も激化します。全10ステージを完全クリアすると、★ 完全制覇 ★ の演出が待っています。
   - title: SUB-1.44MB MINI JAM
     body: 単一HTMLファイルで動く、1.44MB未満のミニゲーム。インストール不要、ブラウザからすぐ遊べる。
 controls:
@@ -51,7 +53,7 @@ controls:
   - icon: "👹"
     title: "ボスを倒す"
     common: "各ステージのどこかにボスが潜伏。近づくとリビールバナーが出て本格戦闘に移行します。"
-    note: "HP が半分で Phase 2（ENRAGED）、25% で Phase 3（OVERDRIVE）へ。終盤は攻撃が一気に激化するので、ドローンや HUL レベルが効いてきます。"
+    note: "HP が半分で Phase 2（ENRAGED）、25% で Phase 3（OVERDRIVE）へ。終盤は攻撃が一気に激化するので、ドローンや HUL レベルが効いてきます。5ステージ制覇後はハードモード（2周目）に突入します。"
 ---
 
 COSMO CLEANER は、宇宙ゴミを回収しながら戦うミニシューティングゲームです。
@@ -62,3 +64,6 @@ COSMO CLEANER は、宇宙ゴミを回収しながら戦うミニシューティ
 
 掃除ドローンにゴミを集めさせ、チャージ弾を撃ち込み、OVERDRIVE に入ったボスを乗り切る——
 どのアップグレードを積むかで、戦い方が少しずつ変わっていきます。
+
+全5ステージを制覇すると、色違い＆パワーアップしたボスが待つ「ハードモード」（2周目）へ。
+全10ステージの完全クリアを目指してみてください。
