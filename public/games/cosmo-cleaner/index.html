@@ -703,7 +703,9 @@ const G = {
   obstacles:[],
   showStageBanner:false,
   // power-up levels
-  pu:{ suck:0, tank:0, power:0, hull:0, shield:0 },
+  pu:{ suck:0, tank:0, power:0, hull:0, shield:0, drone:0 },
+  cleanDrones:[],               // auto-vacuum drones (CLEANER.DRN PU)
+  charging:false, chargeT:0,    // FIRE-button hold state for charged shots
   puff:0,                       // ship "pop" amount — spikes to 1 on each swallow, decays each frame
   puFlash:0, puName:'',
   puPicks:0, puProgress:0,
@@ -717,7 +719,9 @@ for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+
 
 /* ---------- derived stats from power-ups ---------- */
 /* ---------- derived stats from power-ups (all capped at Lv5) ---------- */
-const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones
+const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones; CLEANER up to 2
+const DRONE_R = 30;          // cleaner-drone orbit radius (outside the shield ring)
+const DRONE_RANGE = 26;      // how far a cleaner drone reaches out to pull junk
 const SHIELD_R = BALANCE.player.shieldR;    // orbit radius around player
 const SHIELD_HIT = BALANCE.player.shieldHit;   // bullet vs shield collision radius
 function suckRange(){ return BALANCE.pu.range(G.pu.suck); }         // 14 -> 84 at Lv5
@@ -767,12 +771,15 @@ const PU_DEFS = [
   {k:'power',  name:'COMPRESS.DMG',desc:'圧縮弾の威力上昇',  col:'#ff3050'},  // neon red
   {k:'hull',   name:'HULL.CAP',    desc:'体力上限+1 (即時回復)', col:'#fb7185'}, // pink
   {k:'shield', name:'SHIELD.DRN',  desc:'護衛ドローン+1',    col:'#5eead4'},  // cyan
+  {k:'drone',  name:'CLEANER.DRN', desc:'自動掃除ドローン+1', col:'#a3e635'},  // lime — auto-vacuums junk
 ];
 
 /* ---------- input ---------- */
 let pointer=null, anchor=null, moveId=null, keys={};
 let pointerIsTouch=false;   // true while the active pointer came from touch (enables ぷにコン virtual-stick movement)
+let fireId=null, fireMouse=false;   // tracks the touch/mouse holding the FIRE button (for charge shots)
 const FIRE_BTN={ x:LW-22, y:LH-24, r:18 };
+const CHARGE_FULL=30;       // frames to hold FIRE for a full charged blast (~0.5s). Released sooner = normal tap shot.
 // upgrade card layout (4 cards stacked, centered)
 const CARD={ w:150, h:32, gap:4, top:58 };  // tight enough to fit all 5 PU cards on screen
 function cardRect(i){ return { x:(LW-CARD.w)/2, y:CARD.top+i*(CARD.h+CARD.gap), w:CARD.w, h:CARD.h }; }
@@ -810,12 +817,13 @@ function press(e){
   if(e.touches){
     for(const t of e.changedTouches){
       const p=ptFrom(t);
-      if(inFire(p)){ fire(); continue; }      // tap fire button = shoot
+      // FIRE button: start charging. Quick release = tap shot, hold = charged blast.
+      if(inFire(p)){ if(fireId===null){ fireId=t.identifier; G.charging=true; G.chargeT=0; } continue; }
       if(moveId===null){ moveId=t.identifier; pointer=p; anchor={fx:p.x,fy:p.y,sx:G.px,sy:G.py}; pointerIsTouch=true; G.sucking=true; }
     }
   } else {
     const p=ptFromClient(e.clientX,e.clientY);
-    if(inFire(p)){ fire(); return; }
+    if(inFire(p)){ fireMouse=true; G.charging=true; G.chargeT=0; return; }
     pointer=p; anchor={fx:p.x,fy:p.y,sx:G.px,sy:G.py}; pointerIsTouch=false; G.sucking=true;
   }
 }
@@ -823,8 +831,11 @@ function move(e){
   if(e.touches){ for(const t of e.changedTouches){ if(t.identifier===moveId){ e.preventDefault(); pointer=ptFrom(t);} } }
   else if(pointer){ e.preventDefault(); pointer=ptFromClient(e.clientX,e.clientY); }
 }
-function endTouch(e){ for(const t of e.changedTouches){ if(t.identifier===moveId){ moveId=null; pointer=null; anchor=null; G.sucking=false; } } }
-function release(){ pointer=null; anchor=null; moveId=null; G.sucking=false; }
+function endTouch(e){ for(const t of e.changedTouches){
+  if(t.identifier===moveId){ moveId=null; pointer=null; anchor=null; G.sucking=false; }
+  if(t.identifier===fireId){ releaseFire(); }
+} }
+function release(){ if(fireMouse) releaseFire(); pointer=null; anchor=null; moveId=null; G.sucking=false; }
 cv.addEventListener('mousedown',press); window.addEventListener('mousemove',move); window.addEventListener('mouseup',release);
 cv.addEventListener('touchstart',press,{passive:false}); window.addEventListener('touchmove',move,{passive:false});
 window.addEventListener('touchend',endTouch); window.addEventListener('touchcancel',endTouch);
@@ -882,10 +893,11 @@ function reset(stage){
   // PUs: reset only on Stage 1. On stage >=2, clip carried PUs to puCarryByStage[stage].
   // puPicksThisStage / puPicks / puProgress always reset (cost accumulator scoped to the stage).
   if(stage===1){
-    G.pu={suck:0,tank:0,power:0,hull:0,shield:0};
+    G.pu={suck:0,tank:0,power:0,hull:0,shield:0,drone:0};
   } else {
     const cap = BALANCE.puCarryByStage[stage];
-    if(cap){ for(const k in G.pu) G.pu[k] = Math.min(G.pu[k], cap[k]); }
+    // keys absent from the cap (e.g. drone) carry over fully
+    if(cap){ for(const k in G.pu){ if(cap[k]!=null) G.pu[k] = Math.min(G.pu[k], cap[k]); } }
   }
   G.puPicks=0; G.puProgress=0; G.puPicksThisStage=0;
   G.puFlash=0; G.puName=''; G.puCards=null;
@@ -895,6 +907,8 @@ function reset(stage){
   G.cargoMax = BALANCE.pu.capacity(G.pu.tank);
   G.shields = [];
   for(let i=0;i<G.pu.shield;i++) G.shields.push({ angle: (i/Math.max(1,G.pu.shield))*Math.PI*2 });
+  G.cleanDrones = [];
+  for(let i=0;i<(G.pu.drone||0);i++) G.cleanDrones.push({ angle: (i/Math.max(1,G.pu.drone))*Math.PI*2, x:G.px, y:G.py });
   // junk count from stage config
   for(let i=0;i<cfg.junk;i++){
     const k=JUNK_KEYS[Math.floor(Math.random()*JUNK_KEYS.length)];
@@ -1401,6 +1415,10 @@ function choosePick(idx){
   if(def.k==='shield'){
     G.shields.push({angle: Math.random()*Math.PI*2});
   }
+  // CLEANER: spawn a new auto-vacuum drone
+  if(def.k==='drone'){
+    G.cleanDrones.push({angle: Math.random()*Math.PI*2, x:G.px, y:G.py});
+  }
   SFX.dock();
   G.puPicks--;
   G.puCards=null;
@@ -1431,17 +1449,20 @@ function choosePostBoss(idx){
   }
 }
 
-/* ---------- fire a compressed shot at the boss ---------- */
-function fire(){
+/* ---------- fire a compressed shot at the nearest enemy ----------
+   charged=true fires a big piercing blast for 3 ammo (held FIRE → release). */
+function fire(charged){
   if(G.state!=='play' || G.fireCd>0) return;
-  if(G.ammo < 1){ blip(160,.08,'square',.05); return; }
+  if(charged && G.ammo < 3) charged=false;        // not enough juice for a blast — fire a normal shot
+  const cost = charged ? 3 : 1;
+  if(G.ammo < cost){ blip(160,.08,'square',.05); return; }
   // can't fire from inside the safe zone — base is a sanctuary, not a turret
   if(Math.hypot(G.px-STATION.x, G.py-STATION.y) < SAFE_R){
     blip(140,.06,'square',.04);
     G.fireCd = BALANCE.shot.cdInSafeZone;
     return;
   }
-  G.ammo--;
+  G.ammo -= cost;
   // aim at the NEAREST enemy — mobs and the awake boss compete on distance,
   // so a close zako is hit even while a boss looms far away. Falls back to
   // straight up when nothing's around.
@@ -1456,15 +1477,35 @@ function fire(){
   const sp = BALANCE.shot.speed + G.pu.power * BALANCE.shot.speedPerPowerLv;
   const vx=dx/d*sp, vy=dy/d*sp;
   // PWR-scaled shot: bigger radius, optional piercing (Lv3+ = 1, Lv5 = 2).
-  // Stored on the shot so collision logic can read it.
+  // A charged blast is much larger, hits hard, and pierces through a crowd.
   const pLv = G.pu.power;
-  const shotR = BALANCE.shot.r + Math.floor(pLv/2);                  // 5 → 7 at Lv5
-  const pierce = pLv >= 5 ? 2 : pLv >= 3 ? 1 : 0;
-  G.shots.push({ x:G.px, y:G.py, vx, vy, r:shotR, dmg:shotPower(),
-                 hits:0, pierce, life:BALANCE.shot.life, trail:[], pLv });
-  G.fireCd = BALANCE.shot.fireCd;
-  SFX.fire(1.4 + pLv*0.08);
-  burst(G.px,G.py,'c',6,1.5);
+  const baseR = BALANCE.shot.r + Math.floor(pLv/2);                  // 5 → 7 at Lv5
+  const shotR = charged ? baseR*2 : baseR;
+  const pierce = charged ? 6 : (pLv >= 5 ? 2 : pLv >= 3 ? 1 : 0);
+  const dmg = charged ? shotPower()*3 : shotPower();
+  G.shots.push({ x:G.px, y:G.py, vx, vy, r:shotR, dmg,
+                 hits:0, pierce, life:BALANCE.shot.life, trail:[], pLv, charged:!!charged });
+  G.fireCd = charged ? BALANCE.shot.fireCd*2 : BALANCE.shot.fireCd;
+  SFX.fire(charged ? 2.4 : 1.4 + pLv*0.08);
+  burst(G.px,G.py,'c', charged?14:6, charged?2.4:1.5);
+}
+// resolve a FIRE-button release: a long enough hold fires a charged blast, else a tap shot.
+function releaseFire(){
+  if(!G.charging) return;
+  const held=G.chargeT;
+  G.charging=false; G.chargeT=0; fireId=null; fireMouse=false;
+  fire(held >= CHARGE_FULL);
+}
+
+// swallow one piece of junk into the tank — shared by the roomba's own suction
+// and by the auto-cleaner drones, so both feel/sound identical (pop + gulp).
+function collectJunk(j){
+  const def=JUNK[j.key], CAP=cargoCap();
+  G.cargo=Math.min(CAP,G.cargo+def.weight);
+  G.collected++; G.collectedMass+=def.weight;
+  SFX.collect(Math.min(1,G.cargo/CAP));
+  G.puff=1;
+  burst(j.x,j.y,'c',5,1.2); j.dead=true;
 }
 
 /* ============================================================
@@ -1484,6 +1525,13 @@ function update(){
   if(G.state!=='play') return;
   // hold the world frozen while the stage-intro banner is up — player taps to dismiss
   if(G.showStageBanner) return;
+
+  // FIRE-button charge build-up — rising whine, "ready" chime when full
+  if(G.charging){
+    G.chargeT++;
+    if(G.chargeT<=CHARGE_FULL && (G.chargeT%5)===0) SFX.charge(Math.floor(G.chargeT/5));
+    if(G.chargeT===CHARGE_FULL) SFX.purify();
+  }
 
   // Heavier when cargo full, faster with speed PU.
   const heavy = (1 - (G.cargo/cargoCap())*0.4) * moveScale();
@@ -1561,14 +1609,7 @@ function update(){
         if(d<RNG){
           const pull=(1-d/RNG)*0.95;
           j.vx+=dx/d*pull; j.vy+=dy/d*pull;
-          if(d<9){
-            const def=JUNK[j.key];
-            G.cargo=Math.min(CAP,G.cargo+def.weight);
-            G.collected++; G.collectedMass+=def.weight;
-            SFX.collect(Math.min(1,G.cargo/CAP));
-            G.puff=1;   // pop! the roomba bulges as it gulps the piece down
-            burst(j.x,j.y,'c',5,1.2); j.dead=true;
-          }
+          if(d<9){ collectJunk(j); }   // pop + gulp (see collectJunk)
         }
       }
     };
@@ -1921,6 +1962,27 @@ function update(){
     tryBlock(G.ebullets);
     tryBlock(G.missiles);
     tryBlock(G.flameOrbs);   // GOMILLA 炎弾もシールドで弾き落とせる
+  }
+
+  // ---- cleaner drones: orbit the ship and auto-vacuum nearby junk (hands-free) ----
+  if(G.cleanDrones && G.cleanDrones.length){
+    const CAP=cargoCap(), tankFull=G.cargo>=CAP;
+    for(const dr of G.cleanDrones){
+      dr.angle -= 0.045;                       // orbit opposite the shields, a touch slower
+      if(dr.angle < 0) dr.angle += Math.PI*2;
+      dr.x = G.px + Math.cos(dr.angle)*DRONE_R;
+      dr.y = G.py + Math.sin(dr.angle)*DRONE_R;
+      if(tankFull) continue;                   // full tank → drones idle too (must unload)
+      for(const j of G.junk){
+        if(j.dead) continue;
+        const jx=dr.x-j.x, jy=dr.y-j.y, jd=Math.hypot(jx,jy)||1;
+        if(jd < DRONE_RANGE){
+          const pull=(1-jd/DRONE_RANGE)*0.7;
+          j.vx+=jx/jd*pull; j.vy+=jy/jd*pull;
+          if(jd<8){ collectJunk(j); if(G.cargo>=CAP) break; }
+        }
+      }
+    }
   }
 
   // ---- drifting nebula clouds (slow ambient motion) ----
@@ -2397,7 +2459,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.5.2', rightAlign('v1.5.2', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.6.0', rightAlign('v1.6.0', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -2875,11 +2937,18 @@ function render(){
       ctx.beginPath(); ctx.arc(x, y, ringR, 0, 6.283); ctx.stroke();
       ctx.restore();
     }
-    ctx.save(); ctx.shadowColor=UI.amberHi; ctx.shadowBlur = 14 + pLv*2;
+    // charged blast: pulsing outer halo so it reads as a heavy round
+    if(sh.charged){
+      ctx.save(); ctx.globalAlpha=0.30+0.15*Math.sin(G.t*0.5);
+      ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.shadowColor=UI.amberHi; ctx.shadowBlur=14;
+      ctx.beginPath(); ctx.arc(x,y, sh.r+3, 0, 6.283); ctx.stroke(); ctx.restore();
+    }
+    ctx.save(); ctx.shadowColor=UI.amberHi; ctx.shadowBlur = (sh.charged?22:14) + pLv*2;
     drawDisc(x,y, sh.r+1, UI.amberHi);
     drawDisc(x,y, sh.r-1, UI.amber);
+    if(sh.charged) drawDisc(x,y, Math.max(1,sh.r-2), '#ffffff');   // white-hot core
     ctx.restore();
-    drawDisc(x,y, Math.max(1,sh.r-3), '#7a4a08');
+    drawDisc(x,y, Math.max(1,sh.r-3), sh.charged?'#caa400':'#7a4a08');
   }
 
   // particles — per-kind rendering
@@ -2917,6 +2986,30 @@ function render(){
     else blit(shipMk(), sx(G.px), sy(G.py));
   }
   if(G.sucking && !tankIsFull && G.state==='play'){ const x=sx(G.px),y=sy(G.py); px(x-1,y-1,2,2,(G.t>>1&1)?UI.amberHi:UI.amber); }
+  // charge-shot ring — tightens inward as FIRE is held, flashes bright when full
+  if(G.charging && G.chargeT>0 && G.state==='play'){
+    const cx=sx(G.px), cy=sy(G.py), f=Math.min(1,G.chargeT/CHARGE_FULL), full=G.chargeT>=CHARGE_FULL;
+    ctx.save();
+    ctx.globalAlpha = full ? (0.55+0.45*Math.sin(G.t*0.6)) : (0.35+0.35*f);
+    ctx.strokeStyle = full ? UI.amberHi : UI.amber;
+    ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = full?10:Math.round(5*f);
+    ctx.lineWidth = full?2:1;
+    ctx.beginPath(); ctx.arc(cx, cy, 17-f*9, 0, 6.283); ctx.stroke();
+    ctx.restore();
+  }
+  // cleaner drones — orbit the player, lime dots with a faint intake ring
+  if(G.cleanDrones){
+    for(const dr of G.cleanDrones){
+      const x=sx(dr.x)|0, y=sy(dr.y)|0;
+      if(G.cargo < cargoCap()){
+        ctx.save(); ctx.globalAlpha=0.18; ctx.strokeStyle='#a3e635';
+        ctx.beginPath(); ctx.arc(x,y,DRONE_RANGE,0,6.283); ctx.stroke(); ctx.restore();
+      }
+      ctx.save(); ctx.shadowColor='#a3e635'; ctx.shadowBlur=5;
+      drawDisc(x,y,2,'#caff70'); ctx.restore();
+      px(x,y,1,1,'#f4ffd0');
+    }
+  }
   // shield drones — orbit the player, cyan dots with glow
   if(G.shields){
     for(const s of G.shields){
@@ -3143,7 +3236,7 @@ function render(){
 
   // power-up status panel (bottom-left). 5 stat rows + TUNE label + LOAD bar.
   // tighter 7px stride so we still fit above the FIRE button.
-  const puY = LH-58;
+  const puY = LH-65;
   text('TUNE', 4, puY, UI.amberDim, 1);
   const puList = [
     ['SUC', G.pu.suck,   5, UI.amber],
@@ -3151,6 +3244,7 @@ function render(){
     ['PWR', G.pu.power,  5, UI.red],
     ['HUL', G.pu.hull,   2, '#fb7185'],
     ['SHD', G.pu.shield, 3, '#5eead4'],
+    ['DRN', G.pu.drone,  2, '#a3e635'],
   ];
   for(let i=0;i<puList.length;i++){
     const py = puY + 10 + i*7;
