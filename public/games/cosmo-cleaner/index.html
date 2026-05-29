@@ -704,6 +704,7 @@ const G = {
   showStageBanner:false,
   // power-up levels
   pu:{ suck:0, tank:0, power:0, hull:0, shield:0 },
+  puff:0,                       // ship "pop" amount — spikes to 1 on each swallow, decays each frame
   puFlash:0, puName:'',
   puPicks:0, puProgress:0,
   puPicksThisStage:0,           // count of PUs actually picked DURING current stage (not carried)
@@ -868,7 +869,7 @@ function reset(stage){
   G.planets=[]; G.clouds=[];
   G.flashHp=0; G.hitStop=0; G.bossHitFlash=0;
   G.bossIntro=0; G.phase2Banner=0;
-  G.cargo=0; G.cargoMax=BALANCE.player.cargoMax; G.ammo=0; G.sucking=false; G.fireCd=0; G.dockCd=0; G.shake=0;
+  G.cargo=0; G.cargoMax=BALANCE.player.cargoMax; G.ammo=0; G.sucking=false; G.fireCd=0; G.dockCd=0; G.shake=0; G.puff=0;
   G.collected=0; G.unloaded=0; G.hitsOnBoss=0; G.missed=0; G.junkMass=0; G.collectedMass=0;
   G.crateCd = BALANCE.crate.firstCdMin + Math.random()*BALANCE.crate.firstCdSpread;  // first crate spawn timer
   G.cratesSpawned = 0;  // count of crates spawned this stage (cap = BALANCE.crate.maxPerStage)
@@ -1471,6 +1472,7 @@ function fire(){
    ============================================================ */
 function update(){
   G.t++;
+  if(G.puff>0.001) G.puff*=0.80; else G.puff=0;   // pop decays back to rest in a few frames
   if(G.puFlash>0) G.puFlash--;
   if(G.flashHp>0) G.flashHp--;
   if(G.bossHitFlash>0) G.bossHitFlash--;
@@ -1564,6 +1566,7 @@ function update(){
             G.cargo=Math.min(CAP,G.cargo+def.weight);
             G.collected++; G.collectedMass+=def.weight;
             SFX.collect(Math.min(1,G.cargo/CAP));
+            G.puff=1;   // pop! the roomba bulges as it gulps the piece down
             burst(j.x,j.y,'c',5,1.2); j.dead=true;
           }
         }
@@ -2394,7 +2397,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.5.0', rightAlign('v1.5.0', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.5.1', rightAlign('v1.5.1', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -2905,10 +2908,11 @@ function render(){
     }
   }
 
-  // roomba (blink while invulnerable). While vacuuming it puffs up slightly — a
-  // gentle "inhaling" pulse that makes sucking feel tactile (visual only, no hitbox change).
+  // roomba (blink while invulnerable). It "pops" outward each time it gulps a piece
+  // of junk, then settles back — and once the tank is full it stays bulged (visual
+  // only, no hitbox change).
   if(G.state!=='play' || G.invuln<=0 || (G.t>>2&1)){
-    const puff = (G.sucking && !tankIsFull && G.state==='play') ? (1.10 + Math.sin(G.t*0.4)*0.045) : 1;
+    const puff = tankIsFull ? 1.20 : (1 + G.puff*0.22);
     if(puff!==1) blitScaled(shipMk(), sx(G.px), sy(G.py), puff);
     else blit(shipMk(), sx(G.px), sy(G.py));
   }
