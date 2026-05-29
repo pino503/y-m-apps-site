@@ -3298,10 +3298,6 @@ function render(){
     const dcap=droneCap();
     for(const dr of G.cleanDrones){
       const x=sx(dr.x)|0, y=sy(dr.y)|0, full=(dr.cargo||0)>=dcap;
-      if(!full){   // intake ring = the actual grab radius (junk touching it gets collected)
-        ctx.save(); ctx.globalAlpha=0.30+0.12*Math.sin(G.t*0.2); ctx.strokeStyle='#a3e635';
-        ctx.beginPath(); ctx.arc(x,y,DRONE_GRAB,0,6.283); ctx.stroke(); ctx.restore();
-      }
       ctx.save(); ctx.shadowColor='#a3e635'; ctx.shadowBlur=4;
       blit(SPR.cleaner, x, y); ctx.restore();
       if(full) px(x, y-4, 1, 1, '#fbbf24');   // amber "full" pip above when its buffer is maxed
