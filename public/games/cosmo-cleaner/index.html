@@ -225,6 +225,14 @@ const S = {
     "mMMMm",
     ".mmm.",
   ],
+  // SHIELD/guard drone — cyan buddy with a white helmet brow + two eyes (5x5)
+  guard: [
+    ".ccc.",
+    "cwwwc",
+    "cKcKc",
+    "ccccc",
+    ".ccc.",
+  ],
   // junk: scrap metal chunk (7x7)
   scrap: [
     "..GgG..",
@@ -3102,17 +3110,16 @@ function render(){
       if(full) px(x, y-4, 1, 1, '#fbbf24');   // amber "full" pip above when its buffer is maxed
     }
   }
-  // shield drones — orbit the player, cyan dots with glow
+  // shield/guard drones — orbit the player, cyan buddy sprite with glow
   if(G.shields){
     const n=G.shields.length;
     for(let i=0;i<n;i++){
       const ang = G.shieldPhase + (i/n)*Math.PI*2;
       const sxw = G.px + Math.cos(ang)*SHIELD_R;
       const syw = G.py + Math.sin(ang)*SHIELD_R;
-      ctx.save(); ctx.shadowColor='#5eead4'; ctx.shadowBlur=4;
-      drawDisc(sx(sxw)|0, sy(syw)|0, 2, '#a7ffd0');
+      ctx.save(); ctx.shadowColor='#5eead4'; ctx.shadowBlur=5;
+      blit(SPR.guard, sx(sxw)|0, sy(syw)|0);
       ctx.restore();
-      px(sx(sxw)|0, sy(syw)|0, 1, 1, '#ffffff');
     }
   }
 
