@@ -726,6 +726,9 @@ const SHIELD_R = BALANCE.player.shieldR;    // orbit radius around player
 const SHIELD_HIT = BALANCE.player.shieldHit;   // bullet vs shield collision radius
 function suckRange(){ return BALANCE.pu.range(G.pu.suck); }         // 14 -> 84 at Lv5
 function cargoCap(){  return BALANCE.pu.capacity(G.pu.tank); }      // 100 -> 280 at Lv5
+function droneCap(){  return Math.round(cargoCap()*0.5); }          // each cleaner drone holds 50% of the ship tank
+function droneCargoTotal(){ return G.cleanDrones ? G.cleanDrones.reduce((s,d)=>s+(d.cargo||0),0) : 0; }
+function droneCapTotal(){  return (G.cleanDrones?G.cleanDrones.length:0) * droneCap(); }
 function shipMk(){
   const total = G.pu.suck + G.pu.tank + G.pu.power;
   if(total>=11) return SPR.ship4;
@@ -908,7 +911,7 @@ function reset(stage){
   G.shields = [];
   for(let i=0;i<G.pu.shield;i++) G.shields.push({ angle: (i/Math.max(1,G.pu.shield))*Math.PI*2 });
   G.cleanDrones = [];
-  for(let i=0;i<(G.pu.drone||0);i++) G.cleanDrones.push({ angle: (i/Math.max(1,G.pu.drone))*Math.PI*2, x:G.px, y:G.py });
+  for(let i=0;i<(G.pu.drone||0);i++) G.cleanDrones.push({ angle: (i/Math.max(1,G.pu.drone))*Math.PI*2, x:G.px, y:G.py, cargo:0 });
   // junk count from stage config
   for(let i=0;i<cfg.junk;i++){
     const k=JUNK_KEYS[Math.floor(Math.random()*JUNK_KEYS.length)];
@@ -1417,7 +1420,7 @@ function choosePick(idx){
   }
   // CLEANER: spawn a new auto-vacuum drone
   if(def.k==='drone'){
-    G.cleanDrones.push({angle: Math.random()*Math.PI*2, x:G.px, y:G.py});
+    G.cleanDrones.push({angle: Math.random()*Math.PI*2, x:G.px, y:G.py, cargo:0});
   }
   SFX.dock();
   G.puPicks--;
@@ -1505,6 +1508,15 @@ function collectJunk(j){
   G.collected++; G.collectedMass+=def.weight;
   SFX.collect(Math.min(1,G.cargo/CAP));
   G.puff=1;
+  burst(j.x,j.y,'c',5,1.2); j.dead=true;
+}
+// a cleaner drone swallows a piece into its OWN buffer (50% of ship tank).
+// The ship doesn't pop here — the drone ate it, not the roomba.
+function swallowToDrone(dr, j){
+  const def=JUNK[j.key], dcap=droneCap();
+  dr.cargo=Math.min(dcap, (dr.cargo||0)+def.weight);
+  G.collected++; G.collectedMass+=def.weight;
+  SFX.collect(Math.min(1, dr.cargo/dcap));
   burst(j.x,j.y,'c',5,1.2); j.dead=true;
 }
 
@@ -1964,22 +1976,29 @@ function update(){
     tryBlock(G.flameOrbs);   // GOMILLA 炎弾もシールドで弾き落とせる
   }
 
-  // ---- cleaner drones: orbit the ship and auto-vacuum nearby junk (hands-free) ----
+  // ---- cleaner drones: orbit, auto-vacuum into their own buffer, and ferry it
+  // into the ship tank whenever there's room. Each drone holds 50% of the ship
+  // tank, so total capacity = ship + Σ drones. ----
   if(G.cleanDrones && G.cleanDrones.length){
-    const CAP=cargoCap(), tankFull=G.cargo>=CAP;
+    const CAP=cargoCap(), dcap=droneCap();
     for(const dr of G.cleanDrones){
+      if(dr.cargo==null) dr.cargo=0;
       dr.angle -= 0.045;                       // orbit opposite the shields, a touch slower
       if(dr.angle < 0) dr.angle += Math.PI*2;
       dr.x = G.px + Math.cos(dr.angle)*DRONE_R;
       dr.y = G.py + Math.sin(dr.angle)*DRONE_R;
-      if(tankFull) continue;                   // full tank → drones idle too (must unload)
-      for(const j of G.junk){
-        if(j.dead) continue;
-        const jx=dr.x-j.x, jy=dr.y-j.y, jd=Math.hypot(jx,jy)||1;
-        if(jd < DRONE_RANGE){
-          const pull=(1-jd/DRONE_RANGE)*0.7;
-          j.vx+=jx/jd*pull; j.vy+=jy/jd*pull;
-          if(jd<8){ collectJunk(j); if(G.cargo>=CAP) break; }
+      // ferry buffered junk into the ship tank when the ship has room
+      if(dr.cargo>0 && G.cargo<CAP){ const mv=Math.min(dr.cargo, CAP-G.cargo); G.cargo+=mv; dr.cargo-=mv; }
+      // vacuum nearby junk into this drone's own buffer (only if it has room)
+      if(dr.cargo < dcap){
+        for(const j of G.junk){
+          if(j.dead) continue;
+          const jx=dr.x-j.x, jy=dr.y-j.y, jd=Math.hypot(jx,jy)||1;
+          if(jd < DRONE_RANGE){
+            const pull=(1-jd/DRONE_RANGE)*0.7;
+            j.vx+=jx/jd*pull; j.vy+=jy/jd*pull;
+            if(jd<8){ swallowToDrone(dr,j); if(dr.cargo>=dcap) break; }
+          }
         }
       }
     }
@@ -2999,14 +3018,15 @@ function render(){
   }
   // cleaner drones — orbit the player, lime dots with a faint intake ring
   if(G.cleanDrones){
+    const dcap=droneCap();
     for(const dr of G.cleanDrones){
       const x=sx(dr.x)|0, y=sy(dr.y)|0;
-      if(G.cargo < cargoCap()){
+      if((dr.cargo||0) < dcap){   // intake ring shown while this drone still has room
         ctx.save(); ctx.globalAlpha=0.18; ctx.strokeStyle='#a3e635';
         ctx.beginPath(); ctx.arc(x,y,DRONE_RANGE,0,6.283); ctx.stroke(); ctx.restore();
       }
       ctx.save(); ctx.shadowColor='#a3e635'; ctx.shadowBlur=5;
-      drawDisc(x,y,2,'#caff70'); ctx.restore();
+      drawDisc(x,y,2, (dr.cargo||0)>=dcap ? '#fbbf24' : '#caff70'); ctx.restore();   // amber when its buffer is full
       px(x,y,1,1,'#f4ffd0');
     }
   }
@@ -3213,8 +3233,11 @@ function render(){
   // AREA right-aligned
   text(areaStr, rightAlign(areaStr, LW-4, 1), HUD_Y, UI.amberDim, 1);
 
-  // CARGO gauge — vertical telemetry bar with bracket frame
+  // CARGO gauge — vertical telemetry bar with bracket frame.
+  // Bar is scaled to TOTAL capacity (ship + cleaner drones); the ship's own fill
+  // sits at the bottom, the drones' buffered overflow stacks above it in lime.
   const gx=6, gy=22, gw=8, gh=LH-114, CAP=cargoCap();
+  const dTot=droneCargoTotal(), dCapTot=droneCapTotal(), totCap=CAP+dCapTot, totCargo=G.cargo+dTot;
   // frame brackets (not full rectangle)
   px(gx-2,gy-2,3,1,UI.amber); px(gx-2,gy-2,1,3,UI.amber);
   px(gx+gw-1,gy-2,3,1,UI.amber); px(gx+gw+1,gy-2,1,3,UI.amber);
@@ -3222,17 +3245,26 @@ function render(){
   px(gx+gw-1,gy+gh,3,1,UI.amber); px(gx+gw+1,gy+gh-2,1,3,UI.amber);
   // bg
   px(gx,gy,gw,gh,UI.bg1);
-  // fill
-  const fillH=Math.round(gh*G.cargo/CAP);
-  const full=G.cargo>=CAP-1;
-  const cargoCol = full?UI.red : G.cargo/CAP>0.7?UI.amber : UI.green;
-  ctx.save(); ctx.shadowColor=cargoCol; ctx.shadowBlur=full?8:4;
-  px(gx, gy+gh-fillH, gw, fillH, cargoCol); ctx.restore();
+  // ship fill (bottom)
+  const shipFull=G.cargo>=CAP-1;
+  const shipH=Math.round(gh*G.cargo/totCap);
+  const cargoCol = shipFull?UI.red : G.cargo/CAP>0.7?UI.amber : UI.green;
+  ctx.save(); ctx.shadowColor=cargoCol; ctx.shadowBlur=shipFull?8:4;
+  px(gx, gy+gh-shipH, gw, shipH, cargoCol); ctx.restore();
+  // drone buffer (lime) stacked above the ship fill
+  if(dTot>0){
+    const droneH=Math.max(1,Math.round(gh*dTot/totCap));
+    ctx.save(); ctx.shadowColor='#a3e635'; ctx.shadowBlur=4;
+    px(gx, gy+gh-shipH-droneH, gw, droneH, '#a3e635'); ctx.restore();
+  }
+  // divider tick at the ship-tank boundary so the two tanks read distinctly
+  if(dCapTot>0){ px(gx-1, gy+gh-Math.round(gh*CAP/totCap), gw+2, 1, UI.amberHi); }
   // tick marks
   for(let k=1;k<5;k++){ px(gx-1,gy+Math.round(gh*k/5),gw+2,1,UI.bg0); }
-  // label
+  // label — total % across ship + drones
+  const totFull=totCargo>=totCap-1;
   text('CARGO', gx-3, gy+gh+4, UI.amberDim, 1);
-  text(String(Math.floor(100*G.cargo/CAP)).padStart(3,'0'), gx-2, gy+gh+13, full?UI.red:UI.amberDim, 1);
+  text(String(Math.floor(100*totCargo/totCap)).padStart(3,'0'), gx-2, gy+gh+13, totFull?UI.red:UI.amberDim, 1);
 
   // power-up status panel (bottom-left). 5 stat rows + TUNE label + LOAD bar.
   // tighter 7px stride so we still fit above the FIRE button.
