@@ -762,7 +762,7 @@ for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+
 /* ---------- derived stats from power-ups (all capped at Lv5) ---------- */
 const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones; CLEANER up to 2
 const DRONE_R = 30;          // cleaner-drone home orbit radius (idle position)
-const DRONE_RANGE = 24;      // cosmetic intake-ring radius drawn around each drone
+const DRONE_GRAB = 12;       // junk within this distance of a drone gets collected — and this is the ring we draw
 const DRONE_SEEK = 50;       // a drone only tidies junk within this modest radius of the player (an assist, not a sweep)
 const DRONE_SPD  = 2.4;      // how fast a drone ambles toward target junk (slower than the ship)
 const SHIELD_R = BALANCE.player.shieldR;    // orbit radius around player
@@ -2236,7 +2236,7 @@ function update(){
         const step=Math.min(DRONE_SPD, td);
         dr.x += tx/td*step; dr.y += ty/td*step;
         if((G.t&3)===0) sparks(dr.x, dr.y, '#a3e635', 1, 1.0);   // faint intake wisp = visibly working
-        if(Math.hypot(tgt.x-dr.x, tgt.y-dr.y) < 12) swallowToDrone(dr, tgt);   // contact (post-move)
+        if(Math.hypot(tgt.x-dr.x, tgt.y-dr.y) < DRONE_GRAB) swallowToDrone(dr, tgt);   // contact (post-move)
       } else {
         // nothing nearby (or full) → glide back to the orbit slot
         dr.x += (hx-dr.x)*0.2; dr.y += (hy-dr.y)*0.2;
@@ -3298,9 +3298,9 @@ function render(){
     const dcap=droneCap();
     for(const dr of G.cleanDrones){
       const x=sx(dr.x)|0, y=sy(dr.y)|0, full=(dr.cargo||0)>=dcap;
-      if(!full){   // intake ring shown while this drone still has room
-        ctx.save(); ctx.globalAlpha=0.18; ctx.strokeStyle='#a3e635';
-        ctx.beginPath(); ctx.arc(x,y,DRONE_RANGE,0,6.283); ctx.stroke(); ctx.restore();
+      if(!full){   // intake ring = the actual grab radius (junk touching it gets collected)
+        ctx.save(); ctx.globalAlpha=0.30+0.12*Math.sin(G.t*0.2); ctx.strokeStyle='#a3e635';
+        ctx.beginPath(); ctx.arc(x,y,DRONE_GRAB,0,6.283); ctx.stroke(); ctx.restore();
       }
       ctx.save(); ctx.shadowColor='#a3e635'; ctx.shadowBlur=4;
       blit(SPR.cleaner, x, y); ctx.restore();
