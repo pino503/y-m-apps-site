@@ -3,7 +3,7 @@ title: COSMO CLEANER
 tagline: 宇宙ゴミを集めて、基地で強化。圧縮弾を作って敵とボスに挑む、CRT風の宇宙清掃シューティングゲーム。
 world: cosmo-cleaner
 platform: Webゲーム
-badges: ["Web", "HTML5", "Pixel Art", "v1.8.0"]
+badges: ["Web", "HTML5", "Pixel Art", "v1.9.0"]
 storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
 order: 5
@@ -23,6 +23,8 @@ features:
     body: ジャンク・コア／アイアン・ハスク／ゴミラ／ヴォイド・リヴァイアサン／プロジェニター。固有の攻撃に加え、HP 50% で Phase 2（ENRAGED）、25% で Phase 3（OVERDRIVE）へと激化します。
   - title: NEW GAME+ (HARD MODE)
     body: 全5ステージを制覇すると、難度を上げた2周目「ハードモード」へ突入。ボスは色違い＆パワーアップ（真・◯◯ ／ ◯◯ Ω）、HP も攻撃も激化します。全10ステージを完全クリアすると、★ 完全制覇 ★ の演出が待っています。
+  - title: ??? — 隠しステージ
+    body: 全10ステージを CLEAN 100%（すべてのゴミを回収）で完全制覇した者だけがたどり着く、真の最終決戦「THE MIRROR」。そこで待つのは…？　倒せば TRUE END。
   - title: SUB-1.44MB MINI JAM
     body: 単一HTMLファイルで動く、1.44MB未満のミニゲーム。インストール不要、ブラウザからすぐ遊べる。
 controls:
