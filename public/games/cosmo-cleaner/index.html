@@ -714,6 +714,7 @@ const G = {
   pu:{ suck:0, tank:0, power:0, hull:0, shield:0, drone:0 },
   cleanDrones:[],               // auto-vacuum drones (CLEANER.DRN PU)
   dronePhase:0,                 // shared orbit phase; drones sit at even offsets so they never overlap
+  shieldPhase:0,                // same idea for shield drones
   charging:false, chargeT:0,    // FIRE-button hold state for charged shots
   puff:0,                       // ship "pop" amount — spikes to 1 on each swallow, decays each frame
   puFlash:0, puName:'',
@@ -1956,19 +1957,17 @@ function update(){
 
   // ---- shields: orbit + intercept any enemy projectile that touches them ----
   if(G.shields && G.shields.length){
-    // orbit
-    for(const s of G.shields){
-      s.angle += 0.06;
-      if(s.angle > Math.PI*2) s.angle -= Math.PI*2;
-    }
+    // shared orbit phase + even index offsets → shields stay equally spaced (never overlap)
+    G.shieldPhase += 0.06; if(G.shieldPhase > Math.PI*2) G.shieldPhase -= Math.PI*2;
     // intercept ebullets (boss spit AND gunner red) and missiles
     const tryBlock = (arr) => {
       for(const e of arr){
         if(e.dead) continue;
-        for(let i=G.shields.length-1; i>=0; i--){
-          const s = G.shields[i];
-          const sxw = G.px + Math.cos(s.angle)*SHIELD_R;
-          const syw = G.py + Math.sin(s.angle)*SHIELD_R;
+        const n=G.shields.length;
+        for(let i=n-1; i>=0; i--){
+          const ang = G.shieldPhase + (i/n)*Math.PI*2;
+          const sxw = G.px + Math.cos(ang)*SHIELD_R;
+          const syw = G.py + Math.sin(ang)*SHIELD_R;
           if(Math.abs(e.x-sxw)<SHIELD_HIT && Math.abs(e.y-syw)<SHIELD_HIT){
             e.dead = true;
             G.shields.splice(i,1);
@@ -2048,8 +2047,9 @@ function update(){
 function hurt(){
   // Shield consumes the hit instead of HP (no damage at all to the player)
   if(G.shields && G.shields.length > 0){
-    const s = G.shields.pop();
-    const sxw = G.px + Math.cos(s.angle)*SHIELD_R, syw = G.py + Math.sin(s.angle)*SHIELD_R;
+    const n=G.shields.length, i=n-1, ang=G.shieldPhase + (i/n)*Math.PI*2;
+    G.shields.pop();
+    const sxw = G.px + Math.cos(ang)*SHIELD_R, syw = G.py + Math.sin(ang)*SHIELD_R;
     burst(sxw, syw, 'c', 12, 1.6);
     shockwave(sxw, syw, '#5eead4', 22, 14);
     sparks(sxw, syw, '#a7ffd0', 8, 2.0);
@@ -3044,9 +3044,11 @@ function render(){
   }
   // shield drones — orbit the player, cyan dots with glow
   if(G.shields){
-    for(const s of G.shields){
-      const sxw = G.px + Math.cos(s.angle)*SHIELD_R;
-      const syw = G.py + Math.sin(s.angle)*SHIELD_R;
+    const n=G.shields.length;
+    for(let i=0;i<n;i++){
+      const ang = G.shieldPhase + (i/n)*Math.PI*2;
+      const sxw = G.px + Math.cos(ang)*SHIELD_R;
+      const syw = G.py + Math.sin(ang)*SHIELD_R;
       ctx.save(); ctx.shadowColor='#5eead4'; ctx.shadowBlur=4;
       drawDisc(sx(sxw)|0, sy(syw)|0, 2, '#a7ffd0');
       ctx.restore();
