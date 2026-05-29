@@ -807,7 +807,7 @@ const PU_DEFS = [
 
 /* ---------- input ---------- */
 let pointer=null, anchor=null, moveId=null, keys={};
-let pointerIsTouch=false;   // true while the active pointer came from touch (enables ぷにコン virtual-stick movement)
+let pointerIsTouch=false;   // true while the active pointer came from touch (enables floating virtual-stick movement)
 let fireId=null, fireMouse=false;   // tracks the touch/mouse holding the FIRE button (for charge shots)
 const FIRE_BTN={ x:LW-22, y:LH-24, r:18 };
 const CHARGE_FULL=30;       // frames to hold FIRE for a full charged blast (~0.5s). Released sooner = normal tap shot.
@@ -1619,7 +1619,7 @@ function update(){
   const heavy = (1 - (G.cargo/cargoCap())*0.4) * moveScale();
   if(pointer && anchor){
     if(pointerIsTouch){
-      // ぷにコン (floating virtual stick): velocity from how far the finger is
+      // floating virtual stick: velocity from how far the finger is
       // tilted off the touch-origin. Direction = where you push, speed scales
       // with tilt distance (dead zone near centre, capped at STICK_MAX).
       const DEAD=5, STICK_MAX=34, MAXSPD=3.36;   // MAXSPD matches keyboard feel
@@ -3504,7 +3504,7 @@ function render(){
     }
   }
 
-  // ぷにコン virtual stick — base ring at the touch origin + knob at the tilt.
+  // floating virtual stick — base ring at the touch origin + knob at the tilt.
   // anchor/pointer are already in screen space, so draw directly (no sx/sy).
   if(pointerIsTouch && pointer && anchor && G.state==='play' && !G.showStageBanner){
     const STICK_MAX=34;
