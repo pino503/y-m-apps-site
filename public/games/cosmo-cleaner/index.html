@@ -761,8 +761,10 @@ for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+
 /* ---------- derived stats from power-ups ---------- */
 /* ---------- derived stats from power-ups (all capped at Lv5) ---------- */
 const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones; CLEANER up to 2
-const DRONE_R = 30;          // cleaner-drone orbit radius (outside the shield ring)
-const DRONE_RANGE = 26;      // how far a cleaner drone reaches out to pull junk
+const DRONE_R = 30;          // cleaner-drone home orbit radius (idle position)
+const DRONE_RANGE = 24;      // cosmetic intake-ring radius drawn around each drone
+const DRONE_SEEK = 96;       // a drone actively flies to any junk within this radius of the player
+const DRONE_SPD  = 3.6;      // how fast a drone darts toward target junk (a touch faster than the ship)
 const SHIELD_R = BALANCE.player.shieldR;    // orbit radius around player
 const SHIELD_HIT = BALANCE.player.shieldHit;   // bullet vs shield collision radius
 function suckRange(){ return BALANCE.pu.range(G.pu.suck); }         // 14 -> 84 at Lv5
@@ -1739,7 +1741,7 @@ function swallowToDrone(dr, j){
   dr.cargo=Math.min(dcap, (dr.cargo||0)+def.weight);
   G.collected++; G.collectedMass+=def.weight;
   SFX.collect(Math.min(1, dr.cargo/dcap));
-  burst(j.x,j.y,'c',5,1.2); j.dead=true;
+  burst(j.x,j.y,'c',5,1.2); sparks(j.x,j.y,'#a3e635',5,1.6); j.dead=true;   // lime = the cleaner drone ate it
 }
 
 /* ============================================================
@@ -2206,28 +2208,38 @@ function update(){
   // tank, so total capacity = ship + Σ drones. ----
   if(G.cleanDrones && G.cleanDrones.length){
     const CAP=cargoCap(), dcap=droneCap(), n=G.cleanDrones.length;
-    // one shared orbit phase + an even index offset per drone, so any number of
-    // drones always stay equally spaced (never bunch up / overlap).
+    // shared orbit phase + an even index offset per drone → drones rest equally spaced.
     G.dronePhase -= 0.045; if(G.dronePhase < 0) G.dronePhase += Math.PI*2;
     for(let di=0; di<n; di++){
       const dr=G.cleanDrones[di];
       if(dr.cargo==null) dr.cargo=0;
+      if(dr.x==null){ dr.x=G.px; dr.y=G.py; }
+      // home slot it returns to when there's nothing to clean
       const ang = G.dronePhase + (di/n)*Math.PI*2;
-      dr.x = G.px + Math.cos(ang)*DRONE_R;
-      dr.y = G.py + Math.sin(ang)*DRONE_R;
-      // ferry buffered junk into the ship tank when the ship has room
+      const hx = G.px + Math.cos(ang)*DRONE_R, hy = G.py + Math.sin(ang)*DRONE_R;
+      // ferry buffered junk into the ship tank whenever the ship has room
       if(dr.cargo>0 && G.cargo<CAP){ const mv=Math.min(dr.cargo, CAP-G.cargo); G.cargo+=mv; dr.cargo-=mv; }
-      // vacuum nearby junk into this drone's own buffer (only if it has room)
+      // ACTIVE CLEANUP: if it has buffer room, hunt the nearest junk near the player
+      let tgt=null, best=1e9;
       if(dr.cargo < dcap){
         for(const j of G.junk){
           if(j.dead) continue;
-          const jx=dr.x-j.x, jy=dr.y-j.y, jd=Math.hypot(jx,jy)||1;
-          if(jd < DRONE_RANGE){
-            const pull=(1-jd/DRONE_RANGE)*0.7;
-            j.vx+=jx/jd*pull; j.vy+=jy/jd*pull;
-            if(jd<8){ swallowToDrone(dr,j); if(dr.cargo>=dcap) break; }
-          }
+          if(Math.hypot(j.x-G.px, j.y-G.py) > DRONE_SEEK) continue;   // only tidy the player's vicinity
+          const dd=Math.hypot(j.x-dr.x, j.y-dr.y);
+          if(dd<best){ best=dd; tgt=j; }
         }
+      }
+      if(tgt){
+        // dart toward it, tug it in, and swallow on contact
+        const tx=tgt.x-dr.x, ty=tgt.y-dr.y, td=Math.hypot(tx,ty)||1;
+        const step=Math.min(DRONE_SPD, td);
+        dr.x += tx/td*step; dr.y += ty/td*step;
+        tgt.vx += (dr.x-tgt.x)*0.05; tgt.vy += (dr.y-tgt.y)*0.05;
+        if((G.t&3)===0) sparks(dr.x, dr.y, '#a3e635', 1, 1.0);   // faint intake wisp = visibly working
+        if(td < 11) swallowToDrone(dr, tgt);
+      } else {
+        // nothing nearby (or full) → glide back to the orbit slot
+        dr.x += (hx-dr.x)*0.2; dr.y += (hy-dr.y)*0.2;
       }
     }
   }
