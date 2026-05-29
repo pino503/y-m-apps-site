@@ -528,6 +528,8 @@ function bake(grid){
 }
 const SPR={}; for(const k in S) SPR[k]=bake(S[k]);
 function blit(spr,cx,cy){ ctx.drawImage(spr, Math.round(cx-spr.cw/2), Math.round(cy-spr.ch/2)); }
+// scaled blit around centre (pixelated — imageSmoothing stays off). Visual only.
+function blitScaled(spr,cx,cy,s){ const w=Math.round(spr.cw*s), h=Math.round(spr.ch*s); ctx.drawImage(spr, Math.round(cx-w/2), Math.round(cy-h/2), w, h); }
 
 /* ---------- audio (synth) ---------- */
 let AC=null;
@@ -552,7 +554,10 @@ function noise(dur,vol,cutSweep){
   src.connect(lp).connect(g).connect(AC.destination); src.start(t);
 }
 const SFX={
-  suck(){ /* short rising tick — called repeatedly while sucking */ blip(180+Math.random()*60,.04,'sawtooth',.03,420); },
+  // continuous vacuum hum — throttled at the call site. Pitch rises as the tank fills.
+  slurp(fill){ blip(110+fill*70,.05,'sawtooth',.022,210+fill*170); },
+  // satisfying "gulp" the instant a piece of junk is swallowed; brighter as the tank fills.
+  collect(fill){ blip(460+fill*340,.05,'square',.055,720+fill*340); },
   charge(lvl){ blip(300+lvl*120,.05,'square',.05); },
   fire(pow){ noise(.18,.28,true); blip(520,.14,'square',.1,160*pow); },
   purify(){ blip(700,.08,'square',.1,1050); blip(1050,.12,'square',.08,1570); }, // pleasant chime
@@ -1544,7 +1549,7 @@ function update(){
   const nozX=G.px, nozY=G.py, RNG=suckRange(), CAP=cargoCap();
   const tankFull = G.cargo>=CAP;
   if(G.sucking && !tankFull){
-    SFX.suck();
+    if((G.t&3)===0) SFX.slurp(Math.min(1,G.cargo/CAP));   // throttle the hum to ~15/s
     const suck = (arr)=>{
       for(const j of arr){
         // skip dead items, and skip gunner bullets (fromMob): they're pure
@@ -1558,7 +1563,7 @@ function update(){
             const def=JUNK[j.key];
             G.cargo=Math.min(CAP,G.cargo+def.weight);
             G.collected++; G.collectedMass+=def.weight;
-            SFX.charge(Math.floor(G.cargo/20));
+            SFX.collect(Math.min(1,G.cargo/CAP));
             burst(j.x,j.y,'c',5,1.2); j.dead=true;
           }
         }
@@ -2389,7 +2394,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.4.2', rightAlign('v1.4.2', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.5.0', rightAlign('v1.5.0', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -2900,8 +2905,13 @@ function render(){
     }
   }
 
-  // roomba (blink while invulnerable)
-  if(G.state!=='play' || G.invuln<=0 || (G.t>>2&1)) blit(shipMk(), sx(G.px), sy(G.py));
+  // roomba (blink while invulnerable). While vacuuming it puffs up slightly — a
+  // gentle "inhaling" pulse that makes sucking feel tactile (visual only, no hitbox change).
+  if(G.state!=='play' || G.invuln<=0 || (G.t>>2&1)){
+    const puff = (G.sucking && !tankIsFull && G.state==='play') ? (1.10 + Math.sin(G.t*0.4)*0.045) : 1;
+    if(puff!==1) blitScaled(shipMk(), sx(G.px), sy(G.py), puff);
+    else blit(shipMk(), sx(G.px), sy(G.py));
+  }
   if(G.sucking && !tankIsFull && G.state==='play'){ const x=sx(G.px),y=sy(G.py); px(x-1,y-1,2,2,(G.t>>1&1)?UI.amberHi:UI.amber); }
   // shield drones — orbit the player, cyan dots with glow
   if(G.shields){
