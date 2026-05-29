@@ -3307,7 +3307,7 @@ function render(){
     ctx.beginPath(); ctx.arc(cx, cy, 17-f*9, 0, 6.283); ctx.stroke();
     ctx.restore();
   }
-  // cleaner drones — orbit the player, lime dots with a faint intake ring
+  // cleaner drones — lime buddies that fly out to nearby junk and grab it on contact
   if(G.cleanDrones){
     const dcap=droneCap();
     for(const dr of G.cleanDrones){
