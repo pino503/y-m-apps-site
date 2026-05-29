@@ -695,14 +695,14 @@ const STAGES = [
 const LOOP_COUNT = 2;
 const TOTAL_STAGES = STAGE_COUNT * LOOP_COUNT;            // 10 total (2 loops of 5)
 function stageCfg(s){ return STAGES[((((s|0)-1) % STAGE_COUNT) + STAGE_COUNT) % STAGE_COUNT]; }
-function loopOf(s){ return Math.max(0, Math.floor(((s|0)-1) / STAGE_COUNT)); }  // 0 = first run, 1 = NG+ (激ムズ)
+function loopOf(s){ return Math.max(0, Math.floor(((s|0)-1) / STAGE_COUNT)); }  // 0 = first run, 1 = NG+ (HARD MODE)
 function loopMul(s){ return loopOf(s) >= 1 ? 1.6 : 1; }  // generic difficulty scalar for the hard loop
 // NG+ bosses feel powered-up: 「真・◯◯」 / 「◯◯ Ω」
 function bossNameFor(cfg, loop){ return (loop>=1 ? cfg.bossName + ' Ω' : cfg.bossName); }
 function bossNameJpFor(cfg, loop){ return (loop>=1 ? '真・' + cfg.bossNameJp : cfg.bossNameJp); }
 const G = {
   state:'title', t:0,
-  loop:0,                            // NG+ loop index (0 = first run, 1 = 激ムズ)
+  loop:0,                            // NG+ loop index (0 = first run, 1 = HARD MODE)
   px:WW/2, py:WH/2+40,               // player in WORLD coords
   camX:0, camY:0,                    // top-left of camera in world coords
   junk:[], shots:[], ebullets:[], missiles:[], flameOrbs:[], mobs:[], parts:[],
@@ -898,7 +898,7 @@ function reset(stage){
   stage = stage || 1;
   const cfg = stageCfg(stage);
   G.stage = stage;
-  G.loop = loopOf(stage);   // 0 = first run, 1 = NG+ (激ムズ)
+  G.loop = loopOf(stage);   // 0 = first run, 1 = NG+ (HARD MODE)
   G.t=0; G.px=WW/2; G.py=WH/2+40; G.camX=0; G.camY=0;
   G.junk=[]; G.shots=[]; G.ebullets=[]; G.missiles=[]; G.flameOrbs=[]; G.mobs=[]; G.parts=[]; G.crates=[]; G.obstacles=[];
   G.planets=[]; G.clouds=[];
@@ -1175,7 +1175,7 @@ function updateBoss(){
     const f=bossSafeR/(bsd||1);
     b.x = STATION.x + bsx*f; b.y = STATION.y + bsy*f;
   }
-  // NG+ (激ムズ) cranks attack tempo + projectile speed
+  // NG+ (HARD MODE) cranks attack tempo + projectile speed
   const hardCd = G.loop>=1 ? 0.72 : 1, hardSp = G.loop>=1 ? 1.28 : 1;
   // spit junk (suckable) — p1 random ring; p2/p3 a rotating SPIRAL with one aimed shot
   b.spitCd--;
@@ -3472,9 +3472,9 @@ function render(){
     // typewriter reveal: each line appears in sequence
     if(grow>=1){
       const tt = G.t - 14;     // frames since banner finished growing
-      // Line 1: STAGE X / Y  — instant (NG+ loop flagged 激ムズ)
+      // Line 1: STAGE X / Y  — instant (NG+ loop flagged HARD MODE)
       const ngp = loopOf(G.stage)>=1;
-      glowCenter('STAGE '+G.stage+' / '+TOTAL_STAGES+(ngp?'  ［激ムズ］':''), by+10, ngp?UI.red:UI.amberDim, 1, 4);
+      glowCenter('STAGE '+G.stage+' / '+TOTAL_STAGES+(ngp?'  ［HARD］':''), by+10, ngp?UI.red:UI.amberDim, 1, 4);
       // Line 2: area name — typewriter
       const name = cfg.name;
       if(tt>=4){
@@ -3628,7 +3628,7 @@ function render(){
     const nextCfg = !isFinal ? stageCfg(nextStage) : null;
     const intoNGplus = !isFinal && loopOf(nextStage) >= 1 && loopOf(G.stage) === 0;  // crossing 5 → 6
     const nextLabel = isFinal ? '> 帰還 / 任務完了'
-                    : intoNGplus ? '> 2周目 — 激ムズ突入'
+                    : intoNGplus ? '> 2周目 — ハードモード突入'
                     : ('> '+(loopOf(nextStage)>=1?'NG+ ':'')+(nextCfg?nextCfg.name:''));
     glowText(isFinal?'[2] RETURN':(intoNGplus?'[2] NG+':'[2] WARP'), r1.x+12, r1.y+10, intoNGplus?UI.red:UI.amber, 1, hot?6:3);
     text(nextLabel, r1.x+12, r1.y+26, UI.amberDim, 1);
