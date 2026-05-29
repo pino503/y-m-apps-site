@@ -723,6 +723,7 @@ const G = {
   allPerfect:true,                   // true while every cleared stage hit CLEAN 100%
   secret:false,                      // currently inside the hidden MIRROR stage?
   trueEnd:false,                     // beat the hidden stage → TRUE END
+  forceLoadout:null,                 // one-shot PU loadout injected by the stage-select cheat
   px:WW/2, py:WH/2+40,               // player in WORLD coords
   camX:0, camY:0,                    // top-left of camera in world coords
   junk:[], shots:[], ebullets:[], missiles:[], flameOrbs:[], mobs:[], parts:[],
@@ -843,9 +844,73 @@ function tryPostBossAt(p){
   return false;
 }
 
+/* ---------- STAGE SELECT (hidden cheat: long-press the version label) ----------
+   Everything here is derived from LW. The canvas width is 200 on portrait phones
+   and grows up to 400 on wide/desktop, so the layout must track LW (and resize)
+   instead of hardcoding pixels — otherwise the right half is off-screen on phones. */
+const VHOLD_FULL = 120;            // ~2.0s at 60fps to trigger (deliberate hold)
+let vHoldActive=false, vHoldT=0, vHoldPX=0, vHoldPY=0, vHoldId=null;
+// long-press hotspot: the right portion of the top status row (around the version label)
+function verHot(){ const x=(LW*0.55)|0; return { x, y:0, w:LW-x, h:34 }; }
+// per-stage "as if you got here legitimately" loadout (clamped to PU_MAX in reset)
+const SELECT_LOADOUT = [
+  null,
+  { suck:0, tank:0, power:0, hull:0, shield:0, drone:0 },  // 1
+  { suck:1, tank:1, power:1, hull:0, shield:0, drone:0 },  // 2
+  { suck:2, tank:2, power:2, hull:1, shield:1, drone:0 },  // 3
+  { suck:3, tank:3, power:3, hull:1, shield:1, drone:1 },  // 4
+  { suck:4, tank:4, power:4, hull:2, shield:2, drone:1 },  // 5
+  { suck:5, tank:5, power:4, hull:2, shield:2, drone:1 },  // 6  (NG+ start)
+  { suck:5, tank:5, power:5, hull:2, shield:2, drone:2 },  // 7
+  { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 },  // 8
+  { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 },  // 9
+  { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 },  // 10
+  { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 },  // 11 THE MIRROR
+];
+function loadoutForStage(n){ return { ...(SELECT_LOADOUT[n] || SELECT_LOADOUT[1]) }; }
+// select-screen layout (all LW-relative): 2-column grid (5 rows) + THE MIRROR + BACK
+function selGeom(){ const mX=8, gapX=6, cols=2, colW=(LW-2*mX-(cols-1)*gapX)/cols; return { mX, gapX, cols, colW, y0:46, rowH:26, gapY:5 }; }
+function selRect(i){ const g=selGeom(); return { x:g.mX + (i%g.cols)*(g.colW+g.gapX), y:g.y0 + ((i/g.cols)|0)*(g.rowH+g.gapY), w:g.colW, h:g.rowH }; }
+function selMirrorRect(){ const g=selGeom(); return { x:g.mX, y:g.y0 + 5*(g.rowH+g.gapY) + 8, w:LW-2*g.mX, h:26 }; }
+function selBackRect(){ const m=selMirrorRect(), w=Math.min(160,LW-16); return { x:((LW-w)/2)|0, y:m.y+m.h+8, w, h:24 }; }
+// truncate a label to fit a pixel width (keeps select cells clean on narrow screens)
+function clipLabel(str, maxW, sc){ ctx.font=fontFor(str,sc); if(ctx.measureText(str).width<=maxW) return str; let s=str; while(s.length>1 && ctx.measureText(s+'…').width>maxW) s=s.slice(0,-1); return s+'…'; }
+function openStageSelect(){ G.state='select'; G.t=0; SFX.dock(); blip(660,.10,'triangle',.06,990); }
+function selectStage(n){
+  G.totalMass=0; G.totalCollected=0;          // fresh run stats
+  G.forceLoadout = loadoutForStage(n);
+  G.secret = (n===SECRET_STAGE);
+  G.trueEnd = false;
+  G.allPerfect = (n===1);                      // only a clean Stage-1 start can still legitimately earn the secret
+  reset(n);
+  G.state='play';
+  const ac=audio(); if(ac.state==='suspended') ac.resume();
+  setBGM('explore'); startBGM();
+}
+function trySelectAt(p){
+  for(let i=0;i<TOTAL_STAGES;i++){ if(inRect(p,selRect(i))){ selectStage(i+1); return true; } }
+  if(inRect(p,selMirrorRect())){ selectStage(SECRET_STAGE); return true; }
+  if(inRect(p,selBackRect())){ G.state='title'; G.t=0; SFX.dock(); return true; }
+  return false;
+}
+
 function press(e){
   e.preventDefault(); audio(); if(AC.state==='suspended') AC.resume();
-  if(G.state==='title'){ begin(); return; }
+  if(G.state==='title'){
+    if(vHoldActive) return;   // already holding the version label — ignore stray extra touches
+    const p = e.touches ? ptFrom(e.changedTouches[0]) : ptFromClient(e.clientX,e.clientY);
+    // secret: hold the version label ~2s to open the stage-select cheat (short tap there = nothing)
+    if(inRect(p, verHot())){
+      vHoldActive=true; vHoldT=0; vHoldPX=p.x; vHoldPY=p.y;
+      vHoldId = e.touches ? e.changedTouches[0].identifier : 'mouse';
+      return;
+    }
+    begin(); return;
+  }
+  if(G.state==='select'){
+    const p = e.touches ? ptFrom(e.changedTouches[0]) : ptFromClient(e.clientX,e.clientY);
+    trySelectAt(p); return;
+  }
   if(G.state==='clear'||G.state==='over'){ if(G.t>40){ reset(); G.state='title'; } return; }
   // dismiss stage-intro banner first — single tap anywhere closes it
   if(G.showStageBanner){ G.showStageBanner=false; G.t=0; return; }
@@ -871,17 +936,26 @@ function press(e){
   }
 }
 function move(e){
+  if(vHoldActive){
+    let hp=null;   // only the holding finger/cursor can cancel — other fingers are ignored
+    if(e.touches){ for(const t of e.changedTouches){ if(t.identifier===vHoldId){ hp=ptFrom(t); break; } } }
+    else if(vHoldId==='mouse'){ hp=ptFromClient(e.clientX,e.clientY); }
+    if(hp && Math.hypot(hp.x-vHoldPX, hp.y-vHoldPY) > 22) vHoldActive=false;
+  }
   if(e.touches){ for(const t of e.changedTouches){ if(t.identifier===moveId){ e.preventDefault(); pointer=ptFrom(t);} } }
   else if(pointer){ e.preventDefault(); pointer=ptFromClient(e.clientX,e.clientY); }
 }
-function endTouch(e){ for(const t of e.changedTouches){
-  if(t.identifier===moveId){ moveId=null; pointer=null; anchor=null; G.sucking=false; }
-  if(t.identifier===fireId){ releaseFire(); }
-} }
-function release(){ if(fireMouse) releaseFire(); pointer=null; anchor=null; moveId=null; G.sucking=false; }
+function endTouch(e){
+  for(const t of e.changedTouches){
+    if(vHoldActive && t.identifier===vHoldId) vHoldActive=false;   // only the holding finger lifting cancels
+    if(t.identifier===moveId){ moveId=null; pointer=null; anchor=null; G.sucking=false; }
+    if(t.identifier===fireId){ releaseFire(); }
+  } }
+function release(){ if(vHoldActive && vHoldId==='mouse') vHoldActive=false; if(fireMouse) releaseFire(); pointer=null; anchor=null; moveId=null; G.sucking=false; }
 cv.addEventListener('mousedown',press); window.addEventListener('mousemove',move); window.addEventListener('mouseup',release);
 cv.addEventListener('touchstart',press,{passive:false}); window.addEventListener('touchmove',move,{passive:false});
 window.addEventListener('touchend',endTouch); window.addEventListener('touchcancel',endTouch);
+window.addEventListener('blur',()=>{ vHoldActive=false; });   // don't leave a hold stuck if focus/pointer leaves
 window.addEventListener('keydown',e=>{
   keys[e.key]=true;
   audio(); if(AC&&AC.state==='suspended') AC.resume();
@@ -897,6 +971,13 @@ window.addEventListener('keydown',e=>{
   if(G.state==='postBoss'){
     if(e.key==='1') choosePostBoss(0);
     else if(e.key==='2') choosePostBoss(1);
+    return;
+  }
+  if(G.state==='select'){
+    if(e.key==='Escape'||e.key==='Backspace'){ e.preventDefault(); G.state='title'; G.t=0; return; }
+    if(e.key==='m'||e.key==='M'){ selectStage(SECRET_STAGE); return; }
+    const n=parseInt(e.key,10);
+    if(!isNaN(n)){ const stg = (n===0?10:n); if(stg>=1 && stg<=TOTAL_STAGES) selectStage(stg); }
     return;
   }
   if(e.key===' '||e.key==='Enter'){
@@ -939,7 +1020,11 @@ function reset(stage){
   G.showStageBanner=true;  // shows until the player taps to dismiss
   // PUs: reset only on Stage 1. On stage >=2, clip carried PUs to puCarryByStage[stage].
   // puPicksThisStage / puPicks / puProgress always reset (cost accumulator scoped to the stage).
-  if(stage===1){
+  const forced = G.forceLoadout; G.forceLoadout=null;   // stage-select cheat loadout (one-shot)
+  if(forced){
+    // jump straight to a stage with a fitting build (bypasses carry-in caps)
+    for(const k in G.pu){ G.pu[k] = Math.min(PU_MAX[k], forced[k]||0); }
+  } else if(stage===1){
     G.pu={suck:0,tank:0,power:0,hull:0,shield:0,drone:0};
   } else {
     const cap = BALANCE.puCarryByStage[stage];
@@ -1662,6 +1747,11 @@ function swallowToDrone(dr, j){
    ============================================================ */
 function update(){
   G.t++;
+  // title easter-egg: hold the version label ~1.8s to open the stage-select cheat
+  if(vHoldActive){
+    if(G.state!=='title'){ vHoldActive=false; }
+    else if(++vHoldT >= VHOLD_FULL){ vHoldActive=false; openStageSelect(); }
+  }
   if(G.puff>0.001) G.puff*=0.80; else G.puff=0;   // pop decays back to rest in a few frames
   if(G.puFlash>0) G.puFlash--;
   if(G.flashHp>0) G.flashHp--;
@@ -2618,6 +2708,15 @@ function render(){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
     text('v1.9.0', rightAlign('v1.9.0', LW-10, 1), 10, UI.amberDim, 1);
+    // hidden stage-select: a glowing bar + blinking caption fill while the version label is held
+    if(vHoldActive){
+      const pr=Math.min(1,vHoldT/VHOLD_FULL), bx=LW-74, bw=66;
+      px(bx, 19, bw, 3, UI.amberDark);
+      ctx.save(); ctx.shadowColor=UI.amberHi; ctx.shadowBlur=8;
+      px(bx, 19, Math.round(bw*pr), 3, pr>=1?UI.green:UI.amberHi);
+      ctx.restore();
+      text('HOLD', bx-30, 18, (G.t>>2&1)?UI.amberHi:UI.amberDim, 1);
+    }
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -3731,6 +3830,32 @@ function render(){
     glowText(isSecretStage?'[2] CLEAR':(isFinal?'[2] RETURN':(intoNGplus?'[2] NG+':'[2] WARP')), r1.x+12, r1.y+10, isSecretStage?'#e879f9':(intoNGplus?UI.red:UI.amber), 1, hot?6:3);
     text(nextLabel, r1.x+12, r1.y+26, UI.amberDim, 1);
     center('> TAP TO SELECT', PB_BTN.top+2*(PB_BTN.h+PB_BTN.gap)+10, UI.amberDim, 1);
+  }
+  if(G.state==='select'){
+    px(0,0,LW,LH,'rgba(8,10,14,0.96)');
+    px(0,22,LW,1,UI.amberDark);
+    text('> SYS', 8, 10, UI.green, 1);
+    text('DEBUG_WARP', rightAlign('DEBUG_WARP', LW-10, 1), 10, UI.amberDim, 1);
+    glowCenter('STAGE SELECT', 32, UI.amberHi, 1, 6);
+    const hot=(G.t>>3&1);
+    for(let i=0;i<TOTAL_STAGES;i++){
+      const r=selRect(i), n=i+1, cfg=stageCfg(n), hard=loopOf(n)>=1, ac=hard?UI.red:UI.green;
+      px(r.x|0,r.y,Math.round(r.w),r.h,UI.bg1);
+      px(r.x|0,r.y,2,r.h,ac);   // accent spine (green = normal, red = HARD)
+      for(const cn of [[r.x|0,r.y,1,1],[(r.x+r.w-1)|0,r.y,-1,1],[r.x|0,r.y+r.h-1,1,-1],[(r.x+r.w-1)|0,r.y+r.h-1,-1,-1]]){
+        px(cn[0],cn[1],4*cn[2]||4,1,UI.amberDark); px(cn[0],cn[1],1,4*cn[3]||4,UI.amberDark);
+      }
+      text((hard?'H':'S')+String(n).padStart(2,'0'), (r.x|0)+7, r.y+10, ac, 1);
+      text(clipLabel(bossNameFor(cfg, loopOf(n))||'', r.w-40, 1), (r.x|0)+32, r.y+10, UI.text, 1);
+    }
+    // THE MIRROR (hidden boss)
+    { const r=selMirrorRect(); px(r.x,r.y,r.w,r.h,'rgba(40,10,52,0.92)'); px(r.x,r.y,2,r.h,'#e879f9');
+      ctx.save(); ctx.shadowColor='#e879f9'; ctx.shadowBlur=hot?8:4;
+      glowCenter(LW>=300?'★ THE MIRROR — 隠しステージ ★':'★ THE MIRROR ★', r.y+9, '#f0abfc', 1, hot?8:4); ctx.restore(); }
+    // BACK + hint
+    { const r=selBackRect(); px(r.x,r.y,r.w,r.h,UI.bg1); px(r.x,r.y,2,r.h,UI.amber);
+      glowCenter('← BACK', r.y+8, UI.amber, 1, hot?6:3);
+      center('> TAP A STAGE TO WARP', r.y+r.h+12, UI.amberDim, 1); }
   }
   if(G.state==='clear'){
     const tend=!!G.trueEnd;     // beat the hidden MIRROR boss → TRUE END
