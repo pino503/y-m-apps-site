@@ -203,12 +203,25 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
         title="About"
       />
 
-      <div class="about-panel">
-        <div class="about-body">
-          <p><strong>PINO</strong>（<a href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a>）。Android と Web を中心に、AI を相棒にアプリ・拡張機能・ゲーム・LINE スタンプを作っている個人開発者です。</p>
-          <p>読書、野球、生活を整える小さな道具が好き。「使い続けられる」「無理なく続く」── そんな静かに馴染むものを目指しています。</p>
-          <p>お仕事のご依頼、アプリへのご要望、バグ報告などは <a href="#contact">Contact</a> からどうぞ。</p>
+      <div class="about-card" data-sheen data-reveal>
+        <span class="tape tape-tl" aria-hidden="true"></span>
+        <div class="about-head">
+          <img class="about-avatar" src="/assets/pinokun/pinokun-wave.png" alt="" loading="lazy" decoding="async" />
+          <div class="about-id">
+            <p class="about-name">PINO</p>
+            <a class="about-handle" href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a>
+          </div>
         </div>
+        <div class="about-body">
+          <p>Android と Web を中心に、AI を相棒にアプリ・拡張機能・ゲーム・LINE スタンプを作っている個人開発者です。</p>
+          <p>「使い続けられる」「無理なく続く」── そんな、静かに暮らしへ馴染むものを目指しています。</p>
+        </div>
+        <ul class="about-likes" aria-label="好きなもの">
+          <li>📖 読書</li>
+          <li>⚾ 野球</li>
+          <li>☕ コーヒー</li>
+          <li>🛠 小さな道具</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -645,19 +658,80 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
     transition: color 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-cubic);
   }
 
-  /* ---------- About ---------- */
-  .about-panel {
+  /* ---------- About (profile card) ---------- */
+  .about-card {
+    position: relative;
     max-width: 720px;
-    padding: 18px 0 4px;
-    border-top: 1px solid var(--line-strong);
+    padding: 26px 28px;
+    background:
+      linear-gradient(135deg, rgba(255, 216, 77, 0.16), transparent 46%),
+      var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 26px 70px -52px rgba(38, 52, 74, 0.55);
   }
+  .about-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(280px circle at var(--mx, 80%) var(--my, 0%), rgba(255, 255, 255, 0.35), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-out-cubic);
+  }
+  .about-card:hover::after { opacity: 1; }
+  .about-card > * { position: relative; }
+  .about-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .about-avatar {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 6px 12px rgba(92, 73, 49, 0.16));
+    transition: transform 0.35s var(--ease-out-quint);
+  }
+  .about-card:hover .about-avatar { transform: rotate(-4deg) translateY(-2px); }
+  .about-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--brown-1);
+    line-height: 1.1;
+  }
+  .about-handle { font-size: 12.5px; font-weight: 800; color: var(--accent-deep); }
   .about-body { width: 100%; min-width: 0; }
   .about-body p {
     font-size: 13.5px;
     line-height: 2;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: var(--ink);
   }
+  .about-likes {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--cream-5);
+  }
+  .about-likes li {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--brown-2);
+    background: rgba(255, 216, 77, 0.18);
+    border: 1px solid rgba(168, 95, 45, 0.16);
+    border-radius: 999px;
+    padding: 5px 12px;
+    transition: transform 0.18s var(--ease-out-quint), background 0.18s;
+  }
+  .about-likes li:hover { transform: translateY(-2px) rotate(-1deg); background: rgba(255, 216, 77, 0.3); }
   .about-meta {
     margin-top: 14px;
     padding-top: 12px;

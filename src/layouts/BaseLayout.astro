@@ -186,20 +186,23 @@ const siteName = "Y.M Apps";
       // blocks arbitrary CJK breaks; <wbr> after 、。!? re-adds phrase breaks.
       function phraseWrap(el: Element | null) {
         if (!el || (el as any)._pw) return;
-        const t = el.textContent || "";
-        if (t.length < 4) return;
+        if ((el.textContent || "").length < 4) return;
         (el as any)._pw = true;
         (el as HTMLElement).style.wordBreak = "keep-all";
         (el as HTMLElement).style.overflowWrap = "anywhere"; // safety: break a too-long phrase if needed
-        const parts = t.split(/(?<=[、。，．！？!?])/);
-        if (parts.length < 2) { (el as any)._pw = false; return; }
-        const frag = document.createDocumentFragment();
-        parts.forEach((p, i) => {
-          if (p) frag.appendChild(document.createTextNode(p));
-          if (i < parts.length - 1) frag.appendChild(document.createElement("wbr"));
-        });
-        el.textContent = "";
-        el.appendChild(frag);
+        // walk only TEXT nodes so manual <br> (and other markup) is preserved
+        for (const node of Array.from(el.childNodes)) {
+          if (node.nodeType !== Node.TEXT_NODE) continue;
+          const t = node.textContent || "";
+          const parts = t.split(/(?<=[、。，．！？!?])/);
+          if (parts.length < 2) continue;
+          const frag = document.createDocumentFragment();
+          parts.forEach((p, i) => {
+            if (p) frag.appendChild(document.createTextNode(p));
+            if (i < parts.length - 1) frag.appendChild(document.createElement("wbr"));
+          });
+          el.replaceChild(frag, node);
+        }
       }
       (window as any).ymNoOrphan = (el: Element) => { if (el) { (el as any)._pw = false; phraseWrap(el); } };
       function bindOrphans() {
