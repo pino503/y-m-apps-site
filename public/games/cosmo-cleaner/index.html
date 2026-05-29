@@ -685,11 +685,11 @@ const TOTAL_STAGES = BALANCE.world.totalStages;
 // theme = accent hue for bg/grid (overlays on the neon-green base palette)
 // obstacles = number of static rock/wreckage obstacles in the area
 const STAGES = [
-  { name:'NEBULA OUTSKIRTS', bossName:'JUNK CORE',     bossNameJp:'ジャンク・コア',         bossSpr:'boss',  junk:50,  bossHp:160, mobs:{base:6,gunner:0,split:0,rush:0}, puBase:160, puStep:45, theme:{tint:'#3a1a4a', accent:'#c084fc', name:'NEBULA'},   obstacles:6 },
-  { name:'ASTEROID FIELD',   bossName:'IRON HUSK',     bossNameJp:'アイアン・ハスク',       bossSpr:'boss2', junk:70,  bossHp:260, mobs:{base:5,gunner:2,split:0,rush:0}, puBase:200, puStep:50, theme:{tint:'#3a2810', accent:'#fbbf24', name:'ROCK'},     obstacles:18 },
-  { name:'WRECKAGE BELT',    bossName:'GOMILLA',       bossNameJp:'ゴミラ',                  bossSpr:'boss3', junk:85,  bossHp:345, mobs:{base:5,gunner:2,split:2,rush:0}, puBase:240, puStep:55, theme:{tint:'#0a2838', accent:'#22d3ee', name:'WRECK'},    obstacles:14 },
-  { name:'DEAD ZONE',        bossName:'VOID LEVIATHAN',bossNameJp:'ヴォイド・リヴァイアサン',bossSpr:'boss4', junk:100, bossHp:440, mobs:{base:4,gunner:3,split:2,rush:3}, puBase:280, puStep:65, theme:{tint:'#3a0a14', accent:'#ef4444', name:'DANGER'},   obstacles:10 },
-  { name:'THE HIVE',         bossName:'PROGENITOR',    bossNameJp:'プロジェニター',         bossSpr:'boss5', junk:120, bossHp:555, mobs:{base:6,gunner:3,split:3,rush:4}, puBase:320, puStep:70, theme:{tint:'#2a0a3a', accent:'#e879f9', name:'HIVE'},     obstacles:22 },
+  { name:'NEBULA OUTSKIRTS', bossName:'JUNK CORE',     bossNameJp:'ジャンク・コア',         bossSpr:'boss',  junk:50,  bossHp:260, mobs:{base:6,gunner:0,split:0,rush:0}, puBase:160, puStep:45, theme:{tint:'#3a1a4a', accent:'#c084fc', name:'NEBULA'},   obstacles:6 },
+  { name:'ASTEROID FIELD',   bossName:'IRON HUSK',     bossNameJp:'アイアン・ハスク',       bossSpr:'boss2', junk:70,  bossHp:420, mobs:{base:5,gunner:2,split:0,rush:0}, puBase:200, puStep:50, theme:{tint:'#3a2810', accent:'#fbbf24', name:'ROCK'},     obstacles:18 },
+  { name:'WRECKAGE BELT',    bossName:'GOMILLA',       bossNameJp:'ゴミラ',                  bossSpr:'boss3', junk:85,  bossHp:560, mobs:{base:5,gunner:2,split:2,rush:0}, puBase:240, puStep:55, theme:{tint:'#0a2838', accent:'#22d3ee', name:'WRECK'},    obstacles:14 },
+  { name:'DEAD ZONE',        bossName:'VOID LEVIATHAN',bossNameJp:'ヴォイド・リヴァイアサン',bossSpr:'boss4', junk:100, bossHp:740, mobs:{base:4,gunner:3,split:2,rush:3}, puBase:280, puStep:65, theme:{tint:'#3a0a14', accent:'#ef4444', name:'DANGER'},   obstacles:10 },
+  { name:'THE HIVE',         bossName:'PROGENITOR',    bossNameJp:'プロジェニター',         bossSpr:'boss5', junk:120, bossHp:950, mobs:{base:6,gunner:3,split:3,rush:4}, puBase:320, puStep:70, theme:{tint:'#2a0a3a', accent:'#e879f9', name:'HIVE'},     obstacles:22 },
 ];
 const G = {
   state:'title', t:0,
@@ -705,7 +705,7 @@ const G = {
   cleanliness:0,
   stars:[],
   fireCd:0, dockCd:0, shake:0,
-  boss:null, bossFound:false, bossDowned:false, postBossMenuShown:false,
+  boss:null, bossFound:false, bossDowned:false, postBossMenuShown:false, bannerKind:'p2',
   stage:1,
   crates:[], crateCd:600, cratesSpawned:0, crateMsg:'', crateMsgT:0, crateMsgKind:'reward',
   obstacles:[],
@@ -1161,41 +1161,47 @@ function updateBoss(){
     const f=bossSafeR/(bsd||1);
     b.x = STATION.x + bsx*f; b.y = STATION.y + bsy*f;
   }
-  // spit junk in a ring (suckable) — phase 2 spits more & faster
+  // spit junk (suckable) — p1 random ring; p2/p3 a rotating SPIRAL with one aimed shot
   b.spitCd--;
   if(b.spitCd<=0){
-    const baseN = b.phase===2 ? 5 : 3;
+    const p3=b.phase>=3, p2=b.phase>=2;
+    const baseN = p3 ? 9 : p2 ? 6 : 3;
     const n=baseN+Math.floor(Math.random()*2);
-    const spitSp = b.phase===2 ? 1.4 : 1.0;
+    const spitSp = p3 ? 1.7 : p2 ? 1.4 : 1.0;
+    b.spitBase = (b.spitBase||0) + 0.4;             // advance base angle each volley → spiral
+    const aimed = Math.atan2(G.py-b.y, G.px-b.x);   // first shot tracks the player in p2/p3
     for(let i=0;i<n;i++){
-      const ang=Math.random()*6.283, sp=spitSp+Math.random()*0.8;
+      const ang = p2
+        ? ((i===0) ? aimed : b.spitBase + i*(6.283/n))   // spiral + aimed lead shot
+        : Math.random()*6.283;                            // p1 stays a loose random ring
+      const sp=spitSp+Math.random()*0.5;
       const key=JUNK_KEYS[Math.floor(Math.random()*JUNK_KEYS.length)];
       G.ebullets.push({ x:b.x, y:b.y, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp, key, t:0, danger:true });
       G.junkMass += JUNK[key].weight;
     }
     SFX.rebreak();
-    const base = b.phase===2 ? 50 : 70;
-    b.spitCd=Math.max(24, base-Math.floor((1-b.hp/b.hpMax)*40));
+    const base = p3 ? 30 : p2 ? 50 : 70;
+    b.spitCd=Math.max(p3?14:24, base-Math.floor((1-b.hp/b.hpMax)*40));
   }
   // missiles: aimed, unsuckable, must dodge — phase 2 fires extra
   b.missileCd--;
   if(b.missileCd<=0){
-    const prog=1-b.hp/b.hpMax;
-    const count = b.phase===2 ? (2+Math.floor(prog*2)) : (1+Math.floor(prog*2));
+    const prog=1-b.hp/b.hpMax, p3=b.phase>=3;
+    const count = (b.phase>=2 ? 2 : 1) + Math.floor(prog*2) + (p3?1:0);
     for(let i=0;i<count;i++){
       const mdx=G.px-b.x, mdy=G.py-b.y, md=Math.hypot(mdx,mdy)||1;
       const spread=(count>1)?(i-(count-1)/2)*0.16:0;
       const ca=Math.cos(spread), sa=Math.sin(spread);
-      const nx=mdx/md, ny=mdy/md, sp=b.phase===2?3.0:2.6;
+      const nx=mdx/md, ny=mdy/md, sp=p3?3.4:b.phase>=2?3.0:2.6;
       G.missiles.push({ x:b.x, y:b.y, vx:(nx*ca-ny*sa)*sp, vy:(nx*sa+ny*ca)*sp, t:0, warn:18 });
     }
     SFX.missile();
-    const base = b.phase===2 ? 110 : 160;
-    b.missileCd=Math.max(50, base-Math.floor(prog*70));
+    const base = p3 ? 80 : b.phase>=2 ? 110 : 160;
+    b.missileCd=Math.max(p3?40:50, base-Math.floor(prog*70));
   }
   // PHASE 2 only: aimed-laser. Telegraph (50f) → fire (10f) → cd (180f).
   // Angle locks AT TELEGRAPH START so the player can dodge perpendicularly.
-  if(b.phase===2){
+  if(b.phase>=2){
     if(b.laserT>0){
       b.laserT--;
       if(b.laserT===0){ b.laserFire = 10; SFX.bosshit(); G.shake = Math.max(G.shake, 4); }
@@ -1215,7 +1221,7 @@ function updateBoss(){
       if(b.laserCd<=0){
         b.laserT = 50;
         b.laserAng = Math.atan2(G.py-b.y, G.px-b.x);  // lock now; telegraph is honest
-        b.laserCd = 180;
+        b.laserCd = b.phase>=3 ? 120 : 180;
         blip(220,.10,'sawtooth',.05);   // soft warning chirp
       }
     }
@@ -1225,8 +1231,8 @@ function updateBoss(){
 
   // JUNK CORE (boss): orbiting junk satellites — passive (advance angle only; collision handled in update())
   if(b.spr==='boss'){
-    b.orbCount = b.phase===2 ? 6 : 4;
-    b.orbAng += b.phase===2 ? 0.07 : 0.05;
+    b.orbCount = b.phase>=3 ? 8 : b.phase>=2 ? 6 : 4;
+    b.orbAng += b.phase>=3 ? 0.09 : b.phase>=2 ? 0.07 : 0.05;
   }
 
   // IRON HUSK (boss2): telegraphed dash charge
@@ -1240,7 +1246,11 @@ function updateBoss(){
       const dsx=b.x-STATION.x, dsy=b.y-STATION.y, dsd=Math.hypot(dsx,dsy);
       if(dsd<SAFE_R+80){ const f=(SAFE_R+80)/(dsd||1); b.x=STATION.x+dsx*f; b.y=STATION.y+dsy*f; b.dashFire=0; }
       b.dashFire--;
-      if(b.dashFire<=0){ shockwave(b.x,b.y,'#fbbf24',24,16); }
+      if(b.dashFire<=0){
+        shockwave(b.x,b.y,'#fbbf24',24,16);
+        // combo: chain another dash (re-aim at player) — p2: 2 dashes, p3: 3
+        if(b.dashCombo>0){ b.dashCombo--; b.dashT=14; b.dashAng=Math.atan2(G.py-b.y,G.px-b.x); sparks(b.x,b.y,'#fde047',6,2.0); }
+      }
     } else if(b.dashT>0){
       b.dashT--;
       if(b.dashT<=0){
@@ -1253,7 +1263,8 @@ function updateBoss(){
       if(b.dashCd<=0){
         b.dashT = 40;
         b.dashAng = Math.atan2(G.py-b.y, G.px-b.x);
-        b.dashCd = b.phase===2 ? 170 : 250;
+        b.dashCombo = b.phase>=3 ? 2 : b.phase>=2 ? 1 : 0;   // extra chained dashes
+        b.dashCd = b.phase>=2 ? 170 : 250;
         blip(180,.10,'square',.05);
       }
     }
@@ -1265,12 +1276,11 @@ function updateBoss(){
       b.flameT--;
       if(b.flameT<=0){
         const sp = 2.0;
-        G.flameOrbs.push({
-          x: b.x, y: b.y,
-          vx: Math.cos(b.flameAng)*sp,
-          vy: Math.sin(b.flameAng)*sp,
-          t: 0, life: 360, dead:false,
-        });
+        const ways = b.phase>=3 ? 5 : b.phase>=2 ? 3 : 1;   // single → 3-way fan → 5-way
+        for(let k=0;k<ways;k++){
+          const a = b.flameAng + (k-(ways-1)/2)*0.30;
+          G.flameOrbs.push({ x:b.x, y:b.y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, t:0, life:360, dead:false });
+        }
         SFX.rebreak(); SFX.bosshit();
       }
     } else {
@@ -1278,7 +1288,7 @@ function updateBoss(){
       if(b.flameCd<=0){
         b.flameT = 30;
         b.flameAng = Math.atan2(G.py-b.y, G.px-b.x);
-        b.flameCd = b.phase===2 ? 100 : 160;
+        b.flameCd = b.phase>=2 ? 100 : 160;
         blip(140,.12,'sawtooth',.06);
       }
     }
@@ -1303,7 +1313,19 @@ function updateBoss(){
         b.tpAlpha = Math.min(1, (30-b.tpT)/30);
       }
       b.tpT--;
-      if(b.tpT<=0){ b.tpAlpha = 1; }
+      if(b.tpT<=0){
+        b.tpAlpha = 1;
+        // ambush: burst a junk ring on arrival (p2+)
+        if(b.phase>=2){
+          const ways=b.phase>=3?12:8;
+          for(let k=0;k<ways;k++){ const a=k*(6.283/ways), sp=1.6;
+            const key=JUNK_KEYS[Math.floor(Math.random()*JUNK_KEYS.length)];
+            G.ebullets.push({x:b.x,y:b.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,key,t:0,danger:true});
+            G.junkMass+=JUNK[key].weight;
+          }
+          shockwave(b.x,b.y,'#c4b5fd',30,16); SFX.rebreak();
+        }
+      }
     } else {
       b.tpCd--;
       if(b.tpCd<=0){
@@ -1315,7 +1337,7 @@ function updateBoss(){
         // avoid teleporting into safe zone
         const tsx=b.tpTX-STATION.x, tsy=b.tpTY-STATION.y, tsd=Math.hypot(tsx,tsy);
         if(tsd<SAFE_R+140){ const f=(SAFE_R+140)/(tsd||1); b.tpTX=STATION.x+tsx*f; b.tpTY=STATION.y+tsy*f; }
-        b.tpCd = b.phase===2 ? 210 : 340;
+        b.tpCd = b.phase>=2 ? 210 : 340;
         blip(280,.14,'sine',.06);
       }
     }
@@ -1328,12 +1350,13 @@ function updateBoss(){
       if(b.summonT<=0){
         // summon if mob count is reasonable
         if((G.mobs||[]).filter(m=>!m.dead).length < 9){
-          const count = b.phase===2 ? 3 : 1;
+          const count = b.phase>=3 ? 4 : b.phase>=2 ? 3 : 1;
           for(let i=0;i<count;i++){
             const ang = Math.random()*6.283;
             const sx0 = b.x + Math.cos(ang)*22;
             const sy0 = b.y + Math.sin(ang)*22;
-            spawnMob(sx0, sy0, 'split');
+            const kind = (b.phase>=3 && i===0) ? 'rush' : 'split';   // p3 mixes in an aggressive rusher
+            spawnMob(sx0, sy0, kind);
             shockwave(sx0, sy0, '#fde047', 18, 12);
           }
         }
@@ -1342,7 +1365,7 @@ function updateBoss(){
       b.summonCd--;
       if(b.summonCd<=0){
         b.summonT = 40;
-        b.summonCd = b.phase===2 ? 250 : 380;
+        b.summonCd = b.phase>=2 ? 250 : 380;
         blip(440,.10,'triangle',.06);
       }
     }
@@ -1353,12 +1376,12 @@ function hitBoss(dmg){
   if(!b.awake){ b.awake=true; G.bossFound=true; setBGM('boss'); }
   b.hp-=dmg; G.hitsOnBoss++;
   G.bossHitFlash = 8;  // HP bar pulses white briefly
-  // PHASE TRANSITION at 50% HP
+  // PHASE TRANSITION at 50% HP — ENRAGED
   if(b.phase===1 && b.hp <= b.hpMax*0.5){
     b.phase=2; b.phaseTime=G.t;
     b.spitCd=10; b.missileCd=30;
     G.shake = Math.max(G.shake, 8);
-    G.phase2Banner = 90;     // big red ENRAGED banner
+    G.phase2Banner = 90; G.bannerKind='p2';     // big red ENRAGED banner
     // dramatic phase 2 entry — multiple shockwaves + sparks + smoke
     shockwave(b.x, b.y, '#ef4444', 60, 26);
     shockwave(b.x, b.y, '#fbbf24', 40, 22);
@@ -1366,6 +1389,19 @@ function hitBoss(dmg){
     sparks(b.x, b.y, '#ef4444', 14, 2.0);
     smoke(b.x, b.y, 8);
     SFX.missile(); SFX.bosshit();
+  }
+  // OVERDRIVE at 25% HP — final desperation onslaught
+  else if(b.phase===2 && b.hp <= b.hpMax*0.25){
+    b.phase=3; b.phaseTime=G.t;
+    b.spitCd=8; b.missileCd=20; b.laserCd=40;
+    G.shake = Math.max(G.shake, 12);
+    G.phase2Banner = 90; G.bannerKind='p3';      // magenta/white OVERDRIVE banner
+    shockwave(b.x, b.y, '#e879f9', 80, 32);
+    shockwave(b.x, b.y, '#ffffff', 50, 26);
+    sparks(b.x, b.y, '#e879f9', 22, 3.0);
+    sparks(b.x, b.y, '#ffffff', 16, 2.4);
+    smoke(b.x, b.y, 10);
+    SFX.missile(); SFX.bosshit(); SFX.hurt();
   }
   if(b.hp<=0){ b.hp=0; b.dead=true; b.dieT=0; }
 }
@@ -2490,7 +2526,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.6.0', rightAlign('v1.6.0', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.7.0', rightAlign('v1.7.0', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -2688,7 +2724,7 @@ function render(){
   if(G.boss){
     const b=G.boss, bx=sx(b.x), by=sy(b.y);
     // PHASE 2 aimed-laser: telegraph line then bright lance
-    if(b.phase===2 && !b.dead && (b.laserT>0 || b.laserFire>0)){
+    if(b.phase>=2 && !b.dead && (b.laserT>0 || b.laserFire>0)){
       const ang = b.laserAng;
       const endX = bx + Math.cos(ang)*800;
       const endY = by + Math.sin(ang)*800;
@@ -2730,7 +2766,7 @@ function render(){
     else if(onScreen(b.x,b.y,24)){
       // per-boss theme glow color, then phase 2 overrides with angry red pulse
       const themeGlow = { boss:'#e879f9', boss2:'#94a3b8', boss3:'#84cc16', boss4:'#22d3ee', boss5:'#fde047' };
-      const isP2 = b.phase===2;
+      const isP2 = b.phase>=2;
       const glowCol = b.awake ? (isP2 ? '#ef4444' : (themeGlow[b.spr]||'#e879f9')) : '#3a4a55';
       const blur = b.awake ? (isP2 ? 16+4*Math.sin(G.t*0.3) : 14) : 6;
 
@@ -2779,7 +2815,7 @@ function render(){
         }
         // VOID LEVIATHAN: trailing tendril dots (orbiting + drift)
         if(b.spr==='boss4'){
-          const tcount = b.phase===2 ? 6 : 3;
+          const tcount = b.phase>=2 ? 6 : 3;
           ctx.shadowColor='#a78bfa'; ctx.shadowBlur=6;
           for(let i=0;i<tcount;i++){
             const phase = (G.t*0.05) + i*0.9;
@@ -2896,39 +2932,44 @@ function render(){
         px(10,13,Math.max(0,Math.round(bw*b.hp/b.hpMax)),3,'#fff');
         ctx.restore();
       }
-      // half marker
+      // phase markers: 50% (enrage) and 25% (overdrive)
       px(10+Math.round(bw*0.5), 12, 1, 5, UI.amber);
+      px(10+Math.round(bw*0.25), 12, 1, 5, '#e879f9');
       // phase indicator
-      if(b.phase===2){ text('PH.2', rightAlign('PH.2', LW-4, 1), 18, UI.red, 1); }
+      if(b.phase>=3){ const s='PH.3'; text(s, rightAlign(s, LW-4, 1), 18, '#e879f9', 1); }
+      else if(b.phase>=2){ text('PH.2', rightAlign('PH.2', LW-4, 1), 18, UI.red, 1); }
     }
     // PHASE TRANSITION banner — flash for ~70 frames after entering phase 2
-    if(b.phase===2 && b.t>0 && b.spitCd>0 && b.spitCd<10 && (G.t>>1&1)){
+    if(b.phase>=2 && b.t>0 && b.spitCd>0 && b.spitCd<10 && (G.t>>1&1)){
       // (this fires briefly on the frame of transition); use a steadier banner via b.dieT-like timer instead
     }
   }
   // PHASE 2 BANNER — fills the screen briefly with a dramatic red strip
   if(G.phase2Banner>0 && G.boss){
     const t = G.phase2Banner, p = t/90;     // 1 -> 0 over the banner's life
-    // dark red wash, fades out
+    const p3 = G.bannerKind==='p3';
+    const accent = p3 ? '#e879f9' : UI.red;
+    const label  = p3 ? '!! OVERDRIVE !!' : '!! ENRAGED !!';
+    // full-screen wash, fades out
     ctx.save(); ctx.globalAlpha = Math.min(0.55, p*0.7);
-    ctx.fillStyle = '#3a0a0a'; ctx.fillRect(0, 0, LW, LH); ctx.restore();
+    ctx.fillStyle = p3 ? '#2a0a3a' : '#3a0a0a'; ctx.fillRect(0, 0, LW, LH); ctx.restore();
     // chevron-bordered banner strip — slides in from edges
     const slideIn = Math.min(1, (1-p)*4);    // 0 -> 1 in first quarter
     const by = LH/2 - 22;
     const stripW = LW * Math.min(1, slideIn);
     ctx.save();
-    ctx.fillStyle = 'rgba(80,8,8,0.92)';
+    ctx.fillStyle = p3 ? 'rgba(58,8,80,0.92)' : 'rgba(80,8,8,0.92)';
     ctx.fillRect((LW-stripW)/2, by, stripW, 44);
     // top/bottom accent lines
-    ctx.fillStyle = UI.red;
+    ctx.fillStyle = accent;
     ctx.fillRect((LW-stripW)/2, by, stripW, 1);
     ctx.fillRect((LW-stripW)/2, by+43, stripW, 1);
     ctx.restore();
     if(slideIn >= 0.9){
       // jittery flash on the text
       const jx = (G.t&3)===0 ? (Math.random()*2-1) : 0;
-      ctx.save(); ctx.shadowColor = UI.red; ctx.shadowBlur = 14;
-      glowCenter('!! ENRAGED !!', by+8+jx, UI.red, 2, 14);
+      ctx.save(); ctx.shadowColor = accent; ctx.shadowBlur = 14;
+      glowCenter(label, by+8+jx, accent, 2, 14);
       ctx.restore();
       glowCenter(G.boss.name||'BOSS', by+30, UI.amberHi, 1, 6);
     }
