@@ -161,61 +161,61 @@ const PAL = {
 
 /* ---------- sprites ---------- */
 const S = {
-  // ROOMBA Mk1 — basic cleaner bot (11x11)
+  // ROOMBA Mk1 — basic cleaner bot, clean cyan disc w/ twin sensors (11x11)
   ship: [
     "....ttt....",
-    "...tcccct..",
     "..tcwwwct..",
     ".tcwwwwwct.",
-    "tcwwcKcwwct",
-    "twwcKKKcwwt",
-    "tcwwcKcwwct",
+    ".cwwcccwwc.",
+    "twwccKccwwt",
+    "twccKcKccwt",
+    "twwccKccwwt",
+    ".cwwcccwwc.",
     ".tcwwwwwct.",
     "..tcwwwct..",
-    "...tcccct..",
     "....ttt....",
   ],
-  // Mk2 — armored plates added (11x11)
+  // Mk2 — scrap-armored: bolted-on grey steel plates (11x11)
   ship2: [
-    "....ttt....",
-    "...tdwwdt..",
-    "..tcwwwct..",
-    ".tcwddwwct.",
-    "tcwccKKcwct",
-    "twcKKKKKcwt",
-    "tcwccKKcwct",
-    ".tcwwddwct.",
-    "..tcwwwct..",
-    "...tdwwdt..",
-    "....ttt....",
+    "...GtttG...",
+    "..GcwwwcG..",
+    ".GcwwwwwcG.",
+    ".tcwwcwwct.",
+    "GcwwcKcwwcG",
+    "twwcKcKcwwt",
+    "GcwwcKcwwcG",
+    ".tcwwcwwct.",
+    ".GcwwwwwcG.",
+    "..GcwwwcG..",
+    "...GtttG...",
   ],
-  // Mk3 — heavy chassis + yellow accents (11x11)
+  // Mk3 — heavy chassis + gold trim ring (11x11)
   ship3: [
-    "y...ttt...y",
-    "...tcccct..",
-    "..tcwwwct..",
-    ".tcwyyywct.",
-    "tcwyyKyywct",
-    "twyKKKKKywt",
-    "tcwyyKyywct",
-    ".tcwyyywct.",
-    "..tcwwwct..",
-    "...tcccct..",
-    "y...ttt...y",
+    "...ytty....",
+    "..ytccty...",
+    ".ytcwwwcty.",
+    ".ycwwwwwcy.",
+    "ytcwyKywcty",
+    "ytwyKKKywty",
+    "ytcwyKywcty",
+    ".ycwwwwwcy.",
+    ".ytcwwwcty.",
+    "..ytccty...",
+    "...ytty....",
   ],
-  // Mk4 — final form: golden battle form, glowing core (11x11)
+  // Mk4 — elite form: full gold frame + glowing white/cyan core (11x11)
   ship4: [
-    "y...ccc...y",
-    ".cccwwwccc.",
-    ".cwyyyyywc.",
-    "cwyywywyywc",
-    "cyywKKKywwc",
-    "cwyKKKKKywc",
-    "cyywKKKywwc",
-    "cwyywywyywc",
-    ".cwyyyyywc.",
-    ".cccwwwccc.",
-    "y...ccc...y",
+    "....yyy....",
+    "..yywwwyy..",
+    ".ywwcccwwy.",
+    ".ywccwccwy.",
+    "ywwccwccwwy",
+    "ywwcwwwcwwy",
+    "ywwccwccwwy",
+    ".ywccwccwy.",
+    ".ywwcccwwy.",
+    "..yywwwyy..",
+    "....yyy....",
   ],
   // junk: scrap metal chunk (7x7)
   scrap: [
@@ -367,23 +367,23 @@ const S = {
   // BOSS 3 — KAIJU: a towering scaled monster with dorsal fins (13x17)
   // M=dark scale  m=mid scale  E=acid eye  F=fang  P=purple shadow  X=deep shadow
   boss3: [
-    "....MMM......",
-    "...MmmmM.....",
-    "..MmEFEmM....",
+    "....MMMM.....",
+    "...MmmmmM....",
+    "..MEmmmEM....",
     "..MmFKFmM....",
     "..MmmmmmM....",
     "...MMMMM.....",
-    "..MmmmmmMm...",
-    ".MmmmmmmmmM..",
-    "MmmmmMMmmmmM.",
-    "MmmmMMMmmmmM.",
-    ".MmmMMMmmmM..",
-    "..MmmMMmmM...",
     "..MmmmmmM....",
-    "..MmmMmmM....",
-    "..MM..MM.....",
-    ".MMM..MMM....",
-    ".MM....MM....",
+    ".MmmmmmmmM...",
+    ".MmmEEEmmM...",
+    ".MmmEEEmmM...",
+    ".MmmmmmmmM...",
+    "..MmmmmmM....",
+    "..Mmm.mmM....",
+    "..MM...MM....",
+    ".MMM...MMM...",
+    ".MM.....MM...",
+    "MMMM...MMMM..",
   ],
   // BOSS 4 — VOID LEVIATHAN: serpent-like, long with glowing core (15x14)
   boss4: [
@@ -404,24 +404,119 @@ const S = {
   ],
   // BOSS 5 — THE PROGENITOR: a HUMANOID alien overlord (13x18). The reveal of the series.
   boss5: [
-    "....RFFFR....",
-    "...RREXER....",
-    "...REFKFER...",
-    "...REXKXER...",
-    "....RRFRR....",
-    "...RRRRRR....",
-    "..RRwwwRRR...",
-    ".RwwwQQwRR...",
-    "RwQQQQQQwR...",
-    "RQQEFFEQQR...",
-    "RQQFKKFQQR...",
-    "RQQQwwQQQR...",
-    ".RwQQwwwQR...",
-    "..RwwQQwR....",
+    "....RRR......",
+    "...RRRRR.....",
+    "..RwwwwwR....",
+    "..RwEwEwR....",
+    "..RwwFwwR....",
     "...RwwwR.....",
-    "...R...R.....",
-    "..RR...RR....",
+    "....RKR......",
+    "..RRRRRRR....",
+    ".RRwQQQwRR...",
+    "RRwQQQQQwRR..",
+    "RwQQEFEQQwR..",
+    "RwQQQFQQQwR..",
+    "RRwQQQQQwRR..",
+    ".RRwQQQwRR...",
+    "..RRwwwRR....",
+    "..RQQ.QQR....",
+    "..RQ...QR....",
     ".RRR...RRR...",
+  ],
+
+  /* ===== ENRAGED (phase 2) variants — overheated / amped forms.
+     Drawn in place of the base sprite once the boss hits 50% HP. ===== */
+  // JUNK CORE: green compaction ring goes red-hot / overheating
+  bossE: [
+    ".sg.sGGGGGs.gs.",
+    "sGsGsGGGGGsGsGs",
+    "GsGGGsGGGsGGGsG",
+    "sGGGoFFFFFoGGGs",
+    "GGGoFFrrrFFoGGG",
+    "GsGFFrwowrFFGsG",
+    "sGGFFrwFwrFFGGs",
+    "GsGFFrwowrFFGsG",
+    "GGGoFFrrrFFoGGG",
+    "sGGGoFFFFFoGGGs",
+    "GsGGGsGGGsGGGsG",
+    "sGsGsGGGGGsGsGs",
+    ".sg.sGGGGGs.gs.",
+    "..g...G.G...g..",
+  ],
+  // IRON HUSK: armor cracks, eyes glow red-hot, exposed molten interior
+  boss2E: [
+    "...sssssss.....",
+    "..sGGsGGsGss...",
+    ".sGGsssGsGGGs..",
+    "sGsoooooooosGs.",
+    "GGooFFFFFoooG.s",
+    "GGoorFoFroosGGs",
+    "GGooFFFFFooGGGs",
+    "GGoorFoFroosGGs",
+    "GGooFFFFFoooG.s",
+    "sGsoooooooosGs.",
+    ".sGGsssGsGGGs..",
+    "..sGGsGGsGss...",
+    "...sssssss.....",
+    "....s.F.s......",
+  ],
+  // GOMILLA: eyes blaze red, jaw gapes, belly glows molten
+  boss3E: [
+    "....MMMM.....",
+    "...MmmmmM....",
+    "..MFmmmFM....",
+    "..MwFKFwM....",
+    "..MmFFFmM....",
+    "...MMMMM.....",
+    "..MmmmmmM....",
+    ".MmmmmmmmM...",
+    ".MmoFFFomM...",
+    ".MmoFFFomM...",
+    ".MmmmmmmmM...",
+    "..MmmmmmM....",
+    "..Mmm.mmM....",
+    "..MM...MM....",
+    ".MMM...MMM...",
+    ".MM.....MM...",
+    "MMMM...MMMM..",
+  ],
+  // VOID LEVIATHAN: body flares magenta, core eye burns, tendrils multiply
+  boss4E: [
+    "....XXXXXXX....",
+    "..XXQQQQQQQXX..",
+    ".XQQEEEFEEEQQX.",
+    "XQEEEFFFFFEEEQX",
+    "XQEEFFoFoFFEEQX",
+    "QEEEFoFKFoFEEEQ",
+    "XQEEFFoFoFFEEQX",
+    "XQEEEFFFFFEEEQX",
+    ".XQQEEEFEEEQQX.",
+    "..XXQQQQQQQXX..",
+    "....XXXXXXX....",
+    "...rrr...rrr...",
+    "..rrr.rr.rrr...",
+    ".rr..rr.rr..rr.",
+  ],
+  // PROGENITOR: ascends — gold crown & trim, eyes turn red, emblem gilded
+  boss5E: [
+    "....yyy......",
+    "...yRRRy.....",
+    "..RwwwwwR....",
+    "..RwFwFwR....",
+    "..RwwFwwR....",
+    "...RwwwR.....",
+    "....RKR......",
+    "..yRRRRRy....",
+    ".RywQQQwyR...",
+    "RywQQQQQwyR..",
+    "RwQyEFEyQwR..",
+    "RwQyQFQyQwR..",
+    "RywQQQQQwyR..",
+    ".RywQQQwyR...",
+    "..RRwwwRR....",
+    "..RQQ.QQR....",
+    "..RQ...QR....",
+    ".RRy...yRR...",
   ],
 };
 function bake(grid){
@@ -2272,7 +2367,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.3.4', rightAlign('v1.3.4', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.4.0', rightAlign('v1.4.0', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -2603,7 +2698,9 @@ function render(){
       ctx.save();
       if(spriteAlpha < 1) ctx.globalAlpha = spriteAlpha;
       ctx.shadowColor=glowCol; ctx.shadowBlur=blur;
-      blit(SPR[b.spr]||SPR.boss, bx, by);
+      // phase 2 swaps in the enraged variant (bossE / boss2E / ...) when one exists
+      const bossSpr = (isP2 && SPR[b.spr+'E']) ? SPR[b.spr+'E'] : (SPR[b.spr]||SPR.boss);
+      blit(bossSpr, bx, by);
       ctx.restore();
       if(!b.awake){ ctx.save(); ctx.globalAlpha=0.5+0.3*Math.sin(G.t*0.1); glowText('?', bx-2, by-22, UI.amber,1,6); ctx.restore(); }
 
