@@ -2230,11 +2230,11 @@ function update(){
         }
       }
       if(tgt){
-        // dart toward it, tug it in, and swallow on contact
+        // physically FLY to the junk (no long-range magnet) and grab it on contact
         const tx=tgt.x-dr.x, ty=tgt.y-dr.y, td=Math.hypot(tx,ty)||1;
         const step=Math.min(DRONE_SPD, td);
         dr.x += tx/td*step; dr.y += ty/td*step;
-        tgt.vx += (dr.x-tgt.x)*0.05; tgt.vy += (dr.y-tgt.y)*0.05;
+        if(td < 14){ tgt.vx += (dr.x-tgt.x)/td*0.6; tgt.vy += (dr.y-tgt.y)/td*0.6; }  // gentle slurp only at the mouth
         if((G.t&3)===0) sparks(dr.x, dr.y, '#a3e635', 1, 1.0);   // faint intake wisp = visibly working
         if(td < 11) swallowToDrone(dr, tgt);
       } else {
