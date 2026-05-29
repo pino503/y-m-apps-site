@@ -763,8 +763,8 @@ for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+
 const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones; CLEANER up to 2
 const DRONE_R = 30;          // cleaner-drone home orbit radius (idle position)
 const DRONE_RANGE = 24;      // cosmetic intake-ring radius drawn around each drone
-const DRONE_SEEK = 96;       // a drone actively flies to any junk within this radius of the player
-const DRONE_SPD  = 3.6;      // how fast a drone darts toward target junk (a touch faster than the ship)
+const DRONE_SEEK = 50;       // a drone only tidies junk within this modest radius of the player (an assist, not a sweep)
+const DRONE_SPD  = 3.2;      // how fast a drone darts toward target junk
 const SHIELD_R = BALANCE.player.shieldR;    // orbit radius around player
 const SHIELD_HIT = BALANCE.player.shieldHit;   // bullet vs shield collision radius
 function suckRange(){ return BALANCE.pu.range(G.pu.suck); }         // 14 -> 84 at Lv5
