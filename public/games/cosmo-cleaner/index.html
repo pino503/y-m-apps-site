@@ -1979,8 +1979,22 @@ function update(){
   G.crates=G.crates.filter(cr=>!(cr.opened && cr.life>30));
   if(G.crateMsgT>0) G.crateMsgT--;
 
-  // ---- boss spit (drifts; suckable hazard, fades over time) ----
-  for(const e of G.ebullets){ e.t++; e.x+=e.vx; e.y+=e.vy; e.vx*=0.995; e.vy*=0.995; }
+  // ---- boss spit (drifts as a suckable hazard, then SETTLES into collectable junk) ----
+  // Instead of timing out and vanishing, spit that loses its momentum becomes real junk
+  // you can clean up. Capped so a long fight can't bury the field / tank performance.
+  const SPIT_JUNK_CAP = 100;   // max total junk pieces on the field
+  for(const e of G.ebullets){
+    e.t++; e.x+=e.vx; e.y+=e.vy; e.vx*=0.995; e.vy*=0.995;
+    if(!e.fromMob && !e.dead && (e.vx*e.vx + e.vy*e.vy) < 0.12          // slowed to a near-stop
+       && Math.hypot(e.x-STATION.x, e.y-STATION.y) > SAFE_R+6           // not in the safe zone
+       && e.x>12 && e.x<WW-12 && e.y>12 && e.y<WH-12){                  // not jammed at the edge
+      e.dead=true;
+      if(G.junk.length < SPIT_JUNK_CAP){
+        // push directly — its mass was already counted in junkMass when the boss spat it
+        G.junk.push({ key:e.key||'scrap', x:e.x, y:e.y, vx:0, vy:0, t:Math.random()*6 });
+      }
+    }
+  }
   G.ebullets=G.ebullets.filter(e=>!e.dead && e.t<600 && e.x>-20 && e.x<WW+20 && e.y>-20 && e.y<WH+20 && Math.hypot(e.x-STATION.x,e.y-STATION.y)>SAFE_R);
 
   // ---- MISSILES: fly straight, can't be sucked, damage even while sucking ----
