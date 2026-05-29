@@ -2230,13 +2230,13 @@ function update(){
         }
       }
       if(tgt){
-        // physically FLY to the junk (no long-range magnet) and grab it on contact
+        // physically FLY to the junk and grab it on contact. The drone NEVER touches
+        // the junk's velocity — so it can't magnet it in or fling it away.
         const tx=tgt.x-dr.x, ty=tgt.y-dr.y, td=Math.hypot(tx,ty)||1;
         const step=Math.min(DRONE_SPD, td);
         dr.x += tx/td*step; dr.y += ty/td*step;
-        if(td < 14){ tgt.vx += (dr.x-tgt.x)/td*0.6; tgt.vy += (dr.y-tgt.y)/td*0.6; }  // gentle slurp only at the mouth
         if((G.t&3)===0) sparks(dr.x, dr.y, '#a3e635', 1, 1.0);   // faint intake wisp = visibly working
-        if(td < 11) swallowToDrone(dr, tgt);
+        if(Math.hypot(tgt.x-dr.x, tgt.y-dr.y) < 12) swallowToDrone(dr, tgt);   // contact (post-move)
       } else {
         // nothing nearby (or full) → glide back to the orbit slot
         dr.x += (hx-dr.x)*0.2; dr.y += (hy-dr.y)*0.2;
