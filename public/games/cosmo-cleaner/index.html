@@ -2397,7 +2397,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.5.1', rightAlign('v1.5.1', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.5.2', rightAlign('v1.5.2', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
@@ -2912,7 +2912,7 @@ function render(){
   // of junk, then settles back — and once the tank is full it stays bulged (visual
   // only, no hitbox change).
   if(G.state!=='play' || G.invuln<=0 || (G.t>>2&1)){
-    const puff = tankIsFull ? 1.20 : (1 + G.puff*0.22);
+    const puff = tankIsFull ? 1.22 : (1 + G.puff*0.40);   // big exaggerated pop per gulp
     if(puff!==1) blitScaled(shipMk(), sx(G.px), sy(G.py), puff);
     else blit(shipMk(), sx(G.px), sy(G.py));
   }
