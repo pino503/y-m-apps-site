@@ -127,6 +127,7 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
                         <div class="work-head">
                           <span class="work-title">{app.data.title}</span>
                           {app.data.isNew && <span class="work-new">NEW</span>}
+                          {app.data.unpublished && <span class="work-pending">準備中</span>}
                           <span class="work-platform">{app.data.platform}</span>
                         </div>
                         <p class="work-tag">{app.data.tagline}</p>
@@ -607,6 +608,17 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
   @keyframes workNewPulse {
     0%, 100% { transform: translateY(0) scale(1); }
     50%      { transform: translateY(-1px) scale(1.04); }
+  }
+  .work-pending {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--muted);
+    background: #e8e2d3;
+    border: 1px dashed var(--line);
+    border-radius: 999px;
+    letter-spacing: 0.08em;
   }
   .work-tag {
     font-size: 13.5px;

@@ -36,10 +36,15 @@ const { data } = app;
             <h1 class="app-title">{data.title}</h1>
           </div>
           <p class="app-tagline">{data.tagline}</p>
-          {data.storeUrl && (
+          {data.storeUrl && !data.unpublished && (
             <a class="btn btn-primary app-cta" href={data.storeUrl} target="_blank" rel="noopener noreferrer">
               {data.storeLabel ?? "ストアで見る"} →
             </a>
+          )}
+          {data.unpublished && (
+            <span class="btn app-cta app-cta-pending" aria-disabled="true" title="ストアでの公開準備中です">
+              準備中 — まもなく公開
+            </span>
           )}
         </div>
 
@@ -206,6 +211,19 @@ const { data } = app;
     margin-bottom: 18px;
   }
   .app-cta { margin-top: 2px; }
+  .app-cta-pending {
+    display: inline-block;
+    padding: 10px 18px;
+    color: var(--muted);
+    background: #f1ecdc;
+    border: 1px dashed var(--line);
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    cursor: not-allowed;
+    user-select: none;
+  }
   .app-hero-media {
     position: relative;
     min-height: 280px;

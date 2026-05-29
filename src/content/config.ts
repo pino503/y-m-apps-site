@@ -30,6 +30,9 @@ const apps = defineCollection({
     category: z.enum(["tool", "game", "sticker"]).default("tool"),
     // 新作マーク — Works 行に NEW バッジを出す
     isNew: z.boolean().default(false),
+    // 未公開マーク — ストアにまだ並んでいない（内部テスト中・申請待ち等）。
+    // 表示上「準備中」グレーバッジを出し、storeUrl があってもクリック不可にする。
+    unpublished: z.boolean().default(false),
   }),
 });
 
