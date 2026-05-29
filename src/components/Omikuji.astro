@@ -1,16 +1,13 @@
 ---
-// ものづくりおみくじ — a playful fortune draw. ぴのくん occasionally tells you
-// today's "making luck" + recommends one of the apps. Pure client-side fun.
-interface AppRef { slug: string; title: string; }
-interface Props { apps: AppRef[]; }
-const { apps } = Astro.props;
+// ものづくりおみくじ — a playful fortune draw. ぴのくん tells you today's
+// "making luck" + a lucky item & lucky color. Pure client-side fun.
 ---
 
 <section id="omikuji" class="omikuji-section">
   <div class="container">
-    <div class="omikuji-card" data-sheen data-apps={JSON.stringify(apps)} data-reveal>
+    <div class="omikuji-card" data-sheen data-reveal>
       <span class="omikuji-tape" aria-hidden="true"></span>
-      <img class="pino-friend omikuji-pino" src="/assets/pinokun/pinokun-laptop.png" alt="" loading="lazy" decoding="async" />
+      <img class="pino-friend omikuji-pino" src="/assets/pinokun/pinokun-reading-color.png" alt="" loading="lazy" decoding="async" />
       <div class="omikuji-body">
         <p class="omikuji-kicker">Fun · おまけ</p>
         <h2>ものづくりおみくじ</h2>
@@ -24,7 +21,10 @@ const { apps } = Astro.props;
           <div class="omikuji-result" hidden aria-live="polite">
             <span class="omikuji-level"></span>
             <p class="omikuji-msg"></p>
-            <p class="omikuji-rec"></p>
+            <div class="omikuji-lucky">
+              <span class="lk"><b>ラッキーアイテム</b><span class="omi-item"></span></span>
+              <span class="lk"><b>ラッキーカラー</b><span class="lk-color"><i class="omi-swatch"></i><span class="omi-color"></span></span></span>
+            </div>
             <button class="omikuji-again btn" type="button" data-sfx>もう一度引く</button>
           </div>
         </div>
@@ -61,7 +61,7 @@ const { apps } = Astro.props;
     pointer-events: none;
   }
   .omikuji-pino {
-    width: 96px;
+    width: 104px;
     align-self: end;
     transition: transform 0.35s var(--ease-out-quint);
   }
@@ -98,9 +98,38 @@ const { apps } = Astro.props;
   .lv-kichi    { background: linear-gradient(135deg, #4fb286, #2f8f6b); }
   .lv-shokichi { background: linear-gradient(135deg, #6aa9d6, #3d7d8e); }
   .lv-suekichi { background: linear-gradient(135deg, #a98fc4, #7e5fa8); }
-  .omikuji-msg { font-size: 14px; line-height: 1.95; color: var(--ink); max-width: 480px; margin-bottom: 8px; }
-  .omikuji-rec { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
-  .omikuji-rec a { font-weight: 900; color: var(--accent-deep); }
+  .omikuji-msg { font-size: 14px; line-height: 1.95; color: var(--ink); max-width: 480px; margin-bottom: 12px; }
+
+  .omikuji-lucky {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    margin-bottom: 16px;
+  }
+  .omikuji-lucky .lk {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+  .omikuji-lucky b {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent-deep);
+    background: rgba(255, 216, 77, 0.22);
+    border: 1px solid rgba(168, 95, 45, 0.16);
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-weight: 900;
+  }
+  .lk-color { display: inline-flex; align-items: center; gap: 6px; }
+  .omi-swatch {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.12);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+  }
   .omikuji-again { font-size: 12px; padding: 7px 14px; }
 
   @keyframes omiShake {
@@ -117,7 +146,7 @@ const { apps } = Astro.props;
 
   @media (max-width: 600px) {
     .omikuji-card { grid-template-columns: 1fr; gap: 12px; padding: 22px 18px; text-align: left; }
-    .omikuji-pino { width: 72px; justify-self: start; }
+    .omikuji-pino { width: 80px; justify-self: start; }
     .omikuji-tape { left: 18px; }
   }
 </style>
@@ -147,6 +176,22 @@ const { apps } = Astro.props;
     ]},
   ];
 
+  const ITEMS = [
+    "あたたかい飲みもの", "お気に入りのマグ", "付箋", "短い散歩", "観葉植物",
+    "好きな音楽", "白い紙とペン", "深呼吸", "窓ぎわの席", "ひとつ前のコミット",
+    "お気に入りのキーボード", "甘いおやつ", "ねこ", "早めのおやすみ",
+  ];
+  const COLORS = [
+    { n: "やさしいクリーム", c: "#FFD54F" },
+    { n: "森のグリーン", c: "#4FB286" },
+    { n: "夕焼けオレンジ", c: "#E59F43" },
+    { n: "空色", c: "#6AA9D6" },
+    { n: "ぴのくんピンク", c: "#FF6B8E" },
+    { n: "ラベンダー", c: "#A98FC4" },
+    { n: "インクブラウン", c: "#5D4037" },
+    { n: "レモンイエロー", c: "#FFC107" },
+  ];
+
   function pickLevel(): Level {
     const total = LEVELS.reduce((s, l) => s + l.weight, 0);
     let r = Math.random() * total;
@@ -164,10 +209,10 @@ const { apps } = Astro.props;
     const result = card.querySelector<HTMLElement>(".omikuji-result")!;
     const levelEl = card.querySelector<HTMLElement>(".omikuji-level")!;
     const msgEl = card.querySelector<HTMLElement>(".omikuji-msg")!;
-    const recEl = card.querySelector<HTMLElement>(".omikuji-rec")!;
+    const itemEl = card.querySelector<HTMLElement>(".omi-item")!;
+    const swatchEl = card.querySelector<HTMLElement>(".omi-swatch")!;
+    const colorEl = card.querySelector<HTMLElement>(".omi-color")!;
     const againBtn = card.querySelector<HTMLButtonElement>(".omikuji-again")!;
-    let apps: { slug: string; title: string }[] = [];
-    try { apps = JSON.parse(card.dataset.apps || "[]"); } catch {}
 
     let busy = false;
     function draw() {
@@ -175,7 +220,6 @@ const { apps } = Astro.props;
       const sfx = (window as any).ymSfx;
       result.hidden = true;
       card.classList.add("is-shaking");
-      // little shake-ticks while it "rattles"
       if (sfx) { sfx.tick(); setTimeout(() => sfx.tick(), 130); setTimeout(() => sfx.tick(), 280); }
       setTimeout(() => {
         card.classList.remove("is-shaking");
@@ -183,11 +227,10 @@ const { apps } = Astro.props;
         levelEl.textContent = lv.label;
         levelEl.className = `omikuji-level ${lv.cls}`;
         msgEl.textContent = pick(lv.msgs);
-        if (apps.length) {
-          const app = pick(apps);
-          recEl.innerHTML = `今日のおすすめ：<a href="/works/${app.slug}">${app.title} を見る →</a>`;
-        } else { recEl.textContent = ""; }
-        // re-trigger pop animation
+        itemEl.textContent = pick(ITEMS);
+        const col = pick(COLORS);
+        swatchEl.style.background = col.c;
+        colorEl.textContent = col.n;
         result.hidden = false;
         result.style.animation = "none"; void result.offsetWidth; result.style.animation = "";
         if (sfx) sfx.chime(lv.good);

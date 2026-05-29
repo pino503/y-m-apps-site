@@ -175,7 +175,7 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
   <hr class="retro-hr" />
 
   {/* ============== OMIKUJI (fun) ============== */}
-  <Omikuji apps={apps.map((a) => ({ slug: a.slug, title: a.data.title }))} />
+  <Omikuji />
 
   <hr class="retro-hr" />
 
@@ -275,32 +275,28 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
 
         <ul class="contact-list">
           <li>
-            <span class="k">
+            <a class="contact-link" href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer" title="X (Twitter)" aria-label="X (Twitter) — @Pinopino503">
               <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg>
-              X
-            </span>
-            <a href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a>
+              <span class="handle">@Pinopino503</span>
+            </a>
           </li>
           <li>
-            <span class="k">
+            <a class="contact-link" href="https://note.com/y_m656" target="_blank" rel="noopener noreferrer" title="note" aria-label="note — @y_m656">
               <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm4 2h10v2H7zm0 4h7v2H7z"/></svg>
-              note
-            </span>
-            <a href="https://note.com/y_m656" target="_blank" rel="noopener noreferrer">@y_m656</a>
+              <span class="handle">@y_m656</span>
+            </a>
           </li>
           <li>
-            <span class="k">
+            <a class="contact-link" href="https://pinopino503.itch.io/" target="_blank" rel="noopener noreferrer" title="itch.io" aria-label="itch.io — pinopino503">
               <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.133-3.362 0-7.945.053-8.87.133zm6.376 6.477a2.74 2.74 0 0 1-.468.602c-.5.49-1.19.795-1.947.795a2.786 2.786 0 0 1-1.95-.795c-.182-.178-.32-.37-.446-.59-.127.222-.303.412-.486.59a2.788 2.788 0 0 1-1.95.795c-.092 0-.187-.025-.264-.052-.107 1.113-.152 2.176-.168 2.95v.005l-.006 1.167c.02 2.334-.23 7.564 1.03 8.85 1.952.454 5.545.662 9.15.663 3.605 0 7.198-.21 9.15-.664 1.26-1.284 1.01-6.514 1.03-8.848l-.006-1.167v-.004c-.016-.775-.06-1.838-.168-2.95-.077.026-.172.052-.263.052a2.788 2.788 0 0 1-1.95-.795c-.184-.178-.36-.368-.486-.59-.127.22-.265.412-.447.59a2.786 2.786 0 0 1-1.95.794c-.76 0-1.446-.303-1.948-.793a2.74 2.74 0 0 1-.468-.602 2.738 2.738 0 0 1-.463.602 2.787 2.787 0 0 1-1.95.794h-.16a2.787 2.787 0 0 1-1.95-.793 2.738 2.738 0 0 1-.464-.602zm-2.004 2.59v.002c.795.002 1.5 0 2.373.953.687-.072 1.406-.108 2.125-.107.72 0 1.438.035 2.125.107.873-.953 1.578-.95 2.372-.953.376 0 1.876 0 2.92 2.934l1.123 4.028c.832 2.995-.266 3.068-1.636 3.07-2.03-.075-3.156-1.55-3.156-3.025-1.124.184-2.436.276-3.748.277-1.312 0-2.624-.093-3.748-.277 0 1.475-1.125 2.95-3.156 3.026-1.37-.004-2.468-.077-1.636-3.072l1.122-4.027c1.045-2.934 2.545-2.934 2.92-2.934zM12 12.714c-.002.002-2.14 1.964-2.523 2.662l1.4-.056v1.22c0 .056.56.033 1.123.007.562.026 1.124.05 1.124-.008v-1.22l1.4.055C14.138 14.677 12 12.713 12 12.713z"/></svg>
-              itch.io
-            </span>
-            <a href="https://pinopino503.itch.io/" target="_blank" rel="noopener noreferrer">pinopino503</a>
+              <span class="handle">pinopino503</span>
+            </a>
           </li>
           <li>
-            <span class="k">
+            <a class="contact-link" href="https://store.line.me/stickershop/author/1039160/ja" target="_blank" rel="noopener noreferrer" title="LINE STORE" aria-label="LINE STORE — クリエイターページ">
               <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-              LINE STORE
-            </span>
-            <a href="https://store.line.me/stickershop/author/1039160/ja" target="_blank" rel="noopener noreferrer">クリエイターページ</a>
+              <span class="handle">クリエイターページ</span>
+            </a>
           </li>
         </ul>
       </div>
@@ -714,33 +710,36 @@ const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
     text-transform: uppercase;
   }
   .contact-list { list-style: none; margin-top: 2px; }
-  .contact-list li {
-    display: grid;
-    grid-template-columns: 104px minmax(0, 1fr);
-    gap: 12px;
-    padding: 9px 0;
-    border-bottom: 1px dashed var(--cream-5);
-    align-items: baseline;
-    font-size: 13px;
-  }
+  .contact-list li { border-bottom: 1px dashed var(--cream-5); }
   .contact-list li:last-child { border-bottom: 0; }
-  .contact-list .k {
-    display: inline-flex;
+  /* whole row is the link — icon + handle, no redundant platform label */
+  .contact-link {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    color: var(--brown-4);
-    font-weight: 900;
-    font-size: 12px;
-    letter-spacing: 0.05em;
+    gap: 12px;
+    padding: 11px 8px;
+    border-radius: 8px;
+    color: var(--brown-2);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    transition: background 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-quint);
+  }
+  .contact-link:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateX(4px);
+    text-decoration: none;
   }
   .contact-icon {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     fill: var(--brown-3);
     flex-shrink: 0;
     transition: fill 0.2s var(--ease-out-cubic);
   }
-  .contact-list li:hover .contact-icon { fill: var(--orange); }
+  .contact-link:hover .contact-icon { fill: var(--orange); }
+  .contact-link .handle { color: var(--brown-2); transition: color 0.2s var(--ease-out-cubic); }
+  .contact-link:hover .handle { color: var(--accent-deep); }
   /* email button icon */
   .btn-icon {
     width: 16px;
