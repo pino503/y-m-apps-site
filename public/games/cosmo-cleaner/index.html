@@ -1436,12 +1436,14 @@ function fire(){
     return;
   }
   G.ammo--;
-  // aim priority: awake boss > nearest mob > straight up
-  let tx=G.px, ty=G.py-100, target=null;
-  if(G.boss && G.boss.awake && !G.boss.dead){ target={x:G.boss.x,y:G.boss.y}; }
-  else {
-    let nd=1e9;
-    for(const mo of G.mobs){ if(mo.dead) continue; const d=Math.hypot(mo.x-G.px,mo.y-G.py); if(d<nd){ nd=d; target=mo; } }
+  // aim at the NEAREST enemy — mobs and the awake boss compete on distance,
+  // so a close zako is hit even while a boss looms far away. Falls back to
+  // straight up when nothing's around.
+  let tx=G.px, ty=G.py-100, target=null, nd=1e9;
+  for(const mo of G.mobs){ if(mo.dead) continue; const d=Math.hypot(mo.x-G.px,mo.y-G.py); if(d<nd){ nd=d; target=mo; } }
+  if(G.boss && G.boss.awake && !G.boss.dead){
+    const d=Math.hypot(G.boss.x-G.px, G.boss.y-G.py);
+    if(d<nd){ nd=d; target={x:G.boss.x, y:G.boss.y}; }
   }
   if(target){ tx=target.x; ty=target.y; }
   const dx=tx-G.px, dy=ty-G.py, d=Math.hypot(dx,dy)||1;
@@ -2387,7 +2389,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.4.1', rightAlign('v1.4.1', LW-10, 1), 10, UI.amberDim, 1);
+    text('v1.4.2', rightAlign('v1.4.2', LW-10, 1), 10, UI.amberDim, 1);
     px(8,22,LW-16,1,UI.amberDark);
     // ===== LOGO =====
     // decorative star burst on each side of the logo
