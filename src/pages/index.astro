@@ -206,7 +206,7 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
       <div class="about-card" data-sheen data-reveal>
         <span class="tape tape-tl" aria-hidden="true"></span>
         <div class="about-head">
-          <img class="about-avatar" src="/assets/pinokun/pinokun-wave.png" alt="" loading="lazy" decoding="async" />
+          <img class="about-avatar" src="/assets/pinokun/pinokun-profile.png" alt="" loading="lazy" decoding="async" />
           <div class="about-id">
             <p class="about-name">PINO</p>
             <a class="about-handle" href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a>
@@ -693,7 +693,8 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
   .about-avatar {
     width: 64px;
     height: 64px;
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 50%;
     flex-shrink: 0;
     filter: drop-shadow(0 6px 12px rgba(92, 73, 49, 0.16));
     transition: transform 0.35s var(--ease-out-quint);
