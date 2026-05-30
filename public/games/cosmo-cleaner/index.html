@@ -666,8 +666,8 @@ const BALANCE = {
   },
   // ---- PU SCALING (derived stat formulas) ----
   pu: {
-    range:    lv => 14 + lv*14,       // SUCK.RNG: 14 → 84 at Lv5
-    capacity: lv => 100 + lv*36,      // TANK.CAP: 100 → 280 at Lv5
+    range:    lv => lv<=5 ? 14 + lv*14 : 84 + (lv-5)*7,        // SUCK.RNG: 84 at Lv5 → 119 at Lv10 (overcharge +7/Lv)
+    capacity: lv => lv<=5 ? 100 + lv*36 : 280 + (lv-5)*18,     // TANK.CAP: 280 at Lv5 → 370 at Lv10 (overcharge +18/Lv)
     // shotPower() lives in BALANCE.shot.baseDmg / dmgPerLv above
   },
   // ---- PU carryover caps (per-stage transition) ----
@@ -696,8 +696,8 @@ const STAGES = [
   { name:'NEBULA OUTSKIRTS', bossName:'JUNK CORE',     bossNameJp:'ジャンク・コア',         bossSpr:'boss',  junk:50,  bossHp:260, mobs:{base:6,gunner:0,split:0,rush:0}, puBase:160, puStep:45, theme:{tint:'#3a1a4a', accent:'#c084fc', name:'NEBULA'},   obstacles:6 },
   { name:'ASTEROID FIELD',   bossName:'IRON HUSK',     bossNameJp:'アイアン・ハスク',       bossSpr:'boss2', junk:70,  bossHp:420, mobs:{base:5,gunner:2,split:0,rush:0}, puBase:200, puStep:50, theme:{tint:'#3a2810', accent:'#fbbf24', name:'ROCK'},     obstacles:18 },
   { name:'WRECKAGE BELT',    bossName:'GOMILLA',       bossNameJp:'ゴミラ',                  bossSpr:'boss3', junk:85,  bossHp:560, mobs:{base:5,gunner:2,split:2,rush:0}, puBase:240, puStep:55, theme:{tint:'#0a2838', accent:'#22d3ee', name:'WRECK'},    obstacles:14 },
-  { name:'DEAD ZONE',        bossName:'VOID LEVIATHAN',bossNameJp:'ヴォイド・リヴァイアサン',bossSpr:'boss4', junk:100, bossHp:740, mobs:{base:4,gunner:3,split:2,rush:3}, puBase:280, puStep:65, theme:{tint:'#3a0a14', accent:'#ef4444', name:'DANGER'},   obstacles:10 },
-  { name:'THE HIVE',         bossName:'PROGENITOR',    bossNameJp:'プロジェニター',         bossSpr:'boss5', junk:120, bossHp:950, mobs:{base:6,gunner:3,split:3,rush:4}, puBase:320, puStep:70, theme:{tint:'#2a0a3a', accent:'#e879f9', name:'HIVE'},     obstacles:22 },
+  { name:'DEAD ZONE',        bossName:'VOID LEVIATHAN',bossNameJp:'ヴォイド・リヴァイアサン',bossSpr:'boss4', junk:100, bossHp:740, mobs:{base:6,gunner:4,split:3,rush:4}, puBase:280, puStep:65, theme:{tint:'#3a0a14', accent:'#ef4444', name:'DANGER'},   obstacles:10 },
+  { name:'THE HIVE',         bossName:'PROGENITOR',    bossNameJp:'プロジェニター',         bossSpr:'boss5', junk:120, bossHp:950, mobs:{base:8,gunner:4,split:4,rush:5}, puBase:320, puStep:70, theme:{tint:'#2a0a3a', accent:'#e879f9', name:'HIVE'},     obstacles:22 },
 ];
 // ---- NG+ loops: clearing all STAGE_COUNT stages starts a harder 2nd loop ----
 const LOOP_COUNT = 2;
@@ -760,7 +760,7 @@ for(let i=0;i<48;i++) G.stars.push({x:Math.random()*LW, y:Math.random()*LH, s:1+
 
 /* ---------- derived stats from power-ups ---------- */
 /* ---------- derived stats from power-ups (all capped at Lv5) ---------- */
-const PU_MAX = { suck:5, tank:5, power:5, hull:2, shield:3, drone:2 };  // SUC/CAP/PWR cap at Lv5; HULL +2 (base 3 → max 5); SHIELD up to 3 drones; CLEANER up to 2
+const PU_MAX = { suck:10, tank:20, power:10, hull:2, shield:3, drone:2 };  // SUC/PWR overcharge to Lv10; TANK to Lv20 (economy stat, safe to grow big); HULL +2 (max 5 HP); SHIELD 3; CLEANER 2
 const DRONE_R = 30;          // cleaner-drone home orbit radius (idle position)
 const DRONE_GRAB = 12;       // junk within this distance of a drone gets collected — and this is the ring we draw
 const DRONE_SEEK = 50;       // a drone only tidies junk within this modest radius of the player (an assist, not a sweep)
@@ -780,7 +780,7 @@ function shipMk(){
   return SPR.ship;
 }
 
-function shotPower(){ return BALANCE.shot.baseDmg + G.pu.power*BALANCE.shot.dmgPerLv; }  // 10 -> 30 at Lv5
+function shotPower(){ const p=G.pu.power; return BALANCE.shot.baseDmg + (p<=5 ? p*BALANCE.shot.dmgPerLv : 30 + (p-5)*3); }  // 42 at Lv5 → 57 at Lv10 (overcharge +3/Lv, kept small vs harder bosses)
 function moveScale(){ return 1; }                          // movement is fixed
 
 /* ---------- junk types ---------- */
@@ -1061,7 +1061,10 @@ function reset(stage){
     }
   }
   // NG+ boss is far tankier (player carries full upgrades in) + powered-up name
-  spawnBoss(Math.round(cfg.bossHp * (!secret && G.loop>=1 ? 2.4 : 1)), cfg.bossSpr, bossNameFor(cfg, G.loop), bossNameJpFor(cfg, G.loop));
+  // boss HP: late loop-0 stages (4-5) get a bump (were unscaled); NG+ stays high
+  const bossHpMul = secret ? 1 : (G.loop>=1 ? 2.4 : (((stage-1)%STAGE_COUNT)>=3 ? 1.3 : 1));
+  spawnBoss(Math.round(cfg.bossHp * bossHpMul), cfg.bossSpr, bossNameFor(cfg, G.loop), bossNameJpFor(cfg, G.loop));
+  if(G.boss && G.loop>=1){ G.boss.phase = 2; G.boss.phaseTime = 0; }   // stage 6+: boss enters already ENRAGED (full assault from the start)
   // place static obstacles — far from base, varied sizes for visual variety
   const nObs = cfg.obstacles || 0;
   for(let i=0;i<nObs;i++){
@@ -1708,7 +1711,7 @@ function fire(charged){
   const pLv = G.pu.power;
   const baseR = BALANCE.shot.r + Math.floor(pLv/2);                  // 5 → 7 at Lv5
   const shotR = charged ? baseR*2 : baseR;
-  const pierce = charged ? 6 : (pLv >= 5 ? 2 : pLv >= 3 ? 1 : 0);
+  const pierce = charged ? 6 : (pLv >= 8 ? 3 : pLv >= 5 ? 2 : pLv >= 3 ? 1 : 0);  // overcharge Lv8+ = 3 pierce
   const dmg = charged ? shotPower()*3 : shotPower();
   G.shots.push({ x:G.px, y:G.py, vx, vy, r:shotR, dmg,
                  hits:0, pierce, life:BALANCE.shot.life, trail:[], pLv, charged:!!charged });
@@ -2733,7 +2736,7 @@ function render(){
   if(G.state==='title'){
     // top status row — like a BIOS header
     text('> SYS_BOOT_OK', 10, 10, UI.green, 1);
-    text('v1.9.0', rightAlign('v1.9.0', LW-10, 1), 10, UI.amberDim, 1);
+    text('v2.0.0', rightAlign('v2.0.0', LW-10, 1), 10, UI.amberDim, 1);
     // hidden stage-select: a glowing bar + blinking caption fill while the version label is held
     if(vHoldActive){
       const pr=Math.min(1,vHoldT/VHOLD_FULL), bx=LW-74, bw=66;
@@ -3571,6 +3574,7 @@ function render(){
     text(puList[i][0], 4, py, UI.amberDark, 1);
     const max = puList[i][2], val = puList[i][1], col = puList[i][3];
     for(let s=0;s<max;s++){ px(22+s*4, py+2, 3, 3, s<val ? col : UI.amberDark); }
+    if(val>max){ text('+'+(val-max), 22+max*4+2, py, col, 1); }   // overcharge marker, e.g. PWR ▮▮▮▮▮+3
   }
   // progress meter (one row below the last stat row)
   const pw=46, pf=Math.round(pw*G.puProgress/puNeedNow());

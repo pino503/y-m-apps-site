@@ -3,7 +3,7 @@ title: COSMO CLEANER
 tagline: 宇宙ゴミを集めて、基地で強化。圧縮弾を作って敵とボスに挑む、CRT風の宇宙清掃シューティングゲーム。
 world: cosmo-cleaner
 platform: Webゲーム
-badges: ["Web", "HTML5", "Pixel Art", "v1.9.0"]
+badges: ["Web", "HTML5", "Pixel Art", "v2.0.0"]
 storeUrl: https://pino503.github.io/cosmo-cleaner/
 storeLabel: Play Now
 order: 5
@@ -16,13 +16,13 @@ features:
   - title: COMPRESSED SHOT & CHARGE
     body: 回収したゴミを圧縮して弾に変換。タップで通常弾、FIRE 長押し→離すと大きな貫通チャージ弾。狙いは一番近い敵へ自動で向きます。
   - title: 6 POWER-UPS
-    body: 吸引レンジ・タンク容量・弾威力・体力上限・護衛ドローン・自動掃除ドローン。6種類のアップグレードから毎回選んで自機を育てる。
+    body: 吸引レンジ・タンク容量・弾威力・体力上限・護衛ドローン・自動掃除ドローン。6種類のアップグレードから毎回選んで自機を育てる。終盤はカンスト後も吸引・タンク・威力が伸び続ける「上限突破」で、最後まで強化の手が止まりません。
   - title: DRONES — SHIELD & CLEANER
     body: 敵弾を物理ブロックする護衛ドローン（最大3機）と、近くのゴミを自動回収する掃除ドローン（最大2機・自機タンクの50%ぶんを運搬）。どちらも自機の周りを等間隔で周回します。
   - title: 5 STAGES & 3-PHASE BOSSES
     body: ジャンク・コア／アイアン・ハスク／ゴミラ／ヴォイド・リヴァイアサン／プロジェニター。固有の攻撃に加え、HP 50% で Phase 2（ENRAGED）、25% で Phase 3（OVERDRIVE）へと激化します。
   - title: NEW GAME+ (HARD MODE)
-    body: 全5ステージを制覇すると、難度を上げた2周目「ハードモード」へ突入。ボスは色違い＆パワーアップ（真・◯◯ ／ ◯◯ Ω）、HP も攻撃も激化します。全10ステージを完全クリアすると、★ 完全制覇 ★ の演出が待っています。
+    body: 全5ステージを制覇すると、難度を上げた2周目「ハードモード」へ突入。ボスは色違い＆パワーアップ（真・◯◯ ／ ◯◯ Ω）で、2周目は開幕から ENRAGED 状態の猛攻を仕掛けてきます。HP も攻撃も激化し、全10ステージを完全クリアすると ★ 完全制覇 ★ の演出が待っています。
   - title: ??? — 隠しステージ
     body: 全10ステージを CLEAN 100%（すべてのゴミを回収）で完全制覇した者だけがたどり着く、真の最終決戦「THE MIRROR」。そこで待つのは…？　倒せば TRUE END。
   - title: SUB-1.44MB MINI JAM
