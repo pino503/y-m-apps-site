@@ -9,6 +9,7 @@ storeLabel: itch.io
 order: 4
 category: game
 embedPath: /games/sidewalk-defender/index.html
+iconImage: /assets/apps/sidewalk-defender-cover.png
 coverImage: /assets/apps/sidewalk-defender-cover.png
 screenshots:
   - /assets/apps/sidewalk-defender-screenshot-1.png

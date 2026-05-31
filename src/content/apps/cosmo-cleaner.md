@@ -10,6 +10,8 @@ order: 5
 category: game
 isNew: true
 embedPath: /games/cosmo-cleaner/index.html
+iconImage: /assets/apps/cosmo-cleaner-icon.png
+coverImage: /assets/apps/cosmo-cleaner-cover.png
 features:
   - title: COLLECT / RETURN / POWER UP
     body: 宇宙ゴミを吸い込み、基地へ持ち帰って自機を強化。戻るタイミングと強化の判断が攻略のカギ。

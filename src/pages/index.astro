@@ -9,6 +9,11 @@ const apps = (await getCollection("apps")).sort(
   (a, b) => a.data.order - b.data.order
 );
 
+// Featured 2-up（参考デザイン準拠）: 左に InkPress（特集）、右に COSMO CLEANER。
+// Works リストには全アプリを掲載する（Featured と重複してよい）。
+const lead = apps.find((a) => a.slug === "inkpress") ?? apps[0];
+const cosmo = apps.find((a) => a.slug === "cosmo-cleaner") ?? apps[apps.length - 1];
+
 // 種類でまとめる。表示順は tool → game → sticker。
 const CATEGORY_ORDER = ["tool", "game", "sticker"] as const;
 const CATEGORY_LABELS: Record<(typeof CATEGORY_ORDER)[number], { title: string; lede: string }> = {
@@ -29,7 +34,6 @@ const writings = (await getCollection("writings")).sort(
 );
 
 const recentWritings = writings.slice(0, 5);
-const featured = apps.find((app) => app.slug === "inkpress") ?? apps[0];
 
 // per-app accent color — gives each Works row / Writings tag its own identity
 const APP_ACCENT: Record<string, string> = {
@@ -87,73 +91,91 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
 
   <hr class="retro-hr" />
 
+  {/* ============== FEATURED (2-up) ============== */}
   <section class="featured-section">
     <div class="container">
-      <a class="featured-card" href={`/works/${featured.slug}`} data-world={featured.data.world} data-sheen>
-        <img class="pino-friend featured-pino" src="/assets/pinokun/pinokun-wave.png" alt="ぴのくん" loading="lazy" decoding="async" />
-        <div class="featured-copy">
-          <p class="featured-label">Featured Project</p>
-          <h2>{featured.data.title}</h2>
-          <p>{featured.data.tagline}</p>
-          <div class="featured-tags">
-            {featured.data.badges.map((b) => <span class="tag">{b}</span>)}
+      <div class="featured-row">
+        {/* left: InkPress（バナー） */}
+        <a class="feat-card" href={`/works/${lead.slug}`} data-world={lead.data.world} data-sheen data-reveal style={`--accent:${appAccent(lead.slug)}`}>
+          <div class="feat-media">
+            <img src="/assets/apps/inkpress-banner.png" alt="" loading="lazy" decoding="async" />
           </div>
-          <span class="featured-link">詳しく見る →</span>
-        </div>
-        <div class="featured-media" aria-hidden="true">
-          {featured.data.coverImage && (
-            <img class="featured-cover" src={featured.data.coverImage} alt="" loading="lazy" decoding="async" />
-          )}
-          {featured.data.screenshots.filter((src) => src !== featured.data.coverImage).slice(0, 2).map((src, i) => (
-            <img class={`featured-shot shot-${i + 1}`} src={src} alt="" loading="lazy" decoding="async" />
-          ))}
-        </div>
-      </a>
+          <div class="feat-body">
+            <p class="feat-label">Featured Project</p>
+            <h3 class="feat-title">{lead.data.title}</h3>
+            <p class="feat-tag">{lead.data.tagline}</p>
+            <div class="feat-badges">
+              {lead.data.badges.map((b) => <span class="tag">{b}</span>)}
+            </div>
+            <span class="feat-link">詳しく見る →</span>
+          </div>
+        </a>
+
+        {/* right: COSMO CLEANER（ダークなバナー＋NEW） */}
+        <a class="feat-card feat-dark" href={`/works/${cosmo.slug}`} data-world={cosmo.data.world} data-reveal style={`--accent:${appAccent(cosmo.slug)}`}>
+          {cosmo.data.isNew && <span class="feat-new">NEW</span>}
+          <div class="feat-media">
+            {cosmo.data.coverImage
+              ? <img src={cosmo.data.coverImage} alt="" loading="lazy" decoding="async" />
+              : <span class="wl-mono">{cosmo.data.title.slice(0, 1)}</span>}
+          </div>
+          <div class="feat-body">
+            <p class="feat-label">Featured</p>
+            <h3 class="feat-title">{cosmo.data.title}</h3>
+            <p class="feat-tag">{cosmo.data.tagline}</p>
+            <span class="feat-link">詳しく見る →</span>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 
   <hr class="retro-hr" />
 
-  {/* ============== WORKS (simple list) ============== */}
-  <section id="works" class="stack-section">
+  {/* ============== WORKS — icon list ============== */}
+  <section id="works" class="works-section">
     <div class="container">
       <SectionHead
         title="Works"
         lede="ぜんぶ、自分がほしいなと思って作りました。"
       />
 
-      <div class="works-card">
-        {groupedApps.map((group) => (
-          <div class="work-group">
-            <div class="work-group-head">
-              <h3 class="work-group-title">{group.label.title}</h3>
-              <p class="work-group-lede">{group.label.lede}</p>
-            </div>
-            <ul class="works-list">
-              {group.items.map((app) => {
-                const gi = indexOf.get(app.slug) ?? 0;
-                return (
-                  <li data-reveal data-reveal-delay={Math.min(gi, 5)}>
-                    <a class="work-row" href={`/works/${app.slug}`} style={`--row-accent:${appAccent(app.slug)}`}>
-                      <span class="work-no">{String(gi + 1).padStart(2, "0")}</span>
-                      <div class="work-body">
-                        <div class="work-head">
-                          <span class="work-title">{app.data.title}</span>
-                          {app.data.isNew && <span class="work-new">NEW</span>}
-                          {app.data.unpublished && <span class="work-pending">準備中</span>}
-                          <span class="work-platform">{app.data.platform}</span>
-                        </div>
-                        <p class="work-tag">{app.data.tagline}</p>
-                      </div>
-                      <span class="work-more" aria-hidden="true">→</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
+      {groupedApps.map((group) => (
+        <div class="work-cat" data-cat={group.cat}>
+          <div class="work-cat-head">
+            <h3 class="work-cat-title">{group.label.title}</h3>
+            <p class="work-cat-lede">{group.label.lede}</p>
           </div>
-        ))}
-      </div>
+          <ul class="work-list">
+            {group.items.map((app) => {
+              const gi = indexOf.get(app.slug) ?? 0;
+              return (
+                <li data-reveal data-reveal-delay={Math.min(gi, 5)}>
+                  <a class="work-item" href={`/works/${app.slug}`} data-world={app.data.world} style={`--accent:${appAccent(app.slug)}`}>
+                    <span class="work-ic">
+                      {app.data.iconImage
+                        ? <img src={app.data.iconImage} alt="" loading="lazy" decoding="async" />
+                        : <span class="work-ic-mono">{app.data.title.slice(0, 1)}</span>}
+                    </span>
+                    <span class="work-main">
+                      <span class="work-row-head">
+                        <span class="work-name">{app.data.title}</span>
+                        {app.data.isNew && <span class="work-new">NEW</span>}
+                        {app.data.unpublished && <span class="work-pending">準備中</span>}
+                      </span>
+                      <span class="work-desc">{app.data.tagline}</span>
+                    </span>
+                    <span class="work-aside">
+                      <span class="work-plat">{app.data.platform}</span>
+                      <span class="work-go" aria-hidden="true">→</span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
     </div>
   </section>
 
@@ -167,24 +189,31 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
         lede="アプリ開発の裏側、E-Ink 端末の検証ログ、AI との付き合い方。note で公開しています。"
       />
 
-      <div class="card">
-        <ul class="ruled-list">
-          {recentWritings.map((w, i) => (
-            <li data-reveal data-reveal-delay={Math.min(i, 5)}>
-              <span class="w-main">
-                <a href={w.data.url} target="_blank" rel="noopener noreferrer">{w.data.title}</a>
-                {w.data.relatedApp && appTitle.get(w.data.relatedApp) && (
-                  <span class="w-app" style={`--c:${appAccent(w.data.relatedApp)}`}>{appTitle.get(w.data.relatedApp)}</span>
-                )}
-              </span>
-              <span class="meta">{w.data.date.replace(/-/g, "/").slice(2)}</span>
-            </li>
-          ))}
-        </ul>
+      <div class="writings-grid">
+        {recentWritings.map((w, i) => (
+          <a
+            class="writing-card"
+            href={w.data.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-reveal
+            data-reveal-delay={Math.min(i, 5)}
+            style={w.data.relatedApp ? `--c:${appAccent(w.data.relatedApp)}` : ""}
+          >
+            <span class="wc-top">
+              <span class="wc-date">{w.data.date.replace(/-/g, "/").slice(2)}</span>
+              {w.data.relatedApp && appTitle.get(w.data.relatedApp) && (
+                <span class="wc-app">{appTitle.get(w.data.relatedApp)}</span>
+              )}
+            </span>
+            <span class="wc-title">{w.data.title}</span>
+            <span class="wc-go" aria-hidden="true">読む →</span>
+          </a>
+        ))}
       </div>
 
-      <p style="margin-top:14px; text-align:right;">
-        <a href="/writings" style="font-size:12px;font-weight:900;">すべての記事 ({writings.length}) →</a>
+      <p class="writings-more">
+        <a href="/writings">すべての記事 ({writings.length}) →</a>
       </p>
     </div>
   </section>
@@ -194,10 +223,8 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
   {/* ============== OMIKUJI (fun) ============== */}
   <Omikuji />
 
-  <hr class="retro-hr" />
-
   {/* ============== ABOUT ============== */}
-  <section id="about" class="stack-section">
+  <section id="about" class="stack-section about-section">
     <div class="container">
       <SectionHead
         title="About"
@@ -212,24 +239,24 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
             <a class="about-handle" href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a>
           </div>
         </div>
-        <div class="about-body">
-          <p>Android と Web を中心に、AI を相棒にアプリ・拡張機能・ゲーム・LINE スタンプを作っている個人開発者です。</p>
-          <p>「使い続けられる」「無理なく続く」── そんな、静かに暮らしへ馴染むものを目指しています。</p>
+        <div class="about-text">
+          <div class="about-body">
+            <p>Android と Web を中心に、AI を相棒にアプリ・拡張機能・ゲーム・LINE スタンプを作っている個人開発者です。</p>
+            <p>「使い続けられる」「無理なく続く」── そんな、静かに暮らしへ馴染むものを目指しています。</p>
+          </div>
+          <ul class="about-likes" aria-label="好きなもの">
+            <li>📖 読書</li>
+            <li>⚾ 野球</li>
+            <li>☕ コーヒー</li>
+            <li>🛠 小さな道具</li>
+          </ul>
         </div>
-        <ul class="about-likes" aria-label="好きなもの">
-          <li>📖 読書</li>
-          <li>⚾ 野球</li>
-          <li>☕ コーヒー</li>
-          <li>🛠 小さな道具</li>
-        </ul>
       </div>
     </div>
   </section>
 
-  <hr class="retro-hr" />
-
   {/* ============== CONTACT (Press 統合) ============== */}
-  <section id="contact" class="stack-section">
+  <section id="contact" class="stack-section contact-section">
     <div class="container">
       <SectionHead
         title="Contact"
@@ -460,27 +487,11 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
     .hero-actions, .hero-stats, .hero-poster-img { animation: none; }
   }
 
-  .featured-section {
-    padding: 22px 0 4px;
-  }
-  .featured-card {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
-    gap: 30px;
-    align-items: center;
-    min-height: 360px;
-    padding: 34px;
-    color: var(--ink);
-    text-decoration: none;
-    background:
-      linear-gradient(135deg, rgba(255, 216, 77, 0.24), transparent 42%),
-      var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 26px 70px -52px rgba(38, 52, 74, 0.55);
-  }
+  /* ============ FEATURED (2-up) + WORKS (icon list) ============ */
+  .featured-section { padding: 34px 0 10px; }
+  .works-section { padding: 26px 0 12px; }
+
+  /* shared craft pino (also used by the omikuji card) */
   .pino-friend {
     width: 82px;
     height: auto;
@@ -488,164 +499,102 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
     filter: drop-shadow(0 10px 18px rgba(92, 73, 49, 0.14));
     pointer-events: none;
   }
-  .featured-pino {
-    position: absolute;
-    right: 18px;
-    top: 16px;
-    z-index: 4;
-    opacity: 0.92;
-  }
-  .featured-card:hover {
-    text-decoration: none;
-    transform: translateY(-2px);
-    opacity: 1;
-  }
-  .featured-label {
-    color: var(--accent-deep);
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .featured-copy h2 {
-    color: var(--ink);
-    font-size: clamp(28px, 4vw, 46px);
-    line-height: 1.08;
-    letter-spacing: 0;
-    margin-bottom: 14px;
-  }
-  .featured-copy p:not(.featured-label) {
-    color: var(--muted);
-    max-width: 420px;
-    font-size: 15px;
-    line-height: 1.9;
-  }
-  .featured-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin: 18px 0 20px;
-  }
-  .featured-link {
-    color: var(--ink);
-    font-size: 13px;
-    font-weight: 900;
-  }
-  .featured-media {
-    min-height: 360px;
-    position: relative;
-  }
-  .featured-cover,
-  .featured-shot {
-    position: absolute;
-    width: min(76%, 430px);
-    max-height: 330px;
-    object-fit: contain;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 0 24px 50px -30px rgba(15, 23, 42, 0.74);
-  }
-  .featured-cover {
-    right: 8%;
-    top: 4%;
-    z-index: 2;
-  }
-  .featured-shot {
-    width: min(42%, 220px);
-    z-index: 3;
-  }
-  .featured-shot.shot-1 {
-    left: 0;
-    bottom: 2%;
-    transform: rotate(-4deg);
-  }
-  .featured-shot.shot-2 {
-    right: 0;
-    bottom: -2%;
-    transform: rotate(4deg);
-  }
 
-  .works-card {
-    margin-top: 16px;
-  }
-  .work-group + .work-group {
-    margin-top: 26px;
-  }
-  .work-group-head {
-    padding: 14px 0 10px;
-    border-top: 1px solid var(--line-strong);
-    border-bottom: 1px dashed var(--line);
-  }
-  .work-group-title {
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    margin: 0 0 2px;
-  }
-  .work-group-lede {
-    font-size: 12px;
-    color: var(--muted);
-    margin: 0;
-    letter-spacing: 0.02em;
-  }
-  .works-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .works-list li + li {
-    border-top: 1px solid var(--line);
-  }
-  .work-row {
+  /* --- featured 2-up --- */
+  .featured-row {
     display: grid;
-    grid-template-columns: 52px 1fr 30px;
-    align-items: center;
-    gap: 18px;
-    padding: 22px 0;
-    color: var(--brown-1);
-    text-decoration: none;
-    transition: opacity 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-cubic);
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: 22px;
+    margin-top: 6px;
   }
-  .work-row:hover {
-    opacity: 1;
-    transform: translateX(4px);
-    text-decoration: none;
-  }
-  .work-row:hover .work-more { color: var(--row-accent, var(--accent-deep)); transform: translateX(3px); }
-  .work-no {
-    font-size: 12px;
-    font-weight: 900;
-    color: var(--row-accent, var(--accent-deep));
-    letter-spacing: 0.08em;
-  }
-  .work-body { min-width: 0; }
-  .work-head {
+  .feat-card {
+    position: relative;
     display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  .work-title {
-    font-size: 20px;
-    font-weight: 900;
-    color: var(--brown-1);
-    letter-spacing: 0;
-  }
-  .work-platform {
-    display: inline-block;
-    padding: 3px 9px;
-    font-size: 10px;
-    font-weight: 900;
-    color: var(--muted);
+    flex-direction: column;
+    color: var(--ink);
+    text-decoration: none;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 999px;
-    letter-spacing: 0.06em;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 28px 64px -52px rgba(38, 52, 74, 0.5);
+    transition: transform 0.3s var(--ease-out-quint), box-shadow 0.3s var(--ease-out-quint);
   }
+  .feat-card:hover { transform: translateY(-3px); box-shadow: 0 36px 78px -48px rgba(38, 52, 74, 0.58); text-decoration: none; }
+  .feat-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+  .feat-media img { width: 100%; height: 100%; object-fit: cover; }
+  .feat-media .wl-mono { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-display); font-size: 90px; color: color-mix(in srgb, var(--accent) 70%, #fff); }
+  .feat-body { padding: 22px 24px 24px; }
+  .feat-label { color: var(--accent); font-size: 11px; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 10px; }
+  .feat-title { font-size: clamp(22px, 2.8vw, 30px); line-height: 1.12; margin-bottom: 10px; color: var(--ink); }
+  .feat-tag {
+    color: var(--muted); font-size: 14px; line-height: 1.85; margin-bottom: 14px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .feat-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+  .feat-link { font-size: 13px; font-weight: 900; color: var(--ink); }
+
+  /* dark variant (COSMO) */
+  .feat-dark { background: #0b1220; color: #eef2ff; border-color: rgba(255, 255, 255, 0.08); }
+  .feat-dark .feat-title { color: #fff; }
+  .feat-dark .feat-tag { color: rgba(238, 242, 255, 0.72); }
+  .feat-dark .feat-label { color: color-mix(in srgb, var(--accent) 60%, #fff); }
+  .feat-dark .feat-link { color: #fff; }
+
+  .feat-new {
+    position: absolute; top: 12px; right: 12px; z-index: 3;
+    padding: 4px 11px;
+    font-size: 11px; font-weight: 900; letter-spacing: 0.12em;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 999px;
+    box-shadow: 0 6px 16px -5px color-mix(in srgb, var(--accent) 75%, transparent), 0 0 0 2px rgba(255, 255, 255, 0.18);
+    animation: workNewPulse 1.6s ease-in-out infinite;
+  }
+
+  /* --- category blocks --- */
+  .work-cat + .work-cat { margin-top: 34px; }
+  .work-cat-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 2px solid var(--line-strong); }
+  .work-cat-title { font-size: 15px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brown-1); margin: 0; }
+  .work-cat-lede { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+  /* --- works icon list --- */
+  .work-list { list-style: none; margin: 0; padding: 0; }
+  .work-list li + li { border-top: 1px solid var(--line); }
+  .work-item {
+    display: grid;
+    grid-template-columns: 60px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 8px;
+    color: var(--brown-1);
+    text-decoration: none;
+    border-radius: 12px;
+    transition: background 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-quint);
+  }
+  .work-item:hover { background: color-mix(in srgb, var(--accent) 7%, var(--surface)); transform: translateX(3px); text-decoration: none; }
+  .work-ic {
+    width: 60px; height: 60px;
+    border-radius: 14px;
+    overflow: hidden;
+    display: grid; place-items: center;
+    background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 26%, var(--surface)), color-mix(in srgb, var(--accent) 10%, var(--surface)));
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+    box-shadow: 0 8px 18px -12px rgba(38, 52, 74, 0.4);
+  }
+  .work-ic img { width: 100%; height: 100%; object-fit: cover; }
+  .work-ic-mono { font-family: var(--font-display); font-size: 24px; font-weight: 900; color: color-mix(in srgb, var(--accent) 80%, #5d4037); }
+  .work-item[data-world="pinokun-stamps"] .work-ic img { width: 86%; height: 86%; object-fit: contain; }
+  .work-main { min-width: 0; }
+  .work-row-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 3px; }
+  .work-name { font-size: 18px; font-weight: 900; color: var(--brown-1); }
+  .work-desc { display: block; font-size: 13px; line-height: 1.6; color: var(--muted); }
+  .work-aside { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .work-plat { font-size: 10px; font-weight: 900; color: var(--muted); background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; letter-spacing: 0.05em; white-space: nowrap; }
+  .work-go { font-size: 17px; font-weight: 900; color: var(--muted); transition: transform 0.2s var(--ease-out-quint), color 0.2s; }
+  .work-item:hover .work-go { color: var(--accent); transform: translateX(3px); }
+
+  /* NEW / 準備中 バッジ（旧 Works から継続） */
   .work-new {
     display: inline-block;
     padding: 3px 8px;
@@ -672,19 +621,6 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
     border: 1px dashed var(--line);
     border-radius: 999px;
     letter-spacing: 0.08em;
-  }
-  .work-tag {
-    font-size: 13.5px;
-    line-height: 1.7;
-    color: var(--muted);
-    margin: 0;
-  }
-  .work-more {
-    justify-self: end;
-    font-size: 18px;
-    font-weight: 900;
-    color: var(--muted);
-    transition: color 0.2s var(--ease-out-cubic), transform 0.2s var(--ease-out-cubic);
   }
 
   /* ---------- About (profile card) ---------- */
@@ -889,6 +825,75 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
   }
 
   /* ---------- Responsive ---------- */
+  /* ============ WRITINGS — card grid ============ */
+  .writings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 4px; }
+  .writing-card {
+    --c: var(--accent-deep);
+    display: flex; flex-direction: column; gap: 9px;
+    padding: 18px 18px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--c);
+    border-radius: 12px;
+    color: var(--brown-1); text-decoration: none;
+    transition: transform 0.22s var(--ease-out-quint), box-shadow 0.22s var(--ease-out-quint);
+  }
+  .writing-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -30px rgba(38, 52, 74, 0.5); text-decoration: none; }
+  .wc-top { display: flex; align-items: center; gap: 10px; }
+  .wc-date { font-size: 11px; font-weight: 900; color: var(--muted); letter-spacing: 0.04em; }
+  .wc-app { font-size: 10px; font-weight: 900; color: #fff; background: var(--c); border-radius: 999px; padding: 2px 8px; }
+  .wc-title { font-size: 14.5px; font-weight: 800; line-height: 1.6; color: var(--brown-1); flex: 1; }
+  .wc-go { font-size: 12px; font-weight: 900; color: var(--c); align-self: flex-start; }
+  .writings-more { margin-top: 16px; text-align: right; }
+  .writings-more a { font-size: 12px; font-weight: 900; }
+
+  /* ============ ABOUT — full-width warm band + split ============ */
+  .about-section {
+    margin: 10px 0;
+    padding-top: 42px; padding-bottom: 42px;
+    background:
+      radial-gradient(900px circle at 18% 0%, rgba(255, 216, 77, 0.20), transparent 55%),
+      linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .about-section .about-card {
+    max-width: none;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 30px;
+    padding: 30px 34px;
+  }
+  .about-section .about-head { flex-direction: column; text-align: center; gap: 10px; margin-bottom: 0; align-self: center; }
+  .about-section .about-avatar { width: 96px; height: 96px; }
+  .about-text { min-width: 0; }
+  .about-section .about-likes { margin-top: 14px; padding-top: 14px; }
+
+  /* ============ CONTACT — full-width dark closing band ============ */
+  .contact-section {
+    margin-top: 10px;
+    padding-top: 46px; padding-bottom: 56px;
+    background:
+      radial-gradient(720px circle at 82% 6%, rgba(110, 231, 183, 0.10), transparent 55%),
+      linear-gradient(160deg, #11233a, #0b1220);
+  }
+  .contact-section :global(.section-title) { color: #fff; }
+  .contact-section :global(.lede) { color: rgba(238, 242, 255, 0.72); }
+  .contact-section .contact-panel { max-width: 760px; border-top-color: rgba(255, 255, 255, 0.12); }
+  .contact-section .contact-subhead { color: rgba(238, 242, 255, 0.55); border-top-color: rgba(255, 255, 255, 0.12); }
+  .contact-section .social-card { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.12); color: #dbe4f3; }
+  .contact-section .social-card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.3); }
+  .contact-section .social-ic { background: rgba(255, 255, 255, 0.08); }
+  .contact-section .social-handle { color: #eef2ff; }
+  .contact-section .copy-hint { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); color: #cdd7e8; }
+
+  @media (max-width: 700px) {
+    .writings-grid { grid-template-columns: 1fr; }
+    .about-section .about-card { grid-template-columns: 1fr; gap: 18px; padding: 24px 22px; }
+    .about-section .about-text { text-align: left; }
+  }
+
   @media (max-width: 780px) {
     .hero { padding: 28px 0 14px; }
     .hero-inner {
@@ -911,15 +916,11 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
     .hero-stats dt { font-size: 18px; }
     .hero-stats dd { font-size: 9.5px; }
 
-    .work-row {
-      grid-template-columns: 30px 1fr 18px;
-      gap: 10px;
-      padding: 16px 0;
-    }
-    .work-no { font-size: 11px; letter-spacing: 0.05em; }
-    .work-title { font-size: 17px; }
-    .work-platform { font-size: 10px; padding: 1px 7px; }
-    .work-tag { font-size: 12px; line-height: 1.65; }
+    .work-item { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; padding: 14px 4px; }
+    .work-ic { width: 52px; height: 52px; border-radius: 12px; }
+    .work-name { font-size: 16px; }
+    .work-desc { font-size: 12px; }
+    .work-aside { grid-column: 2 / 3; justify-content: flex-start; gap: 8px; margin-top: 4px; }
 
     .about-meta div {
       grid-template-columns: 70px 1fr;
@@ -927,29 +928,8 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
       font-size: 12px;
     }
 
-    .featured-card {
-      grid-template-columns: 1fr;
-      gap: 20px;
-      padding: 24px 18px;
-      min-height: 0;
-    }
-    .featured-pino {
-      right: 10px;
-      top: 10px;
-      width: 62px;
-    }
-    .featured-media {
-      min-height: 310px;
-      order: -1;
-    }
-    .featured-cover {
-      width: 76%;
-      right: 4%;
-      top: 4%;
-    }
-    .featured-shot {
-      width: 42%;
-    }
+    .featured-row { grid-template-columns: 1fr; gap: 16px; }
+    .feat-body { padding: 20px 20px 22px; }
   }
 
   @media (max-width: 520px) {
@@ -960,9 +940,9 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
   }
 
   @media (max-width: 360px) {
-    .work-row { padding: 12px 10px; }
-    .work-title { font-size: 13.5px; }
-    .work-tag { font-size: 11.5px; }
+    .work-item { gap: 10px; }
+    .work-ic { width: 46px; height: 46px; }
+    .work-name { font-size: 15px; }
     .about-meta div { grid-template-columns: 60px 1fr; font-size: 11.5px; }
   }
 </style>

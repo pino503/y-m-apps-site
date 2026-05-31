@@ -8,6 +8,7 @@ storeUrl: https://store.line.me/stickershop/author/1039160/ja
 storeLabel: LINE STORE クリエイターページ
 order: 6
 category: sticker
+iconImage: /assets/apps/pinokun-stamps-icon.png
 features:
   - title: 日常会話の温度を上げる
     body: 喜怒哀楽から軽いツッコミまで、ふだんのトークに使いやすい表情を揃えています。
