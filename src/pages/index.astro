@@ -223,8 +223,10 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
   {/* ============== OMIKUJI (fun) ============== */}
   <Omikuji />
 
+  <hr class="retro-hr" />
+
   {/* ============== ABOUT ============== */}
-  <section id="about" class="stack-section about-section">
+  <section id="about" class="stack-section">
     <div class="container">
       <SectionHead
         title="About"
@@ -239,24 +241,24 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
             <a class="about-handle" href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">@Pinopino503</a>
           </div>
         </div>
-        <div class="about-text">
-          <div class="about-body">
-            <p>Android と Web を中心に、AI を相棒にアプリ・拡張機能・ゲーム・LINE スタンプを作っている個人開発者です。</p>
-            <p>「使い続けられる」「無理なく続く」── そんな、静かに暮らしへ馴染むものを目指しています。</p>
-          </div>
-          <ul class="about-likes" aria-label="好きなもの">
-            <li>📖 読書</li>
-            <li>⚾ 野球</li>
-            <li>☕ コーヒー</li>
-            <li>🛠 小さな道具</li>
-          </ul>
+        <div class="about-body">
+          <p>Android と Web を中心に、AI を相棒にアプリ・拡張機能・ゲーム・LINE スタンプを作っている個人開発者です。</p>
+          <p>「使い続けられる」「無理なく続く」── そんな、静かに暮らしへ馴染むものを目指しています。</p>
         </div>
+        <ul class="about-likes" aria-label="好きなもの">
+          <li>📖 読書</li>
+          <li>⚾ 野球</li>
+          <li>☕ コーヒー</li>
+          <li>🛠 小さな道具</li>
+        </ul>
       </div>
     </div>
   </section>
 
+  <hr class="retro-hr" />
+
   {/* ============== CONTACT (Press 統合) ============== */}
-  <section id="contact" class="stack-section contact-section">
+  <section id="contact" class="stack-section">
     <div class="container">
       <SectionHead
         title="Contact"
@@ -847,51 +849,8 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
   .writings-more { margin-top: 16px; text-align: right; }
   .writings-more a { font-size: 12px; font-weight: 900; }
 
-  /* ============ ABOUT — full-width warm band + split ============ */
-  .about-section {
-    margin: 10px 0;
-    padding-top: 42px; padding-bottom: 42px;
-    background:
-      radial-gradient(900px circle at 18% 0%, rgba(255, 216, 77, 0.20), transparent 55%),
-      linear-gradient(180deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-  }
-  .about-section .about-card {
-    max-width: none;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    gap: 30px;
-    padding: 30px 34px;
-  }
-  .about-section .about-head { flex-direction: column; text-align: center; gap: 10px; margin-bottom: 0; align-self: center; }
-  .about-section .about-avatar { width: 96px; height: 96px; }
-  .about-text { min-width: 0; }
-  .about-section .about-likes { margin-top: 14px; padding-top: 14px; }
-
-  /* ============ CONTACT — full-width dark closing band ============ */
-  .contact-section {
-    margin-top: 10px;
-    padding-top: 46px; padding-bottom: 56px;
-    background:
-      radial-gradient(720px circle at 82% 6%, rgba(110, 231, 183, 0.10), transparent 55%),
-      linear-gradient(160deg, #11233a, #0b1220);
-  }
-  .contact-section :global(.section-title) { color: #fff; }
-  .contact-section :global(.lede) { color: rgba(238, 242, 255, 0.72); }
-  .contact-section .contact-panel { max-width: 760px; border-top-color: rgba(255, 255, 255, 0.12); }
-  .contact-section .contact-subhead { color: rgba(238, 242, 255, 0.55); border-top-color: rgba(255, 255, 255, 0.12); }
-  .contact-section .social-card { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.12); color: #dbe4f3; }
-  .contact-section .social-card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.3); }
-  .contact-section .social-ic { background: rgba(255, 255, 255, 0.08); }
-  .contact-section .social-handle { color: #eef2ff; }
-  .contact-section .copy-hint { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); color: #cdd7e8; }
-
   @media (max-width: 700px) {
     .writings-grid { grid-template-columns: 1fr; }
-    .about-section .about-card { grid-template-columns: 1fr; gap: 18px; padding: 24px 22px; }
-    .about-section .about-text { text-align: left; }
   }
 
   @media (max-width: 780px) {
