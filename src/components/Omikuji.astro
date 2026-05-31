@@ -144,6 +144,42 @@
     to   { opacity: 1; transform: translateY(0) scale(1); }
   }
 
+  /* result badge: "stamp press" entrance (like pressing a hanko) */
+  .omikuji-level { position: relative; animation: omiStamp 0.5s var(--ease-out-quint) both; }
+  @keyframes omiStamp {
+    0%   { opacity: 0; transform: rotate(-2deg) scale(1.5); }
+    55%  { opacity: 1; transform: rotate(-2deg) scale(0.92); }
+    72%  { transform: rotate(-2deg) scale(1.06); }
+    100% { transform: rotate(-2deg) scale(1); }
+  }
+  /* good-fortune sparkles around the badge (大吉/中吉/吉) */
+  .omi-spark {
+    position: absolute;
+    width: 7px; height: 7px; margin: -3.5px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #ffd54f 55%, transparent 72%);
+    pointer-events: none; opacity: 0; z-index: 2;
+    animation: omiSpark 0.9s var(--ease-out-quint) both;
+  }
+  @keyframes omiSpark {
+    0%   { opacity: 0; transform: translate(0, 0) scale(0.2); }
+    35%  { opacity: 1; transform: translate(var(--dx, 0), var(--dy, 0)) scale(1.1); }
+    100% { opacity: 0; transform: translate(calc(var(--dx, 0) * 1.4), calc(var(--dy, 0) * 1.4 - 6px)) scale(0.3); }
+  }
+  /* ぴのくん gives a little hop on a good result */
+  .omikuji-card.is-happy .omikuji-pino { animation: omiHop 0.7s var(--ease-out-quint); }
+  @keyframes omiHop {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
+    55% { transform: translateY(0); }
+    72% { transform: translateY(-4px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .omikuji-level { animation: none; }
+    .omikuji-card.is-happy .omikuji-pino { animation: none; }
+    .omi-spark { display: none; }
+  }
+
   @media (max-width: 600px) {
     .omikuji-card { grid-template-columns: 1fr; gap: 12px; padding: 22px 18px; text-align: left; }
     .omikuji-pino { width: 80px; justify-self: start; }
@@ -222,6 +258,24 @@
   }
   function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 
+  // a few soft golden sparkles bursting around the result badge (good fortunes)
+  function spawnSparkles(anchor: HTMLElement, n: number) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("span");
+      s.className = "omi-spark";
+      const ang = (Math.PI * 2 * i) / n + Math.random() * 0.6;
+      const dist = 14 + Math.random() * 16;
+      s.style.left = (10 + Math.random() * 80) + "%";
+      s.style.top = (Math.random() * 100) + "%";
+      s.style.setProperty("--dx", (Math.cos(ang) * dist).toFixed(1) + "px");
+      s.style.setProperty("--dy", (Math.sin(ang) * dist - 6).toFixed(1) + "px");
+      s.style.animationDelay = (i * 0.04).toFixed(2) + "s";
+      anchor.appendChild(s);
+      setTimeout(() => s.remove(), 1020 + i * 40);
+    }
+  }
+
   function initOmikuji() {
     const card = document.querySelector<HTMLElement>(".omikuji-card");
     if (!card || (card as any)._omiInit) return;
@@ -256,6 +310,15 @@
         colorEl.textContent = col.n;
         result.hidden = false;
         result.style.animation = "none"; void result.offsetWidth; result.style.animation = "";
+        // stamp-press the level badge (replay each draw)
+        levelEl.style.animation = "none"; void levelEl.offsetWidth; levelEl.style.animation = "";
+        // celebrate good fortunes: ぴのくん hops + soft sparkles
+        card.classList.remove("is-happy");
+        if (lv.good >= 1) {
+          void card.offsetWidth;
+          card.classList.add("is-happy");
+          spawnSparkles(levelEl, lv.good >= 2 ? 6 : 4);
+        }
         if (sfx) sfx.chime(lv.good);
         busy = false;
       }, 520);

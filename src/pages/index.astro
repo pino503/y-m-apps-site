@@ -49,7 +49,7 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="hero-kicker">Solo software studio by PINO</p>
-        <h1>小さなアイデアを、<br />かたちに。</h1>
+        <h1><span class="hl-line">小さなアイデアを、</span><span class="hl-line">かたちに。</span></h1>
         <p class="hero-lede">
           Android アプリ、Chrome 拡張、Web ゲーム、LINE スタンプ。読書や野球、日々のちょっとした不便から生まれたプロダクトをまとめています。
         </p>
@@ -431,6 +431,33 @@ const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  /* ---- hero entrance — tasteful, line-by-line stagger on load ---- */
+  .hero-copy h1 .hl-line { display: block; }
+  @keyframes heroRise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heroPoster {
+    from { opacity: 0; transform: translateY(18px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .hero-kicker,
+  .hero-copy h1 .hl-line,
+  .hero-lede,
+  .hero-actions,
+  .hero-stats { animation: heroRise 0.7s var(--ease-out-quint) both; }
+  .hero-kicker { animation-delay: 0.06s; }
+  .hero-copy h1 .hl-line:nth-child(1) { animation-delay: 0.14s; }
+  .hero-copy h1 .hl-line:nth-child(2) { animation-delay: 0.24s; }
+  .hero-lede { animation-delay: 0.38s; }
+  .hero-actions { animation-delay: 0.50s; }
+  .hero-stats { animation-delay: 0.58s; }
+  .hero-poster-img { animation: heroPoster 0.9s var(--ease-out-quint) both; animation-delay: 0.1s; }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-kicker, .hero-copy h1 .hl-line, .hero-lede,
+    .hero-actions, .hero-stats, .hero-poster-img { animation: none; }
   }
 
   .featured-section {
