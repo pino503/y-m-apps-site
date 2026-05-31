@@ -2,7 +2,7 @@
 // Strategy: network-first for HTML so updates always reach the user,
 // cache-first for icons/manifest so the app shell loads instantly offline.
 
-const CACHE_VERSION = "v2.0.0";
+const CACHE_VERSION = "v2.0.1";
 const CACHE_NAME = `cosmo-cleaner-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
@@ -11,6 +11,7 @@ const PRECACHE_URLS = [
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./audio/Dead_Orbit_Salvage.mp3",
 ];
 
 self.addEventListener("install", (event) => {

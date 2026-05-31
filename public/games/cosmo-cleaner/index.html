@@ -618,6 +618,32 @@ function startBGM(){ if(!AC||bgmOn) return; bgmOn=true; bstep=0; nextNote=AC.cur
 function stopBGM(){ bgmOn=false; if(bgmTick) clearTimeout(bgmTick); bgmTick=null; }
 function setBGM(mode){ if(bgmMode!==mode){ bgmMode=mode; bstep=0; } }
 
+/* ---------- Title screen BGM: real MP3 track (Dead Orbit Salvage) ---------- */
+let titleBgm=null, titleBgmPrev=false, titleArmed=false;
+function ensureTitleBgm(){
+  if(!titleBgm){
+    titleBgm=new Audio('audio/Dead_Orbit_Salvage.mp3');
+    titleBgm.loop=true; titleBgm.preload='auto'; titleBgm.volume=0.5;
+  }
+  return titleBgm;
+}
+function startTitleBgm(){ const a=ensureTitleBgm(); const p=a.play(); if(p&&p.catch) p.catch(()=>{}); }
+function stopTitleBgm(){ if(titleBgm){ titleBgm.pause(); try{ titleBgm.currentTime=0; }catch(_){} } }
+// Title BGM follows the title state: starts on entry, stops when a run begins
+// (the chiptune explore/boss BGM takes over). Browser autoplay rules mean the
+// first-ever title view may stay silent until a user gesture, but every later
+// return to the title plays immediately (audio already unlocked).
+function syncTitleBgm(){
+  const onTitle=(G.state==='title');
+  if(onTitle && !titleBgmPrev) startTitleBgm();
+  else if(!onTitle && titleBgmPrev) stopTitleBgm();
+  titleBgmPrev=onTitle;
+}
+// Retry the moment a user gesture unlocks audio, while still on the title.
+function _titleBgmUnlock(){ if(G.state==='title' && titleBgm && titleBgm.paused) startTitleBgm(); }
+window.addEventListener('pointerdown', _titleBgmUnlock, true);
+window.addEventListener('keydown', _titleBgmUnlock, true);
+
 /* ============================================================
    BALANCE — all gameplay tuning lives here.
    Change a value here and the whole game reflects it.
@@ -907,6 +933,9 @@ function press(e){
       vHoldId = e.touches ? e.changedTouches[0].identifier : 'mouse';
       return;
     }
+    // first tap arms the title: unlock + start the title BGM and stay on the
+    // title so it is actually heard from the very first launch. Next tap plays.
+    if(!titleArmed){ titleArmed=true; startTitleBgm(); return; }
     begin(); return;
   }
   if(G.state==='select'){
@@ -983,7 +1012,7 @@ window.addEventListener('keydown',e=>{
     return;
   }
   if(e.key===' '||e.key==='Enter'){
-    if(G.state==='title') begin();
+    if(G.state==='title'){ if(!titleArmed){ titleArmed=true; startTitleBgm(); } else begin(); }
     else if((G.state==='clear'||G.state==='over')&&G.t>40){ reset(); G.state='title'; }
     else fire();
   }
@@ -2798,13 +2827,13 @@ function render(){
     }
     ctx.save(); ctx.shadowColor=UI.amber; ctx.shadowBlur=8;
     blit(SPR.ship, LW/2, vy+vh/2+Math.sin(G.t*0.08)*2); ctx.restore();
-    // prompt to start
+    // prompt to start — first tap arms (sound on), next tap plays
     if((G.t>>4)&1){
-      glowCenter('> PRESS START', 250, UI.amberHi, 1, 8);
+      glowCenter(titleArmed ? '> TAP TO PLAY' : '> PRESS START', 250, UI.amberHi, 1, 8);
     } else {
       glowCenter('> _', 250, UI.amberHi, 1, 8);
     }
-    center('TAP / SPACE', 264, UI.amberDim, 1);
+    center(titleArmed ? 'SOUND ON' : 'TAP / SPACE', 264, titleArmed ? UI.green : UI.amberDim, 1);
     drawBudget(54, 290);
     center('© Y.M Apps', 312, UI.amberDark, 1);
     return;
@@ -4004,6 +4033,7 @@ function loop(now){
     steps++;
   }
   if(steps >= MAX_CATCHUP) _acc = 0;  // drop residue if we hit the cap
+  syncTitleBgm();
   render();
   requestAnimationFrame(loop);
 }
