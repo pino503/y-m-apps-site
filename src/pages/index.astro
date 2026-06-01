@@ -463,7 +463,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .feat-more svg{ width:17px; transition:transform .2s; }
   .feat-more:hover{ opacity:1; text-decoration:none; }
   .feat-more:hover svg{ transform:translateX(4px); }
-  .feat-visual{ position:absolute; right:-6px; bottom:0; width:52%; height:100%; pointer-events:none; }
+  .feat-visual{ position:absolute; right:48px; bottom:0; width:52%; height:100%; pointer-events:none; }
   .feat-phone{ position:absolute; border-radius:16px; box-shadow:var(--sh-3); border:3px solid #fff; width:152px; }
   .feat-phone.a{ right:118px; bottom:58px; transform:rotate(-9deg); z-index:2; }
   .feat-phone.b{ right:4px; bottom:96px; transform:rotate(7deg); z-index:1; width:140px; }
@@ -497,7 +497,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .app-ico img{ width:100%; height:100%; object-fit:cover; }
   .app-ic-mono{ font-family:var(--font-display); font-weight:900; font-size:18px; color:var(--gold-deep); }
   .app-name{ font-family:var(--font-display); font-weight:700; font-size:16px; white-space:nowrap; color:var(--ink); }
-  .app-mid{ display:flex; flex-direction:column; gap:5px; min-width:0; flex:1; }
+  .app-mid{ display:flex; flex-direction:column; gap:5px; min-width:0; flex:1; margin-left:14px; }
   .app-tags{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
   .app-desc{ color:var(--ink-2); font-size:13.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .app-arrow{ flex:none; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; color:var(--ink-3); border:1px solid var(--line); transition:.18s; }
@@ -661,7 +661,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
        second line (otherwise the long name squeezes the description to nothing) */
     .app-row{ flex-wrap:wrap; }
     .app-arrow{ order:1; margin-left:auto; }
-    .app-mid{ order:2; flex-basis:100%; }
+    .app-mid{ order:2; flex-basis:100%; margin-left:0; }
     /* Writings rows: title full-width on top (no ellipsis), 日付+読む below —
        otherwise the title is squeezed to almost nothing on phones */
     .write-row{ flex-wrap:wrap; gap:5px 12px; }
