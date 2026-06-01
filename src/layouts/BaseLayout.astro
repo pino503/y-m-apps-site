@@ -48,6 +48,11 @@ const siteName = "Y.M Apps";
     <main id="main"><slot /></main>
     <Footer />
 
+    <!-- back to top (appears after scrolling; persists across page transitions) -->
+    <button id="to-top" class="to-top" type="button" aria-label="ページの先頭へ戻る" title="先頭へ戻る" transition:persist>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V7M6 13l6-6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+
     <!-- sound toggle (persists across page transitions) -->
     <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="true" aria-label="効果音の切り替え" title="効果音のオン / オフ" transition:persist>
       <span class="st-on" aria-hidden="true">🔊</span>
@@ -175,6 +180,15 @@ const siteName = "Y.M Apps";
         Sound.toggle();
         syncToggle();
       });
+
+      // back-to-top: show after scrolling, smooth-scroll to the top on click
+      document.addEventListener("click", (e) => {
+        if ((e.target as Element)?.closest?.("#to-top")) window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      const toTopBtn = document.getElementById("to-top");
+      function syncToTop() { if (toTopBtn) toTopBtn.classList.toggle("show", window.scrollY > 500); }
+      window.addEventListener("scroll", syncToTop, { passive: true });
+      syncToTop();
 
       // smooth scroll for in-page anchors (delegated)
       document.addEventListener("click", (e) => {
