@@ -218,7 +218,8 @@ const siteName = "Y.M Apps";
           .forEach((el) => phraseWrap(el));
       }
 
-      function onPageLoad() { setupReveals(); setupSheen(); syncToggle(); bindOrphans(); }
+      // 本文の改行は CSS の text-wrap:balance に一本化（旧 phrase-wrap は不使用）
+      function onPageLoad() { setupReveals(); setupSheen(); syncToggle(); }
       document.addEventListener("astro:page-load", onPageLoad);
       if (document.readyState !== "loading") onPageLoad();
       else document.addEventListener("DOMContentLoaded", onPageLoad);

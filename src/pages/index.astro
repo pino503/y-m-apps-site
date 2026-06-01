@@ -409,7 +409,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         slip!.classList.remove("rank-daikichi");
         if (rank.cls) slip!.classList.add(rank.cls);
         if (sealEl) { sealEl.src = "/assets/omikuji/" + rank.file + ".png"; sealEl.alt = rank.r; }
-        if (poemEl) { poemEl.textContent = poem; (window as any).ymNoOrphan?.(poemEl); } // 句読点で自然に折り返す
+        if (poemEl) poemEl.textContent = poem; // 折り返しは CSS の text-wrap:balance に任せる
         if (starsEl) starsEl.innerHTML = stars(rank.stars);
         if (itemEl) itemEl.textContent = item;
         if (swEl) swEl.style.background = col.c;
@@ -449,6 +449,8 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .hero h1 .spark{ position:absolute; top:-26px; left:-30px; width:46px; height:46px; }
   /* text-wrap:balance で各行の幅を均等に（句読点改行だと行が不揃いになるため） */
   .hero p.lead{ font-size:16.5px; color:var(--ink-2); max-width:48ch; margin:0 0 30px; line-height:1.9; text-wrap:balance; }
+  /* 本文系テキストも行幅を均等化して改行の違和感をなくす */
+  .sec-sub, .omi-lead, .feat-main p, .feat-side p, .about-body p, .copy-hint, .omi-poem{ text-wrap:balance; }
   .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:40px; }
   .stats{ display:flex; gap:42px; }
   .stat .num{ font-family:var(--font-display); font-weight:900; font-size:34px; line-height:1; color:var(--ink); }
