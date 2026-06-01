@@ -57,6 +57,8 @@ const writings = defineCollection({
     url: z.string().url(),
     summary: z.string().optional(),
     relatedApp: z.string().optional(),
+    // テーマ別ジャンル — Writings 一覧でタグ表示（E-Ink / AI活用 / 開発の裏側 など）
+    genre: z.string().optional(),
   }),
 });
 
