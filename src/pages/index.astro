@@ -140,11 +140,13 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
                       ? <img src={app.data.iconImage} alt="" loading="lazy" />
                       : <span class="app-ic-mono">{app.data.title.slice(0, 1)}</span>}
                   </span>
-                  <span class="app-name">{app.data.title}</span>
-                  <span class="app-mid">
-                    <span class="app-tags">
-                      {app.data.isNew && <span class="badge-new">NEW</span>}
-                      {app.data.badges.slice(0, 2).map((b) => <span class="chip">{b}</span>)}
+                  <span class="app-body">
+                    <span class="app-head">
+                      <span class="app-name">{app.data.title}</span>
+                      <span class="app-tags">
+                        {app.data.isNew && <span class="badge-new">NEW</span>}
+                        {app.data.badges.slice(0, 2).map((b) => <span class="chip">{b}</span>)}
+                      </span>
                     </span>
                     <span class="app-desc">{app.data.tagline}</span>
                   </span>
@@ -496,8 +498,11 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .app-ico{ width:38px; height:38px; border-radius:10px; flex:none; background:var(--paper-soft); border:1px solid var(--line); overflow:hidden; display:grid; place-items:center; }
   .app-ico img{ width:100%; height:100%; object-fit:cover; }
   .app-ic-mono{ font-family:var(--font-display); font-weight:900; font-size:18px; color:var(--gold-deep); }
+  /* content column: starts at a consistent x for every row (after the icon),
+     name + tags share the top line, description sits directly below them */
+  .app-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; }
+  .app-head{ display:flex; align-items:center; gap:10px 12px; flex-wrap:wrap; }
   .app-name{ font-family:var(--font-display); font-weight:700; font-size:16px; white-space:nowrap; color:var(--ink); }
-  .app-mid{ display:flex; flex-direction:column; gap:5px; min-width:0; flex:1; margin-left:14px; }
   .app-tags{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
   .app-desc{ color:var(--ink-2); font-size:13.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .app-arrow{ flex:none; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; color:var(--ink-3); border:1px solid var(--line); transition:.18s; }
@@ -659,9 +664,10 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     .hero h1 .spark{ left:-10px; top:-20px; width:36px; height:36px; }
     /* Works rows: wrap so アイコン+名前+矢印 sit on top and タグ+説明 get a full
        second line (otherwise the long name squeezes the description to nothing) */
-    .app-row{ flex-wrap:wrap; }
-    .app-arrow{ order:1; margin-left:auto; }
-    .app-mid{ order:2; flex-basis:100%; margin-left:0; }
+    /* let the description wrap (it shares the content column with the icon+arrow
+       on the sides, so it would otherwise truncate on a phone) */
+    .app-desc{ white-space:normal; overflow:visible; text-overflow:clip; }
+    .work-group{ padding:22px 16px; }
     /* Writings rows: title full-width on top (no ellipsis), 日付+読む below —
        otherwise the title is squeezed to almost nothing on phones */
     .write-row{ flex-wrap:wrap; gap:5px 12px; }
