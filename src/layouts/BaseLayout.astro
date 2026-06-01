@@ -91,6 +91,18 @@ const siteName = "Y.M Apps";
           o.start(t); o.stop(t + dur + 0.02);
         }
 
+        // --- real audio files (mp3) — respects mute ---
+        const PRESS_SRC = "/assets/audio/decision.mp3";
+        const SHAKE_SRC = "/assets/audio/omikuji-shake.mp3"; // おみくじを振る音（このファイルを置けば鳴る）
+        const pressPool: HTMLAudioElement[] = [];
+        try { for (let i = 0; i < 4; i++) { const a = new Audio(PRESS_SRC); a.preload = "auto"; a.volume = 0.55; pressPool.push(a); } } catch {}
+        let pressIdx = 0;
+        let shakeEl: HTMLAudioElement | null = null;
+        function playFile(a: HTMLAudioElement | null) {
+          if (muted || !a) return;
+          try { a.currentTime = 0; const p = a.play(); if (p && (p as any).catch) (p as any).catch(() => {}); } catch {}
+        }
+
         let lastTick = 0;
         return {
           tick() { const now = performance.now(); if (now - lastTick < 45) return; lastTick = now; blip(1760 + Math.random() * 120, 0.03, "triangle", 0.018, 2100); },
@@ -100,11 +112,13 @@ const siteName = "Y.M Apps";
             const n = good >= 2 ? 4 : good >= 1 ? 3 : 2;
             for (let i = 0; i < n; i++) blip(base[i], 0.22, "triangle", 0.05, base[i] * 1.5, i * 0.085);
           },
+          press() { if (muted || !pressPool.length) return; const a = pressPool[pressIdx]; pressIdx = (pressIdx + 1) % pressPool.length; playFile(a); },
+          shake() { if (muted) return; if (!shakeEl) { try { shakeEl = new Audio(SHAKE_SRC); shakeEl.volume = 0.5; } catch {} } playFile(shakeEl); },
           enabled() { return !muted; },
           toggle() {
             muted = !muted;
             try { localStorage.setItem("ym-sound", muted ? "off" : "on"); } catch {}
-            if (!muted) this.pop();
+            if (!muted) this.press();
             return !muted;
           },
         };
@@ -131,7 +145,7 @@ const siteName = "Y.M Apps";
       });
       document.addEventListener("pointerdown", (e) => {
         if ((e.target as Element)?.closest?.("#sound-toggle")) return;
-        if (isInteractive(e.target as Element)) Sound.pop();
+        if (isInteractive(e.target as Element)) Sound.press();
       });
 
       // sound toggle

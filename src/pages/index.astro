@@ -480,6 +480,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
       drawing = true;
       slip!.classList.remove("show");
       box!.classList.remove("shake"); void box!.offsetWidth; box!.classList.add("shake");
+      (window as any).ymSfx?.shake?.(); // 箱を振る音
 
       window.setTimeout(() => {
         const rank = rollRank();
@@ -501,7 +502,6 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         slip!.classList.add("show");
         if (press) press.style.opacity = "0";
         box!.classList.remove("shake");
-        (window as any).ymSfx?.chime?.(rank.stars >= 4 ? 2 : rank.stars >= 2 ? 1 : 0);
         drawing = false;
       }, 640); // 箱のシェイク時間に合わせ、箱が「収まる」瞬間にスリップを出す
     }
