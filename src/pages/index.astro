@@ -211,7 +211,25 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
               </button>
               <button class="btn btn-outline btn-sm omi-again" data-omikuji-again>もう一度引く</button>
             </div>
-            <div class="omi-slip" data-omikuji-slip aria-live="polite"></div>
+            {/* 構造は Astro 側で描画（=スコープ属性が付き .omi-* スタイルが効く）。
+                JS は data-omi-* の値とランククラスだけを差し替える。 */}
+            <div class="omi-slip" data-omikuji-slip aria-live="polite">
+              <div class="omi-paper">
+                <div class="omi-paper-head">
+                  <span class="omi-vtitle">おみくじ</span>
+                  <img class="omi-head-plum" src="/assets/omikuji/plum-v2.png" alt="" loading="lazy" />
+                </div>
+                <div class="omi-paper-main">
+                  <img class="omi-seal" alt="" data-omi-seal />
+                  <p class="omi-poem" data-omi-poem></p>
+                </div>
+                <dl class="omi-rows">
+                  <div class="omi-row"><dt>総合運</dt><dd><span class="omi-stars" data-omi-stars></span></dd></div>
+                  <div class="omi-row"><dt>ラッキーアイテム</dt><dd data-omi-item></dd></div>
+                  <div class="omi-row"><dt>ラッキーカラー</dt><dd><span class="omi-sw" data-omi-sw></span><span data-omi-color></span></dd></div>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -310,6 +328,13 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     const press = card.querySelector(".omi-press") as HTMLElement | null;
     const triggers = document.querySelectorAll("[data-omikuji]");
     const again = document.querySelector("[data-omikuji-again]");
+    // dynamic slots inside the server-rendered slip (these have scope attrs)
+    const sealEl = slip.querySelector("[data-omi-seal]") as HTMLImageElement | null;
+    const poemEl = slip.querySelector("[data-omi-poem]") as HTMLElement | null;
+    const starsEl = slip.querySelector("[data-omi-stars]") as HTMLElement | null;
+    const itemEl = slip.querySelector("[data-omi-item]") as HTMLElement | null;
+    const swEl = slip.querySelector("[data-omi-sw]") as HTMLElement | null;
+    const colorEl = slip.querySelector("[data-omi-color]") as HTMLElement | null;
 
     const items = [
       "湯気の立つコーヒー", "読みかけの文庫本", "新しいメモ帳", "お気に入りのイヤホン",
@@ -360,7 +385,9 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     }
     function stars(n: number) {
       let s = "";
-      for (let i = 0; i < 5; i++) s += i < n ? "★" : '<span class="off">★</span>';
+      // off-stars are injected via innerHTML, so color them inline (scoped CSS
+      // can't reach runtime-injected nodes).
+      for (let i = 0; i < 5; i++) s += i < n ? "★" : '<span class="off" style="color:#e0cfa6">★</span>';
       return s;
     }
 
@@ -376,24 +403,19 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         const item = pick(items);
         const col = pick(colors);
         const poem = pick(poems[rank.r]);
-        slip!.className = "omi-slip " + rank.cls;
-        slip!.innerHTML =
-          '<div class="omi-paper">' +
-            '<div class="omi-paper-head"><span class="omi-vtitle">おみくじ</span><img class="omi-head-plum" src="/assets/omikuji/plum-v2.png" alt="" /></div>' +
-            '<div class="omi-paper-main">' +
-              '<img class="omi-seal" src="/assets/omikuji/' + rank.file + '.png" alt="' + rank.r + '" />' +
-              '<p class="omi-poem">' + poem + '</p>' +
-            '</div>' +
-            '<dl class="omi-rows">' +
-              '<div class="omi-row"><dt>総合運</dt><dd><span class="omi-stars">' + stars(rank.stars) + '</span></dd></div>' +
-              '<div class="omi-row"><dt>ラッキーアイテム</dt><dd>' + item + '</dd></div>' +
-              '<div class="omi-row"><dt>ラッキーカラー</dt><dd><span class="omi-sw" style="background:' + col.c + '"></span>' + col.n + '</dd></div>' +
-            '</dl>' +
-          '</div>';
-        void slip!.offsetWidth;
-        slip!.classList.add("show");
+        // only swap the dynamic values + rank class; structure stays in the DOM
+        slip!.classList.remove("rank-daikichi");
+        if (rank.cls) slip!.classList.add(rank.cls);
+        if (sealEl) { sealEl.src = "/assets/omikuji/" + rank.file + ".png"; sealEl.alt = rank.r; }
+        if (poemEl) poemEl.textContent = poem;
+        if (starsEl) starsEl.innerHTML = stars(rank.stars);
+        if (itemEl) itemEl.textContent = item;
+        if (swEl) swEl.style.background = col.c;
+        if (colorEl) colorEl.textContent = col.n;
         if (stage) stage.classList.add("drawn");
-        card!.classList.add("drawn");
+        card!.classList.add("drawn"); // makes the slip display:block …
+        void slip!.offsetWidth;       // … reflow so the opacity/transform transition fires
+        slip!.classList.add("show");
         if (press) press.style.opacity = "0";
         box!.classList.remove("shake");
         (window as any).ymSfx?.chime?.(rank.stars >= 4 ? 2 : rank.stars >= 2 ? 1 : 0);
@@ -543,11 +565,13 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .omikuji.drawn .omi-again{ display:inline-flex; }
 
   /* the paper slip — authentic omikuji */
-  .omi-slip{ margin-top:24px; max-width:452px; position:relative; padding:7px;
+  /* hidden (and out of layout) until the first draw, then revealed via show */
+  .omi-slip{ display:none; margin-top:24px; max-width:452px; position:relative; padding:7px;
     background:linear-gradient(165deg,#b6321f,#9a2a18); border-radius:16px;
     box-shadow:0 18px 40px -18px rgba(120,40,24,.5), 0 2px 0 rgba(255,255,255,.15) inset;
     opacity:0; transform:translateY(16px) scale(.97) rotate(-.6deg);
     transition:opacity .55s ease, transform .6s cubic-bezier(.22,.61,.36,1); }
+  .omikuji.drawn .omi-slip{ display:block; }
   .omi-slip.show{ opacity:1; transform:none; }
   .omi-paper{ position:relative; border-radius:10px; overflow:hidden;
     background:radial-gradient(120% 80% at 50% -10%, #fffdf8, #fbf4e4 60%, #f6ecd6);
@@ -578,6 +602,15 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .omi-slip.rank-daikichi::after{ content:"✦"; position:absolute; top:-10px; right:14px; font-size:20px; color:var(--gold); filter:drop-shadow(0 0 6px rgba(244,183,62,.8)); animation:omiSpark 1.6s ease-in-out infinite; }
   @keyframes omiSpark{ 0%,100%{ opacity:.4; transform:scale(.8) rotate(0) } 50%{ opacity:1; transform:scale(1.15) rotate(20deg) } }
   @media (prefers-reduced-motion:reduce){ .omi-box, .omi-slip.rank-daikichi::after, .omi-slip.show .omi-seal{ animation:none; } }
+  /* phones: stack the seal above the poem (so the poem gets full width, not a
+     squished column next to the seal) and tighten the rows a touch */
+  @media (max-width:480px){
+    .omi-paper-head{ padding:11px 16px 9px; }
+    .omi-paper-main{ grid-template-columns:1fr; justify-items:center; text-align:center; gap:14px; padding:10px 18px 14px; min-height:0; }
+    .omi-poem{ font-size:15px; line-height:1.9; }
+    .omi-rows{ padding:14px 18px 18px; }
+    .omi-row{ grid-template-columns:104px 1fr; gap:10px; }
+  }
 
   /* ============ ABOUT ============ */
   .about-card{ display:grid; grid-template-columns:auto 1fr; gap:34px; padding:36px 38px; align-items:center; }
@@ -614,7 +647,9 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     .feat-phone.b{ left:50%; right:auto; }
     .feat-cat{ left:12%; right:auto; }
     .socials{ grid-template-columns:repeat(2,1fr); }
-    .work-group{ grid-template-columns:1fr; gap:14px; }
+    /* minmax(0,1fr) (not 1fr) so a long nowrap .app-desc can't blow the track
+       out past the card → caused horizontal scroll on phones */
+    .work-group{ grid-template-columns:minmax(0,1fr); gap:14px; padding:24px 22px; }
   }
   @media (max-width:860px){
     .hero-grid{ grid-template-columns:1fr; gap:34px; }
@@ -632,5 +667,10 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     .socials{ grid-template-columns:1fr; }
     .feat-main h3{ font-size:32px; }
     .hero h1 .spark{ left:-10px; top:-20px; width:36px; height:36px; }
+    /* Works rows: wrap so アイコン+名前+矢印 sit on top and タグ+説明 get a full
+       second line (otherwise the long name squeezes the description to nothing) */
+    .app-row{ flex-wrap:wrap; }
+    .app-arrow{ order:1; margin-left:auto; }
+    .app-mid{ order:2; flex-basis:100%; }
   }
 </style>
