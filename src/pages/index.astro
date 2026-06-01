@@ -337,7 +337,8 @@ const arrow = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6
   .poster-stack .p1{ background:var(--gold-soft); transform:rotate(-4.5deg) translate(14px,16px); box-shadow:var(--sh-2); }
   .poster-stack .p2{ background:#fce9bf; transform:rotate(3deg) translate(-10px,8px); box-shadow:var(--sh-1); }
   .poster{ position:relative; border-radius:26px; overflow:hidden; box-shadow:var(--sh-3); border:5px solid var(--paper); background:var(--paper); }
-  .poster img{ width:100%; aspect-ratio:1/1; object-fit:cover; }
+  /* height:auto so the img's width/height attrs (kept for CLS) don't override aspect-ratio → keeps the square poster from being cropped tall */
+  .poster img{ width:100%; height:auto; aspect-ratio:1/1; object-fit:cover; display:block; }
   .poster .tape{ position:absolute; top:-10px; left:50%; transform:translateX(-50%) rotate(-2deg); width:96px; height:24px; background:rgba(244,183,62,.55); border:1px dashed rgba(226,150,42,.6); border-radius:2px; z-index:2; }
 
   /* ============ FEATURED ============ */
