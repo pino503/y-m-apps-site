@@ -204,11 +204,8 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
           <div class="omi-panel">
             <img class="omi-banner" src="/assets/omikuji/banner.png" alt="開運おみくじ" loading="lazy" />
             <p class="omi-lead">今日の運勢を、ぴのくんが占います。箱を振ると、運勢といっしょに「今日のラッキーアイテム」も出てきます。</p>
+            {/* 起点は箱（タップして振る）に一本化。引いた後だけ「もう一度引く」を出す。 */}
             <div class="omi-action">
-              <button class="btn btn-primary" data-omikuji>
-                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3c2 3 5 4 5 8a5 5 0 01-10 0c0-4 3-5 5-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-                おみくじを引く
-              </button>
               <button class="btn btn-outline btn-sm omi-again" data-omikuji-again>もう一度引く</button>
             </div>
             {/* 構造は Astro 側で描画（=スコープ属性が付き .omi-* スタイルが効く）。
