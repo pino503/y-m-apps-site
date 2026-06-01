@@ -3,7 +3,7 @@ title: InkPress
 tagline: 軽くて静かな自炊本リーダー。
 world: inkpress
 platform: Android
-badges: ["Android", "v1.1.7"]
+badges: ["Android", "v1.1.7", "読書アプリ"]
 storeUrl: https://play.google.com/store/apps/details?id=com.pino.inkpress
 storeLabel: Google Play
 order: 1

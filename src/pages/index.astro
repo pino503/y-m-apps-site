@@ -51,7 +51,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
           <svg class="spark" viewBox="0 0 48 48" fill="none"><path d="M24 4v12M24 32v12M4 24h12M32 24h12" stroke="#f4b73e" stroke-width="3.4" stroke-linecap="round"/><path d="M10 10l7 7M31 31l7 7M38 10l-7 7M17 31l-7 7" stroke="#f4b73e" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg>
           小さなアイデアを、<br />かたちに。
         </h1>
-        <p class="lead">Androidアプリ、Webゲーム、Chrome拡張、LINEスタンプなど、日々の小さな「ほしい」を形にしている個人開発スタジオです。便利さと遊び心のあいだにある、ちょうどいいものを作っています。</p>
+        <p class="lead">Androidアプリ、Webゲーム、Chrome拡張、LINEスタンプなど、小さなアイデアから生まれた個人開発の作品をまとめています。便利さと遊び心のあいだにある、ちょうどいいものを作っています。</p>
         <div class="hero-cta">
           <a class="btn btn-primary" href="#works">
             <svg viewBox="0 0 24 24" fill="none"><path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4M21 7v10l-9 4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
@@ -65,7 +65,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         <div class="stats">
           <div class="stat"><div class="num">{apps.length}</div><div class="lbl">Products</div></div>
           <div class="stat"><div class="num">{writings.length}</div><div class="lbl">Writings</div></div>
-          <div class="stat"><div class="num">2026</div><div class="lbl">Active</div></div>
+          <div class="stat"><div class="num">2026</div><div class="lbl">更新中</div></div>
         </div>
       </div>
 
@@ -90,10 +90,11 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         <div class="feat-main">
           <span class="feat-label">Featured Project</span>
           <h3>{lead.data.title}</h3>
-          <p>E-Ink端末でも読みやすく、読書に集中できるシンプルな自炊本リーダー。</p>
+          <p><strong>E-Ink 端末向けの読書アプリ。</strong>読みやすさに特化し、読書に集中できるシンプルな自炊本リーダーです。</p>
           <div class="feat-chips">
             <span class="chip">Android</span>
             <span class="chip">v1.1.7</span>
+            <span class="chip chip-gold">読書アプリ</span>
           </div>
           <a class="feat-more" href={`/works/${lead.slug}`}>InkPressを詳しく見る
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -254,7 +255,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
       <div class="contact-top reveal">
         <div class="sec-head" style="margin:0">
           <h2 class="sec-title">Contact</h2>
-          <p class="sec-sub">アプリ制作、Webページ、ゲーム制作、記事やデザインまわりのご相談など、まだ形になっていない段階でもお気軽にご連絡ください。</p>
+          <p class="sec-sub">小さな声も、お聞かせください。アプリの不具合報告、使ってみた感想、改善アイデア、制作のご相談など、どんな小さなことでもお気軽にご連絡ください。</p>
         </div>
         {/* ボット対策：HTML 上にメアドの完全形を出さず、ローカル部とドメイン部を data 属性に分割。JS で mailto: を組み立てる。 */}
         <a id="contact-link" class="btn btn-primary" href="#contact" data-l="y.m_games503" data-d="protonmail.com">
@@ -464,6 +465,9 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .feat-more svg{ width:17px; transition:transform .2s; }
   .feat-more:hover{ opacity:1; text-decoration:none; }
   .feat-more:hover svg{ transform:translateX(4px); }
+  /* 代表作 InkPress の導線はボタン寄りにして主役感を出す */
+  .feat-main .feat-more{ padding:12px 22px; border-radius:999px; background:var(--ink); color:var(--ink-on); box-shadow:var(--sh-2); }
+  .feat-main .feat-more:hover{ color:var(--ink-on); transform:translateY(-2px); box-shadow:var(--sh-3); }
   .feat-visual{ position:absolute; right:48px; bottom:0; width:52%; height:100%; pointer-events:none; }
   .feat-phone{ position:absolute; border-radius:16px; box-shadow:var(--sh-3); border:3px solid #fff; width:152px; }
   .feat-phone.a{ right:118px; bottom:58px; transform:rotate(-9deg); z-index:2; }
