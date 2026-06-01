@@ -13,17 +13,17 @@ const CAT_META: Record<(typeof CAT_ORDER)[number], { title: string; lede: string
   tool: {
     title: "TOOLS",
     lede: "ちょっと便利な道具",
-    icon: `<svg viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6 6 2 2 6-6a4 4 0 005.4-5.4l-2.3 2.3-1.7-.3-.3-1.7 2.3-2.3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>`,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6 6 2 2 6-6a4 4 0 005.4-5.4l-2.3 2.3-1.7-.3-.3-1.7 2.3-2.3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>`,
   },
   game: {
     title: "GAMES",
     lede: "小さく遊べる実験",
-    icon: `<svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="7" width="19" height="10" rx="5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10v4M5 12h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="11" r="1.1" fill="currentColor"/><circle cx="18.5" cy="13.5" r="1.1" fill="currentColor"/></svg>`,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="7" width="19" height="10" rx="5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10v4M5 12h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16" cy="11" r="1.1" fill="currentColor"/><circle cx="18.5" cy="13.5" r="1.1" fill="currentColor"/></svg>`,
   },
   sticker: {
     title: "STICKERS",
     lede: "会話に使えるゆるいもの",
-    icon: `<svg viewBox="0 0 24 24" fill="none"><path d="M4 9l1.5-4L9 7M20 9l-1.5-4L15 7" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 10c0-2 3-3 7-3s7 1 7 3c0 5-3 9-7 9s-7-4-7-9z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/></svg>`,
+    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 9l1.5-4L9 7M20 9l-1.5-4L15 7" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 10c0-2 3-3 7-3s7 1 7 3c0 5-3 9-7 9s-7-4-7-9z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/></svg>`,
   },
 };
 const groups = CAT_ORDER.map((cat) => ({
@@ -38,7 +38,7 @@ const writings = (await getCollection("writings")).sort(
 const recentWritings = writings.slice(0, 5);
 const appTitle = new Map(apps.map((a) => [a.slug, a.data.title]));
 
-const arrow = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 ---
 
 <BaseLayout title="Y.M Apps — 小さなアイデアを、かたちに。">
@@ -369,7 +369,10 @@ const arrow = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6
 
   /* ============ WORKS ============ */
   .works-card{ padding:8px 0; }
-  .work-group{ display:grid; grid-template-columns:230px 1fr; gap:24px; padding:26px 32px; }
+  /* minmax(0,1fr) (not bare 1fr) so the flexible track can shrink below its
+     content's min-content — otherwise a long nowrap .app-desc blows the track
+     out past the card, pushing the row + arrow outside (the はみ出し bug). */
+  .work-group{ display:grid; grid-template-columns:230px minmax(0,1fr); gap:24px; padding:26px 32px; }
   .work-group + .work-group{ border-top:1px solid var(--line); }
   .cat{ display:flex; gap:14px; align-items:flex-start; }
   .cat-ico{ width:46px; height:46px; border-radius:13px; flex:none; display:grid; place-items:center; background:var(--gold-wash); color:var(--gold-deep); box-shadow:inset 0 0 0 1px #eecf95; }
