@@ -1,0 +1,208 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Bespoke detail page (the generic [slug].astro skips cosmo-cleaner). Metadata
+// comes from the content collection; the layout follows the Claude Design
+// handoff (works/cosmo-cleaner.html).
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "cosmo-cleaner")!;
+const { data } = app;
+
+const playUrl = data.embedPath ?? "/games/cosmo-cleaner/";
+
+const features = [
+  { title: "集めて、圧縮して、撃つ", body: "宙域に漂う宇宙ゴミを回収し、基地で圧縮弾へと変換。作った弾を、迫りくる敵やボスにぶつけていきます。" },
+  { title: "基地で強化していく", body: "集めた資源で装備をアップグレード。少しずつ深い宙域へ進み、より大きな脅威に立ち向かえるようになります。" },
+  { title: "CRT風のレトロな画面", body: "走査線がかった画面表現で、ブラウン管時代のアーケードシューティングのような手ざわりを目指しました。" },
+];
+
+const powerups = [
+  { k: "SUC", label: "吸引レンジ" },
+  { k: "CAP", label: "タンク容量" },
+  { k: "PWR", label: "弾威力" },
+  { k: "HUL", label: "体力上限" },
+  { k: "SHD", label: "護衛ドローン" },
+  { k: "DRN", label: "自動掃除ドローン" },
+];
+
+const otherWorks = [
+  { slug: "sidewalk-defender", name: "Sidewalk Defender", desc: "80年代アーケード風アクション。", icon: "/assets/apps/sidewalk-defender-cover.png" },
+  { slug: "playcord", name: "PLAYCORD", desc: "リアルな野球人生シミュレーション。", icon: "/assets/apps/playcord-icon.png" },
+  { slug: "inkpress", name: "InkPress", desc: "軽くて静かな自炊本リーダー。", icon: "/assets/apps/inkpress-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="宇宙ゴミを集めて、基地で強化。CRT風の宇宙清掃シューティングゲーム。">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-built hb-space">
+          <div class="hb-text">
+            <span class="hb-icon"><img src={data.iconImage} alt="" /></span>
+            <h1>{data.title}</h1>
+            <p class="hb-tag">宇宙ゴミを集めて、基地で強化。CRT風の宇宙清掃シューティングゲーム。</p>
+            <div class="hb-badges"><span class="badge-new">NEW</span><span class="chip">Webゲーム</span><span class="chip">ブラウザ</span></div>
+          </div>
+          <div class="hb-visual"><img src={data.coverImage} alt={`${data.title} のゲーム画面`} /></div>
+        </div>
+
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-live">公開中 — ブラウザでプレイ可能</span></div>
+          <div class="mb-chips"><span class="chip">Webゲーム</span><span class="chip chip-gold">CRT風シューティング</span></div>
+          <div class="mb-actions">
+            <a class="btn btn-primary" href={playUrl} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              ブラウザでプレイ
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このゲームについて</h2>
+          <div class="about-text">
+            <p>漂う宇宙ゴミを集めて、基地で圧縮弾に変えて、敵とボスに挑む ── そんな「掃除」と「シューティング」を組み合わせたミニゲームです。</p>
+            <p class="pull">集める・強化する・撃つ、のループを気軽に楽しめる、CRT風のレトロな宇宙清掃ゲームに仕上げました。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>遊びどころ</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">SCREENS</span>
+          <h2>ゲーム画面</h2>
+          <div class="shots wide">
+            <div class="shot"><img src="/assets/cosmo/shot1.png" alt={`${data.title} タイトル画面`} loading="lazy" decoding="async" /></div>
+            <div class="shot"><img src={data.coverImage} alt={`${data.title} キービジュアル`} loading="lazy" decoding="async" /></div>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">HOW TO PLAY</span>
+          <h2>操作方法</h2>
+          <div class="howto">
+
+            <div class="howto-row">
+              <span class="howto-icon">🎮</span>
+              <div class="howto-body">
+                <h3>移動（フローティングスティック）</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>画面のどこかに触れるとそこがスティックの中心に。指を倒した方向へ動き続け、離すと止まります。傾けた量で速さが変わります。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p>マウスを押したまま動かす、または <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> ／ <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>。</p></div>
+                </div>
+                <p class="howto-tip">積荷が増えると少し重くなります。空のときが一番きびきび動きます。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">🌀</span>
+              <div class="howto-body">
+                <h3>吸引（COLLECT）</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>ドラッグしている間は常に吸引中。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p>マウスを押している間は常に吸引中。キーボードのみの場合は <kbd>Shift</kbd> で吸引 ON/OFF。</p></div>
+                </div>
+                <p class="howto-tip">近くのジャンクやボスが吐き出すゴミを引き寄せて回収。タンク満タンで一旦停止します。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">💥</span>
+              <div class="howto-body">
+                <h3>発射 / チャージ</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>画面右下の FIRE ボタンをタップで通常弾。長押し→離すと大きな貫通チャージ弾。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p><kbd>Space</kbd> または <kbd>Enter</kbd> で通常弾（FIRE を長押しすればチャージも可）。</p></div>
+                </div>
+                <p class="howto-tip">回収したゴミを圧縮した弾。狙いは自動で一番近い敵へ。チャージ弾は弾薬を多めに使います。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">🏠</span>
+              <div class="howto-body">
+                <h3>基地に戻って納品</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat common">共通</span><p>中央の STATION エリアに自機を入れると、カーゴが自動でアンロードされ、圧縮弾の弾薬になります。</p></div>
+                </div>
+                <p class="howto-tip">掃除ドローンが溜めたゴミも自機経由でまとめて納品されます。ドック中は強化ゲージも止まるので、たまに戻って整えるのがコツ。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">⬆️</span>
+              <div class="howto-body">
+                <h3>パワーアップ選択</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>選びたいカードをタップ。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p>カードをクリック、または数字キーで選択。</p></div>
+                </div>
+                <div class="pups">
+                  {powerups.map((p) => (
+                    <span class="pup"><b>{p.k}</b>{p.label}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">👹</span>
+              <div class="howto-body">
+                <h3>ボスを倒す</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat common">共通</span><p>各ステージのどこかにボスが潜伏。近づくとリビールバナーが出て本格戦闘に移行します。</p></div>
+                </div>
+                <p class="howto-tip">HP が半分で Phase 2（ENRAGED）、25% で Phase 3（OVERDRIVE）へ。終盤は攻撃が一気に激化するので、ドローンや HUL レベルが効いてきます。5ステージ制覇後はハードモード（2周目）に突入します。</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>

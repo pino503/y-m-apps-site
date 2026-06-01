@@ -1,0 +1,116 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Reuse the content-collection entry as the single source of truth for the
+// page's metadata (title, tagline, store URL, icon). The layout follows the
+// Claude Design handoff: constructed hero + LINE-STORE meta-bar + four real
+// sticker-series grids. Shared styling lives in src/styles/detail.css. The
+// generic [slug].astro skips this slug so the routes don't collide.
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "pinokun-stamps")!;
+const { data } = app;
+
+const storeUrl = data.storeUrl ?? "https://store.line.me/stickershop/author/1039160/ja";
+
+const series = [
+  { title: "ぴのくんのスタンプ〜友達と遊ぼう〜", type: "スタンプ", count: "全24種", dir: "asobou", n: 24, alt: "ぴのくんスタンプ" },
+  { title: "ぴのくんの使いやすいスタンプ", type: "スタンプ", count: "抜粋", dir: "pinokun", n: 5, alt: "ぴのくんスタンプ" },
+  { title: "トーイくんの日常", type: "スタンプ", count: "抜粋", dir: "toy", n: 5, alt: "トーイくんスタンプ" },
+  { title: "使いやすい！白ネコ絵文字", type: "絵文字", count: "抜粋", dir: "shironeko", n: 6, alt: "白ネコ絵文字" },
+];
+
+const otherWorks = [
+  { slug: "inkpress", name: "InkPress", desc: "軽くて静かな自炊本リーダー。", icon: "/assets/apps/inkpress-icon.png" },
+  { slug: "playcord", name: "PLAYCORD", desc: "リアルな野球人生シミュレーション。", icon: "/assets/apps/playcord-icon.png" },
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="ぴのくんの、使いやすい LINE スタンプと絵文字。">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-built hb-line">
+          <div class="hb-text">
+            <span class="hb-icon"><img src={data.iconImage} alt="" /></span>
+            <h1>{data.title}</h1>
+            <p class="hb-tag">ぴのくんの、毎日のトークで使いやすいスタンプと絵文字たち。</p>
+            <div class="hb-badges"><span class="chip">LINE</span><span class="chip">スタンプ・絵文字</span></div>
+          </div>
+          <div class="hb-visual center"><img src="/assets/stamps/asobou/1.png" alt="ぴのくん スタンプ" /></div>
+        </div>
+
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-live">公開中 — LINE STORE</span></div>
+          <div class="mb-chips"><span class="chip">LINE</span><span class="chip chip-gold">ぴのくん</span></div>
+          <div class="mb-actions">
+            <a class="btn btn-primary" href={storeUrl} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4c4.4 0 8 2.9 8 6.4 0 3.6-3.6 6.5-8 6.5-.7 0-1.4-.1-2-.2L6 19l.6-2.8C4.9 15 4 12.9 4 10.4 4 6.9 7.6 4 12 4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
+              LINE STORE で見る
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このスタンプについて</h2>
+          <div class="about-text">
+            <p>返事に困ったときの相づちから、ちょっとした気持ちの表現まで。ぴのくんが、毎日のトークをそっと手伝います。</p>
+            <p class="pull">会話の温度を、ほんの少しだけ上げてくれる ── そんな使いやすさを大切にしています。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">LINEUP</span>
+          <h2>スタンプと絵文字</h2>
+          <p class="about-text lineup-lede">ぴのくんとトーイくん、それに白ネコの絵文字。トークに合わせて選べる、4つのラインナップです。</p>
+
+          {series.map((s) => (
+            <div class="stamp-series">
+              <div class="series-head">
+                <h3>{s.title}</h3>
+                <span class="series-type">{s.type}</span>
+                <span class="series-count">{s.count}</span>
+              </div>
+              <div class="stamp-grid">
+                {Array.from({ length: s.n }, (_, i) => i + 1).map((num) => (
+                  <span class="stamp"><img src={`/assets/stamps/${s.dir}/${num}.png`} alt={s.alt} loading="lazy" decoding="async" /></span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>

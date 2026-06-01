@@ -4,10 +4,15 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
   const apps = await getCollection("apps");
-  return apps.map((app) => ({
-    params: { slug: app.slug },
-    props: { app },
-  }));
+  // These slugs have their own bespoke pages (works/<slug>.astro), redesigned
+  // from the Claude Design handoff; skip them so routes don't collide.
+  const bespoke = new Set(["pinokun-stamps", "cosmo-cleaner"]);
+  return apps
+    .filter((app) => !bespoke.has(app.slug))
+    .map((app) => ({
+      params: { slug: app.slug },
+      props: { app },
+    }));
 }
 
 interface Props {
