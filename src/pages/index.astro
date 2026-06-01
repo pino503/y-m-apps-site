@@ -192,19 +192,27 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   <section class="section" style="padding-top:0">
     <div class="wrap">
       <div class="card omikuji reveal">
-        <span class="washi"></span>
-        <img class="omi-cat" src="/assets/pinokun/pinokun-reading-color.png" alt="" loading="lazy" />
-        <div class="omi-body">
-          <span class="tag">Fun · おまけ</span>
-          <h3>ぴのくんおみくじ</h3>
-          <p>今日の運勢を、ぴのくんが占います。1日のはじまりに、軽い気持ちでどうぞ。</p>
-        </div>
-        <div class="omi-action">
-          <button class="btn btn-primary" data-omikuji>
-            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3c2 3 5 4 5 8a5 5 0 01-10 0c0-4 3-5 5-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-            おみくじを引く
-          </button>
-          <div class="omi-result" data-omikuji-result><span class="omi-msg">ボタンを押してね</span></div>
+        <img class="omi-plum" src="/assets/omikuji/plum-v2.png" alt="" loading="lazy" />
+        <div class="omi-grid">
+          <div class="omi-stage" data-omi-stage>
+            <img class="omi-cat" src="/assets/omikuji/pinokun-ryo.png" alt="" loading="lazy" />
+            <div class="omi-box" data-omikuji role="button" tabindex="0" aria-label="おみくじを引く">
+              <img class="omi-box-img" src="/assets/omikuji/box2.png" alt="おみくじ箱" />
+            </div>
+            <span class="omi-press">タップして振る</span>
+          </div>
+          <div class="omi-panel">
+            <img class="omi-banner" src="/assets/omikuji/banner.png" alt="開運おみくじ" loading="lazy" />
+            <p class="omi-lead">今日の運勢を、ぴのくんが占います。箱を振ると、運勢といっしょに「今日のラッキーアイテム」も出てきます。</p>
+            <div class="omi-action">
+              <button class="btn btn-primary" data-omikuji>
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3c2 3 5 4 5 8a5 5 0 01-10 0c0-4 3-5 5-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                おみくじを引く
+              </button>
+              <button class="btn btn-outline btn-sm omi-again" data-omikuji-again>もう一度引く</button>
+            </div>
+            <div class="omi-slip" data-omikuji-slip aria-live="polite"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -288,27 +296,116 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     });
   }
 
-  // --- Omikuji ---
+  // --- Omikuji（ぴのくんおみくじ）---
+  // 箱を振る → 640ms 後に運勢スリップを生成して .show で表示。重み付き抽選で
+  // 大吉がいちばんレア。凶/大凶もやさしい文面に。transform/opacity だけで演出する
+  // ので、タブが背景化してもコンテンツが見えないまま固まることはない。
   function initOmikuji() {
-    const btn = document.querySelector("[data-omikuji]") as HTMLElement | null;
-    if (!btn || (btn as any)._bound) return;
-    (btn as any)._bound = true;
-    const out = document.querySelector("[data-omikuji-result]");
-    const fortunes = [
-      { r: "大吉", c: "いいことが続きそう。新しい一歩を踏み出すのにぴったりの日。", good: 2 },
-      { r: "中吉", c: "ゆっくり進めば大丈夫。コーヒー片手にどうぞ。", good: 1 },
-      { r: "小吉", c: "小さな発見がある一日。メモを忘れずに。", good: 1 },
-      { r: "吉", c: "いつも通りが、いちばん強い。マイペースでいこう。", good: 0 },
-      { r: "末吉", c: "あせらず、ひと休み。野球でも観て深呼吸。", good: 0 },
-      { r: "吉", c: "誰かのひとことが、ヒントになるかも。", good: 0 },
+    const card = document.querySelector(".omikuji") as HTMLElement | null;
+    const box = document.querySelector(".omi-box") as HTMLElement | null;
+    const slip = document.querySelector("[data-omikuji-slip]") as HTMLElement | null;
+    if (!card || !box || !slip || (card as any)._omiBound) return;
+    (card as any)._omiBound = true;
+    const stage = document.querySelector("[data-omi-stage]");
+    const press = card.querySelector(".omi-press") as HTMLElement | null;
+    const triggers = document.querySelectorAll("[data-omikuji]");
+    const again = document.querySelector("[data-omikuji-again]");
+
+    const items = [
+      "湯気の立つコーヒー", "読みかけの文庫本", "新しいメモ帳", "お気に入りのイヤホン",
+      "小さな観葉植物", "折りたたみ傘", "あたたかいマグカップ", "よく書けるボールペン",
+      "ふかふかのクッション", "一杯のほうじ茶", "散歩用のスニーカー", "日付の入った付箋",
+      "手のひらサイズのラジオ", "まだ甘い板チョコ", "使い込んだトートバッグ", "お気に入りのマグネット",
+      "香りのいい入浴剤", "メモを挟んだ手帳", "冷たい炭酸水", "やわらかいブランケット",
+      "お守り代わりのキーホルダー", "景色のいい窓ぎわの席", "焼きたてのトースト", "充電満タンのスマホ",
+      "新しい靴下", "濃いめの緑茶", "よく切れるはさみ", "小銭の入った貯金箱",
     ];
-    btn.addEventListener("click", () => {
-      const f = fortunes[Math.floor(Math.random() * fortunes.length)];
-      if (out) {
-        out.innerHTML = `<span class="omi-rank">${f.r}</span><span class="omi-msg">${f.c}</span>`;
-        out.classList.remove("pop"); void (out as HTMLElement).offsetWidth; out.classList.add("pop");
-      }
-      (window as any).ymSfx?.chime?.(f.good);
+    const colors = [
+      { n: "クリーム", c: "#efe6d3" }, { n: "やまぶき", c: "#f4b73e" },
+      { n: "そら色", c: "#5aa9e6" }, { n: "すみ墨", c: "#2c2722" },
+      { n: "あかね", c: "#e98a86" }, { n: "わかば", c: "#7bbf6a" },
+      { n: "さくら", c: "#f3b6c2" }, { n: "うみ色", c: "#3a8fb7" },
+      { n: "こはく", c: "#d98a3a" }, { n: "すみれ", c: "#9b7bc4" },
+      { n: "もえぎ", c: "#9cc16a" }, { n: "こん青", c: "#2f4a78" },
+      { n: "ゆき白", c: "#f7f4ec" }, { n: "すなベージュ", c: "#d8c4a0" },
+      { n: "ほのお", c: "#e3603a" }, { n: "みずあさぎ", c: "#7fcfc4" },
+      { n: "やまぶどう", c: "#8a4a5e" }, { n: "はいいろ", c: "#9b958a" },
+    ];
+    // weighted ranks — `w` は相対抽選ウェイト（大吉が最レア、吉が最多）
+    const ranks = [
+      { r: "大吉", file: "daikichi-v2", w: 2,   cls: "rank-daikichi", stars: 5 },
+      { r: "中吉", file: "chukichi-v2", w: 3,   cls: "", stars: 4 },
+      { r: "小吉", file: "shokichi-v2", w: 4,   cls: "", stars: 3 },
+      { r: "吉",   file: "kichi-v2",    w: 5,   cls: "", stars: 3 },
+      { r: "末吉", file: "suekichi-v2", w: 3,   cls: "", stars: 2 },
+      { r: "凶",   file: "kyo-v2",      w: 1.5, cls: "", stars: 1 },
+      { r: "大凶", file: "daikyo-v2",   w: 0.5, cls: "", stars: 1 },
+    ];
+    const poems: Record<string, string[]> = {
+      "大吉": ["作りたかったものが、するっと形になる日。今日こそ、あの一歩を。","いい流れが続きそう。新しい本を開くのにぴったり。","思いきって動くほど、味方が増える。胸を張っていこう。","迷っていたことに、はっきり答えが出る日。直感を信じて。","努力が実を結ぶとき。まわりの人にも、いいことが連鎖する。"],
+      "中吉": ["ゆっくり進めば大丈夫。コーヒー片手に、ひとつずつ。","小さな改善が、のちのち効いてくる。こつこついこう。","人の話に、思わぬ気づきがある日。耳をすませて。","半分でやめた作業に、戻ってみるといい流れ。","丁寧にやった分だけ、ちゃんと返ってくる。"],
+      "小吉": ["小さな発見がある一日。メモを忘れずに。","寄り道の先に、思わぬヒントが落ちている。","完璧じゃなくていい。出してみることが今日のコツ。","身近なものを整えると、気持ちも軽くなる。","いつもの道を、少しだけ変えてみる日。"],
+      "吉": ["いつも通りが、いちばん強い。マイペースでいこう。","誰かのひとことが、次のアイデアになるかも。","焦らなくていい。今日できることを、ひとつだけ。","小さな「ありがとう」が、いい一日をつくる。","手を止めて空を見ると、気分が切り替わる。"],
+      "末吉": ["あせらず、ひと休み。野球でも観て深呼吸。","今日は整える日。机のうえも、頭のなかも。","うまくいかなくても大丈夫。明日の自分に種をまこう。","無理は禁物。早めに切り上げて、よく眠ること。","立ち止まるのも前進のうち。ゆっくりでいい。"],
+      "凶": ["今日はゆっくり守りの日。無理せず、あたたかくして過ごそう。","うまくいかない日もある。そんな日は、自分を甘やかしていい。","転びそうな日は、はじめから座っておくが勝ち。お茶でも一杯。"],
+      "大凶": ["ここが底。あとは上がるだけ、と思えば気がラク。","大凶を引けたら、もう怖いものなし。明日はきっと良くなる。","こんな日はそっと店じまい。お風呂に入って、早めに寝よう。"],
+    };
+
+    const totalW = ranks.reduce((s, x) => s + x.w, 0);
+    const pick = <T,>(a: T[]): T => a[Math.floor(Math.random() * a.length)];
+    function rollRank() {
+      let t = Math.random() * totalW;
+      for (const r of ranks) { if ((t -= r.w) < 0) return r; }
+      return ranks[ranks.length - 1];
+    }
+    function stars(n: number) {
+      let s = "";
+      for (let i = 0; i < 5; i++) s += i < n ? "★" : '<span class="off">★</span>';
+      return s;
+    }
+
+    let drawing = false;
+    function draw() {
+      if (drawing) return;
+      drawing = true;
+      slip!.classList.remove("show");
+      box!.classList.remove("shake"); void box!.offsetWidth; box!.classList.add("shake");
+
+      window.setTimeout(() => {
+        const rank = rollRank();
+        const item = pick(items);
+        const col = pick(colors);
+        const poem = pick(poems[rank.r]);
+        slip!.className = "omi-slip " + rank.cls;
+        slip!.innerHTML =
+          '<div class="omi-paper">' +
+            '<div class="omi-paper-head"><span class="omi-vtitle">おみくじ</span><img class="omi-head-plum" src="/assets/omikuji/plum-v2.png" alt="" /></div>' +
+            '<div class="omi-paper-main">' +
+              '<img class="omi-seal" src="/assets/omikuji/' + rank.file + '.png" alt="' + rank.r + '" />' +
+              '<p class="omi-poem">' + poem + '</p>' +
+            '</div>' +
+            '<dl class="omi-rows">' +
+              '<div class="omi-row"><dt>総合運</dt><dd><span class="omi-stars">' + stars(rank.stars) + '</span></dd></div>' +
+              '<div class="omi-row"><dt>ラッキーアイテム</dt><dd>' + item + '</dd></div>' +
+              '<div class="omi-row"><dt>ラッキーカラー</dt><dd><span class="omi-sw" style="background:' + col.c + '"></span>' + col.n + '</dd></div>' +
+            '</dl>' +
+          '</div>';
+        void slip!.offsetWidth;
+        slip!.classList.add("show");
+        if (stage) stage.classList.add("drawn");
+        card!.classList.add("drawn");
+        if (press) press.style.opacity = "0";
+        box!.classList.remove("shake");
+        (window as any).ymSfx?.chime?.(rank.stars >= 4 ? 2 : rank.stars >= 2 ? 1 : 0);
+        drawing = false;
+      }, 640); // 箱のシェイク時間に合わせ、箱が「収まる」瞬間にスリップを出す
+    }
+
+    triggers.forEach((t) => t.addEventListener("click", draw));
+    if (again) again.addEventListener("click", draw);
+    box.addEventListener("keydown", (e) => {
+      const ev = e as KeyboardEvent;
+      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); draw(); }
     });
   }
 
@@ -411,18 +508,76 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .link-more:hover svg{ transform:translateX(4px); }
 
   /* ============ OMIKUJI ============ */
-  .omikuji{ position:relative; overflow:hidden; background:linear-gradient(135deg,#f7ead0,#f3dfb6); border:1px solid #ecd6a3; padding:34px 40px; display:grid; grid-template-columns:auto 1fr auto; gap:30px; align-items:center; }
-  .omikuji .washi{ position:absolute; top:14px; left:-30px; width:140px; height:26px; transform:rotate(-32deg); background:repeating-linear-gradient(90deg,var(--gold),var(--gold) 12px,#f7c861 12px,#f7c861 24px); opacity:.8; }
-  .omi-cat{ width:104px; }
-  .omi-body .tag{ font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--gold-deep); }
-  .omi-body h3{ font-family:var(--font-display); font-weight:900; font-size:30px; margin:6px 0 8px; color:var(--ink); }
-  .omi-body p{ color:#7c6a44; margin:0; font-size:14.5px; }
-  .omi-action{ display:flex; flex-direction:column; align-items:flex-end; gap:12px; }
-  .omi-result{ display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.7); border:1px solid #ecd6a3; border-radius:12px; padding:8px 14px; }
-  .omi-result.pop{ animation:omiPop .4s ease; }
-  @keyframes omiPop{ 0%{ transform:scale(.9); opacity:0 } 100%{ transform:scale(1); opacity:1 } }
-  .omi-rank{ font-family:var(--font-display); font-weight:900; font-size:20px; color:var(--gold-deep); }
-  .omi-msg{ font-size:12.5px; color:#7c6a44; max-width:24ch; }
+  .omikuji{ position:relative; overflow:hidden; padding:46px 48px;
+    background:
+      radial-gradient(680px 300px at 22% 16%, rgba(255,255,255,.5), transparent 70%),
+      radial-gradient(560px 360px at 84% 110%, rgba(244,183,62,.18), transparent 70%),
+      linear-gradient(135deg,#f8eed7,#f1dcb4);
+    border:1px solid #e7d3a6; }
+  /* faint seigaiha (青海波) pattern, top/bottom masked out */
+  .omikuji::before{ content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.5; border-radius:inherit; overflow:hidden;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='30' viewBox='0 0 60 30'%3E%3Cg fill='none' stroke='%23d9b870' stroke-width='1' opacity='0.5'%3E%3Cpath d='M0 30a15 15 0 0130 0 15 15 0 0130 0'/%3E%3Cpath d='M-15 30a15 15 0 0130 0M45 30a15 15 0 0130 0'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:60px 30px; -webkit-mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent); mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent); }
+  .omi-grid{ position:relative; z-index:1; display:grid; grid-template-columns:160px minmax(0,1fr); gap:44px; align-items:center; }
+  .omi-plum{ position:absolute; top:16px; left:22px; width:64px; height:auto; z-index:2; transform:rotate(-6deg); filter:drop-shadow(0 4px 7px rgba(58,48,32,.14)); pointer-events:none; }
+  .omi-banner{ width:262px; max-width:78%; height:auto; display:block; margin:0 0 16px; }
+
+  /* --- the fortune box --- */
+  .omi-stage{ position:relative; display:grid; place-items:center; min-height:226px; }
+  .omi-stage::before{ content:""; position:absolute; width:150px; height:150px; border-radius:50%; background:radial-gradient(circle, rgba(255,247,230,.9), rgba(255,247,230,0) 68%); z-index:0; }
+  .omi-stage::after{ content:""; position:absolute; bottom:24px; width:120px; height:18px; border-radius:50%; background:radial-gradient(ellipse, rgba(58,44,16,.22), transparent 70%); filter:blur(3px); z-index:0; }
+  .omi-cat{ position:absolute; bottom:-8px; left:-30px; width:92px; z-index:5; transform:rotate(-4deg); filter:drop-shadow(0 6px 10px rgba(58,48,32,.16)); pointer-events:none; }
+  .omi-box{ position:relative; width:104px; height:auto; cursor:pointer; transform-origin:50% 90%; outline:none; z-index:2; animation:omiFloat 4.5s ease-in-out infinite; }
+  @keyframes omiFloat{ 0%,100%{ transform:translateY(0) rotate(-.6deg) } 50%{ transform:translateY(-5px) rotate(.6deg) } }
+  .omi-box.shake{ animation:omiShake .66s cubic-bezier(.36,.07,.19,.97); }
+  @keyframes omiShake{ 10%,90%{ transform:translateX(-1px) rotate(-2deg) } 20%,80%{ transform:translateX(2px) rotate(2deg) } 30%,50%,70%{ transform:translateX(-6px) rotate(-6deg) } 40%,60%{ transform:translateX(6px) rotate(6deg) } }
+  .omi-box-img{ width:100%; height:auto; display:block; filter:drop-shadow(0 8px 14px rgba(58,48,32,.2)); pointer-events:none; }
+  .omi-press{ position:absolute; bottom:-30px; left:50%; transform:translateX(-50%); font-size:11.5px; font-weight:700; letter-spacing:.06em; color:var(--gold-deep); white-space:nowrap; opacity:.9; transition:opacity .3s; }
+  .omi-stage.drawn .omi-press{ opacity:0; }
+
+  /* --- panel + slip --- */
+  .omi-panel{ position:relative; }
+  .omi-lead{ color:#7c6a44; margin:0 0 22px; font-size:14.5px; line-height:1.85; max-width:42ch; }
+  .omi-action{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .omi-again{ display:none; }
+  .omikuji.drawn .omi-again{ display:inline-flex; }
+
+  /* the paper slip — authentic omikuji */
+  .omi-slip{ margin-top:24px; max-width:452px; position:relative; padding:7px;
+    background:linear-gradient(165deg,#b6321f,#9a2a18); border-radius:16px;
+    box-shadow:0 18px 40px -18px rgba(120,40,24,.5), 0 2px 0 rgba(255,255,255,.15) inset;
+    opacity:0; transform:translateY(16px) scale(.97) rotate(-.6deg);
+    transition:opacity .55s ease, transform .6s cubic-bezier(.22,.61,.36,1); }
+  .omi-slip.show{ opacity:1; transform:none; }
+  .omi-paper{ position:relative; border-radius:10px; overflow:hidden;
+    background:radial-gradient(120% 80% at 50% -10%, #fffdf8, #fbf4e4 60%, #f6ecd6);
+    box-shadow:inset 0 0 0 1.5px #e6c48f, inset 0 0 0 4px #fffaf0, inset 0 0 0 5.5px #e9c98f; }
+  .omi-paper::before{ content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.04'/%3E%3C/svg%3E"); }
+  .omi-paper-head{ position:relative; display:flex; align-items:center; justify-content:space-between; padding:13px 20px 11px; }
+  .omi-vtitle{ font-family:"Shippori Mincho B1",serif; font-weight:800; font-size:15px; letter-spacing:.5em; color:#a8311e; }
+  .omi-head-plum{ width:34px; height:auto; flex:none; transform:rotate(-4deg); }
+  .omi-paper-main{ position:relative; display:grid; grid-template-columns:auto 1fr; gap:20px; padding:8px 22px 18px; align-items:center; min-height:108px; }
+  .omi-seal{ width:98px; height:auto; display:block; filter:drop-shadow(0 5px 10px rgba(120,40,24,.28)); }
+  .omi-slip.show .omi-seal{ animation:omiSealIn .6s cubic-bezier(.22,1.2,.4,1) both; }
+  @keyframes omiSealIn{ 0%{ transform:scale(.4) rotate(-14deg); opacity:0 } 60%{ transform:scale(1.08) rotate(3deg); opacity:1 } 100%{ transform:none } }
+  .omi-poem{ margin:0; color:#463a26; font-size:16px; line-height:1.95; font-weight:500; font-family:"Shippori Mincho B1",var(--font-body); }
+  .omi-rows{ position:relative; margin:0; padding:15px 22px 19px; display:grid; gap:0; }
+  .omi-rows::before{ content:""; position:absolute; left:22px; right:22px; top:0; height:1px; background:repeating-linear-gradient(90deg,#dcc79a,#dcc79a 5px,transparent 5px,transparent 10px); }
+  .omi-row{ display:grid; grid-template-columns:122px 1fr; gap:12px; align-items:center; font-size:13.5px; padding:8px 0; }
+  .omi-row + .omi-row{ border-top:1px solid #efe4cc; }
+  .omi-row dt{ color:#a8895a; font-weight:700; letter-spacing:.04em; white-space:nowrap; font-family:"Shippori Mincho B1",serif; }
+  .omi-row dd{ margin:0; color:#463a26; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .omi-stars{ color:var(--gold-deep); letter-spacing:.16em; font-size:15px; }
+  .omi-stars .off{ color:#e0cfa6; }
+  .omi-sw{ width:15px; height:15px; border-radius:5px; border:1px solid rgba(0,0,0,.12); box-shadow:inset 0 1px 1px rgba(255,255,255,.4); flex:none; }
+  /* daikichi (大吉) golden treatment */
+  .omi-slip.rank-daikichi{ background:linear-gradient(165deg,#e0a93f,#c9882a); box-shadow:0 18px 44px -16px rgba(210,150,40,.6), 0 0 0 1px var(--gold-soft); }
+  .omi-slip.rank-daikichi .omi-paper{ box-shadow:inset 0 0 0 1.5px #e9c266, inset 0 0 0 4px #fffaf0, inset 0 0 0 5.5px #edc874; }
+  .omi-slip.rank-daikichi .omi-vtitle{ color:#c2871a; }
+  .omi-slip.rank-daikichi::after{ content:"✦"; position:absolute; top:-10px; right:14px; font-size:20px; color:var(--gold); filter:drop-shadow(0 0 6px rgba(244,183,62,.8)); animation:omiSpark 1.6s ease-in-out infinite; }
+  @keyframes omiSpark{ 0%,100%{ opacity:.4; transform:scale(.8) rotate(0) } 50%{ opacity:1; transform:scale(1.15) rotate(20deg) } }
+  @media (prefers-reduced-motion:reduce){ .omi-box, .omi-slip.rank-daikichi::after, .omi-slip.show .omi-seal{ animation:none; } }
 
   /* ============ ABOUT ============ */
   .about-card{ display:grid; grid-template-columns:auto 1fr; gap:34px; padding:36px 38px; align-items:center; }
@@ -466,8 +621,12 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     .poster-stack{ max-width:420px; margin:0 auto; }
     .stats{ gap:30px; }
     .about-card{ grid-template-columns:1fr; text-align:center; justify-items:center; }
-    .omikuji{ grid-template-columns:1fr; text-align:center; justify-items:center; }
-    .omi-action{ align-items:center; }
+    .omikuji{ padding:32px 24px; }
+    .omi-grid{ grid-template-columns:1fr; gap:28px; justify-items:center; text-align:center; }
+    .omi-lead{ margin-left:auto; margin-right:auto; }
+    .omi-action{ justify-content:center; }
+    .omi-slip{ margin-left:auto; margin-right:auto; text-align:left; }
+    .omi-cat{ left:auto; right:-18px; }
   }
   @media (max-width:560px){
     .socials{ grid-template-columns:1fr; }
