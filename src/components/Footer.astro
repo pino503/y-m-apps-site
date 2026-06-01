@@ -3,23 +3,8 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <hr class="retro-hr" />
-  <div class="container" style="text-align: center;">
-    <p class="copy">
-      © {year} Y.M Apps / PINO
-    </p>
+  <div class="wrap foot-inner">
+    <small>© {year} Y.M Apps / PINO</small>
+    <img class="foot-cat" src="/assets/pinokun/pinokun-reading-color.png" alt="" loading="lazy" decoding="async" />
   </div>
 </footer>
-
-<style>
-  .site-footer {
-    margin-top: 46px;
-    padding-bottom: 34px;
-  }
-  .copy {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-  }
-</style>

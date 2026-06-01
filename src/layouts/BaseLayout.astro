@@ -4,6 +4,9 @@ import Footer from "../components/Footer.astro";
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import "../styles/world-themes.css";
+// Claude Design system — loaded last so its warm tokens, Zen fonts and
+// header/footer/button styles win site-wide over the older global.css.
+import "../styles/site.css";
 
 interface Props {
   title?: string;
@@ -28,6 +31,9 @@ const siteName = "Y.M Apps";
     <meta name="theme-color" content="#efe6d3" />
     <link rel="icon" type="image/png" href="/assets/favicon.png" />
     <link rel="apple-touch-icon" href="/assets/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=DotGothic16&display=swap" rel="stylesheet" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
