@@ -269,7 +269,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         {/* ボット対策：HTML 上にメアドの完全形を出さず、ローカル部とドメイン部を data 属性に分割。JS で mailto: を組み立てる。 */}
         <a id="contact-link" class="btn btn-primary" href="#contact" data-l="y.m_games503" data-d="protonmail.com">
           <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18v12H3z" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-          メールで相談する
+          メールで連絡する
         </a>
       </div>
       <p id="copy-hint" class="copy-hint" hidden aria-live="polite">
@@ -479,10 +479,10 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .feat-main .feat-more{ padding:12px 22px; border-radius:999px; background:var(--ink); color:var(--ink-on); box-shadow:var(--sh-2); }
   .feat-main .feat-more:hover{ color:var(--ink-on); transform:translateY(-2px); box-shadow:var(--sh-3); }
   .feat-visual{ position:absolute; right:48px; bottom:0; width:52%; height:100%; pointer-events:none; }
-  .feat-phone{ position:absolute; border-radius:16px; box-shadow:var(--sh-3); border:3px solid #fff; width:152px; }
-  .feat-phone.a{ right:118px; bottom:58px; transform:rotate(-9deg); z-index:2; }
-  .feat-phone.b{ right:4px; bottom:96px; transform:rotate(7deg); z-index:1; width:140px; }
-  .feat-cat{ position:absolute; right:206px; bottom:18px; width:112px; z-index:3; }
+  .feat-phone{ position:absolute; border-radius:16px; box-shadow:var(--sh-3); border:3px solid #fff; width:166px; }
+  .feat-phone.a{ right:112px; bottom:54px; transform:rotate(-9deg); z-index:2; }
+  .feat-phone.b{ right:0; bottom:94px; transform:rotate(7deg); z-index:1; width:152px; }
+  .feat-cat{ position:absolute; right:212px; bottom:14px; width:120px; z-index:3; }
 
   .feat-side{ background:linear-gradient(160deg,#312b25,#211c18); color:#f3ece0; padding:26px 24px; display:flex; flex-direction:column; position:relative; }
   .feat-side .badge-new{ position:absolute; top:18px; left:20px; z-index:3; }
@@ -513,11 +513,11 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .app-ic-mono{ font-family:var(--font-display); font-weight:900; font-size:18px; color:var(--gold-deep); }
   /* content column: starts at a consistent x for every row (after the icon),
      name + tags share the top line, description sits directly below them */
-  .app-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; }
+  .app-body{ flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
   .app-head{ display:flex; align-items:center; gap:10px 12px; flex-wrap:wrap; }
-  .app-name{ font-family:var(--font-display); font-weight:700; font-size:16px; white-space:nowrap; color:var(--ink); }
+  .app-name{ font-family:var(--font-display); font-weight:700; font-size:16.5px; white-space:nowrap; color:var(--ink); }
   .app-tags{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
-  .app-desc{ color:var(--ink-2); font-size:13.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .app-desc{ color:var(--ink-2); font-size:14.5px; line-height:1.6; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .app-arrow{ flex:none; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; color:var(--ink-3); border:1px solid var(--line); transition:.18s; }
   .app-row:hover .app-arrow{ color:var(--ink); border-color:var(--ink-2); transform:translateX(3px); }
   .app-arrow svg{ width:15px; }
@@ -531,8 +531,9 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .write-main{ flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; }
   .write-title{ font-weight:600; font-size:15px; color:var(--ink); }
   .write-sum{ color:var(--ink-2); font-size:13px; line-height:1.7; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .write-go{ flex:none; color:var(--ink-3); font-size:13px; font-weight:700; display:inline-flex; gap:5px; align-items:center; align-self:center; }
-  .write-row:hover .write-go{ color:var(--gold-deep); }
+  .write-go{ flex:none; color:var(--gold-deep); font-size:13px; font-weight:700; display:inline-flex; gap:5px; align-items:center; align-self:center; }
+  .write-go svg{ transition:transform .2s; }
+  .write-row:hover .write-go svg{ transform:translateX(3px); }
   .write-tags{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
   .write-new{ font-size:10.5px; font-weight:800; letter-spacing:.08em; color:var(--gold-deep); background:var(--gold-wash); border:1px solid #eecf95; border-radius:999px; padding:2px 9px; }
   .write-genre{ font-size:11px; font-weight:700; color:var(--ink-2); background:var(--paper-soft); border:1px solid var(--line); border-radius:999px; padding:2px 9px; }
