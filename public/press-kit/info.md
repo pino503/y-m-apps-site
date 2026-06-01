@@ -1,12 +1,12 @@
 # Y.M Apps — プロダクト一覧
 
 ## InkPress
-BOOX 等の Android E-Ink 端末向けの軽量リーダー。Android。
+Android の E-Ink 端末向けの軽量リーダー。Android。
 PDF / CBZ / CBR / 画像フォルダ対応、見開き・縦スクロール・RTL、フォルダ単位の設定継承。
 ストア: https://play.google.com/store/apps/details?id=com.pino.inkpress
 
 ## PLAYCORD
-NPB / MLB をまたぐ野球選手キャリアシミュレーション。Android。
+国内/海外リーグをまたぐ野球選手キャリアシミュレーション。Android。
 ドラフト入団から1軍/2軍進行、契約更改、国際大会、移籍、引退まで「1人の選手視点」で追える。
 ストア: https://play.google.com/store/apps/details?id=com.pino.playcord
 
