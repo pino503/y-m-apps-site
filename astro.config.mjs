@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://ymapps.pages.dev',
+  site: 'https://y-m-apps-site.pages.dev',
   trailingSlash: 'never',
   build: {
     assets: '_assets',
