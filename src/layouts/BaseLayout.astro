@@ -212,7 +212,9 @@ const siteName = "Y.M Apps";
       }
       (window as any).ymNoOrphan = (el: Element) => { if (el) { (el as any)._pw = false; phraseWrap(el); } };
       function bindOrphans() {
-        document.querySelectorAll(".hero-lede, .lede, .omikuji-lede, .featured-copy p, .work-tag, .about-body p")
+        // real text blocks on the page — phrase-aware wrapping (break after 、。
+        // not mid-phrase) so Japanese lines never orphan a lone character
+        document.querySelectorAll(".lead, .sec-sub, .feat-main p, .feat-side p, .omi-lead, .about-body p, .copy-hint")
           .forEach((el) => phraseWrap(el));
       }
 

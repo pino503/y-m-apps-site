@@ -407,7 +407,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         slip!.classList.remove("rank-daikichi");
         if (rank.cls) slip!.classList.add(rank.cls);
         if (sealEl) { sealEl.src = "/assets/omikuji/" + rank.file + ".png"; sealEl.alt = rank.r; }
-        if (poemEl) poemEl.textContent = poem;
+        if (poemEl) { poemEl.textContent = poem; (window as any).ymNoOrphan?.(poemEl); } // 句読点で自然に折り返す
         if (starsEl) starsEl.innerHTML = stars(rank.stars);
         if (itemEl) itemEl.textContent = item;
         if (swEl) swEl.style.background = col.c;
