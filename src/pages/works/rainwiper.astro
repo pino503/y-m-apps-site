@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Bespoke detail page (the generic [slug].astro skips this slug). Layout
+// follows the Claude Design handoff (works/rainwiper.html) — banner hero +
+// "coming soon" meta-bar + DEMO grid.
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "rainwiper")!;
+const { data } = app;
+
+const features = [
+  { title: "どんなページにも、リアルな雨を", body: "表示中のどんな Web ページの上にも、ガラスを伝うような本物さながらの雨粒を重ねられます。いつものサイトが、雨の日の窓辺に変わります。" },
+  { title: "ワイパーが、すっと拭き取る", body: "雨で曇った画面を、ワイパーが左右に動いて拭き取る演出。降らせる・拭き取るを自由に切り替えて楽しめます。" },
+  { title: "強さもムードも、自分好みに", body: "小雨から本降りまで、雨量や雰囲気を調整。作業のじゃまにならない、ちょうどいい強さに合わせられます。" },
+];
+
+const demos = [
+  { src: "/assets/rainwiper/demo1.png", alt: "写真ポートフォリオに雨を重ねたデモ" },
+  { src: "/assets/rainwiper/demo2.png", alt: "天気予報サイトに雨を重ねたデモ" },
+  { src: "/assets/rainwiper/demo3.png", alt: "コーヒー店サイトに雨を重ねたデモ" },
+];
+
+const otherWorks = [
+  { slug: "inkpress", name: "InkPress", desc: "軽くて静かな自炊本リーダー。", icon: "/assets/apps/inkpress-icon.png" },
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+  { slug: "pinokun-stamps", name: "LINEスタンプと絵文字", desc: "使いやすい絵文字やスタンプたち。", icon: "/assets/apps/pinokun-stamps-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="ブラウザに、雨を降らせる Chrome 拡張。RainWiper。">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-banner">
+          <img src="/assets/hero/rainwiper-hero.png" alt="RainWiper（雨ふりブラウザ）— どんな Web ページにも、本物のような雨とワイパーを" />
+        </div>
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-soon">準備中 — まもなく公開</span></div>
+          <div class="mb-chips">
+            <span class="chip">Chrome拡張</span>
+            <span class="chip chip-gold">RainWiper</span>
+          </div>
+          <div class="mb-actions">
+            <a class="btn btn-outline" href="https://note.com/y_m656/n/n673462bf744d" target="_blank" rel="noopener noreferrer">制作の話を読む</a>
+            <span class="btn btn-primary" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-1.5L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>
+              Chrome ウェブストア（準備中）
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>この拡張について</h2>
+          <div class="about-text">
+            <p>見ている Web ページの上に、ガラスを伝う本物のような雨と、それを拭き取るワイパーを重ねる Chrome 拡張です。はじめて作った拡張機能でもあります。</p>
+            <p class="pull">ふだんのブラウジングに、ちょっとした天気と遊び心を添える ── そんな小さな道具です。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>できること</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">DEMO</span>
+          <h2>いろんなサイトで</h2>
+          <p class="about-text lineup-lede">写真サイトでも、天気予報でも、コーヒー店のページでも。開いているそのページに、そのまま雨が降ります。</p>
+          <div class="shots">
+            {demos.map((d) => (
+              <div class="shot"><img src={d.src} alt={d.alt} loading="lazy" decoding="async" /></div>
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>

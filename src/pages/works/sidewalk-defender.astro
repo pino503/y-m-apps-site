@@ -1,0 +1,123 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Bespoke detail page (the generic [slug].astro skips this slug). Layout
+// follows the Claude Design handoff (works/sidewalk-defender.html) —
+// constructed arcade hero + "playable now" meta-bar + game screens.
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "sidewalk-defender")!;
+const { data } = app;
+
+const playUrl = data.embedPath ?? "/games/sidewalk-defender/";
+
+const features = [
+  { title: "ジャンプ・パンチ・キックで迎え撃つ", body: "スケボーで向かってくる相手に合わせて、3つのアクションを使い分け。タイミングが決まれば、テンポよく倒していけます。" },
+  { title: "コンボとフィーバーで一気に", body: "連続で決めるほどコンボが伸び、ゲージが満タンになるとフィーバー＆無敵タイム。スコアが一気に跳ね上がります。" },
+  { title: "ボスとの、熱いラッシュ", body: "ステージを進むと現れるボス。HPを削りきるまで、攻防の続くひと勝負です。レベルが上がるほど手ごたえも増していきます。" },
+];
+
+const shots = [
+  { src: "/assets/sidewalk/shot1.png", alt: "Sidewalk Defender 通常プレイ画面" },
+  { src: "/assets/sidewalk/shot3.png", alt: "Sidewalk Defender チャージ・フィーバー画面" },
+  { src: "/assets/sidewalk/shot2.png", alt: "Sidewalk Defender ボス戦画面" },
+];
+
+const otherWorks = [
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+  { slug: "playcord", name: "PLAYCORD", desc: "リアルな野球人生シミュレーション。", icon: "/assets/apps/playcord-icon.png" },
+  { slug: "pinokun-stamps", name: "LINEスタンプと絵文字", desc: "使いやすい絵文字やスタンプたち。", icon: "/assets/apps/pinokun-stamps-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="歩道の平和を守れ！80年代アーケード風アクションゲーム。">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-built hb-arcade">
+          <div class="hb-text">
+            <span class="hb-icon"><img src="/assets/apps/sidewalk-defender-cover.png" alt="" /></span>
+            <h1>{data.title}</h1>
+            <p class="hb-tag">歩道の平和を守れ！80年代アーケード風アクションゲーム。</p>
+            <div class="hb-badges"><span class="chip">Webゲーム</span><span class="chip">ブラウザ</span></div>
+          </div>
+          <div class="hb-visual center"><img src="/assets/sidewalk/shot2.png" alt="Sidewalk Defender のボス戦・フィーバー画面" /></div>
+        </div>
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-live">公開中 — ブラウザでプレイ可能</span></div>
+          <div class="mb-chips"><span class="chip">Webゲーム</span><span class="chip chip-gold">レトロアーケード</span></div>
+          <div class="mb-actions">
+            <a class="btn btn-primary" href={playUrl} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              ブラウザでプレイ
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このゲームについて</h2>
+          <div class="about-text">
+            <p>夜の街の歩道に、スケボーに乗った相手が次々とやってきます。タイミングよくジャンプ・パンチ・キックを決めて、歩道の平和を守りぬく80年代アーケード風のアクションゲームです。</p>
+            <p class="pull">コンボをつないでフィーバーへ。ブラウザを開けばすぐ遊べる、ひと息つきたい時のための一本です。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>遊びどころ</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">SCREENS</span>
+          <h2>ゲーム画面</h2>
+          <div class="shots">
+            {shots.map((s) => (
+              <div class="shot"><img src={s.src} alt={s.alt} loading="lazy" decoding="async" /></div>
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>

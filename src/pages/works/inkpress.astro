@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Bespoke detail page (the generic [slug].astro skips this slug). Title comes
+// from the content collection; layout follows the Claude Design handoff
+// (works/inkpress.html) — banner hero + "coming soon" meta-bar.
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "inkpress")!;
+const { data } = app;
+
+const features = [
+  { title: "BOOX 等の Android E-Ink 端末向け", body: "ディザリング・コントラスト調整・E-Ink ディスプレイの残像と反応速度に合わせた描画。BOOX をはじめとする Android E-Ink 端末で、紙の本に近い読み心地を狙っています。" },
+  { title: "PDF・CBZ・CBR・画像、まとめて", body: "PDF / ZIP / CBZ / RAR / CBR / 画像フォルダに対応。自炊した本もダウンロードしたコミックも、1つのアプリでそのまま開けます。" },
+  { title: "見開き・縦スクロール・RTL", body: "LTR、RTL（漫画）、縦スクロール（ウェブトゥーン）、見開き表示。フォルダ単位で設定を継承するので、いちいち調整しなおさずに読み進められます。" },
+];
+
+const shots = [
+  { src: "/assets/apps/inkpress-onboarding.png", alt: "InkPress スクリーンショット 1" },
+  { src: "/assets/apps/inkpress-settings.png", alt: "InkPress スクリーンショット 2" },
+  { src: "/assets/apps/inkpress-reader-controls.png", alt: "InkPress スクリーンショット 3" },
+];
+
+const otherWorks = [
+  { slug: "playcord", name: "PLAYCORD", desc: "リアルな野球人生シミュレーション。", icon: "/assets/apps/playcord-icon.png" },
+  { slug: "rainwiper", name: "雨ふりブラウザ", desc: "ブラウザに、雨を降らせる。", icon: "/assets/apps/rainwiper-icon.png" },
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="軽くて静かな自炊本リーダー。">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-banner">
+          <img src="/assets/hero/inkpress-hero.png" alt="InkPress — 軽くて静かな自炊本リーダー" />
+        </div>
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-soon">準備中 — まもなく公開</span></div>
+          <div class="mb-chips">
+            <span class="chip">Android</span>
+            <span class="chip">v1.1.7</span>
+            <span class="chip chip-gold">BOOX対応</span>
+          </div>
+          <div class="mb-actions">
+            <a class="btn btn-outline" href="https://note.com/y_m656/n/n7a510107a6ff" target="_blank" rel="noopener noreferrer">開発日誌を読む</a>
+            <span class="btn btn-primary" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              Google Play（準備中）
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このアプリについて</h2>
+          <div class="about-text">
+            <p>E-Ink端末で本を読むことが好きで、自分が「これだ」と思えるリーダーが欲しくて作りました。</p>
+            <p class="pull">PDF も自炊コミックも、紙の本のように構えずに開ける ── そういう静かな道具を目指しています。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>主な特徴</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">SCREENS</span>
+          <h2>スクリーンショット</h2>
+          <div class="shots">
+            {shots.map((s) => (
+              <a class="shot" href={s.src} target="_blank" rel="noopener noreferrer"><img src={s.src} alt={s.alt} loading="lazy" decoding="async" /></a>
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>

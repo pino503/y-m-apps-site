@@ -1,0 +1,120 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Bespoke detail page (the generic [slug].astro skips this slug). Layout
+// follows the Claude Design handoff (works/playcord.html) — banner hero +
+// "coming soon" meta-bar + four game screens.
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "playcord")!;
+const { data } = app;
+
+const features = [
+  { title: "ドラフトから引退まで、選手視点で", body: "月次進行で1シーズンずつ。1軍と2軍を行き来しながら、契約更改、国際大会、移籍、そして引退まで。1人の選手として「自分の野球史」を最後まで追えます。" },
+  { title: "国内から海外へ、海をまたぐキャリア", body: "国内リーグのドラフトから始まって、移籍や海外挑戦でステージを広げていけます。所属するリーグが変わっても、キャリアと記録は続いていきます。" },
+  { title: "タイトル、ライバル、ベストナイン", body: "同期や同世代のライバルとの順位争い、首位打者やホームラン王、毎年のベストナイン。シーズンを重ねるごとに、選手名鑑に記録が積み上がっていきます。" },
+];
+
+const shots = [
+  { src: "/assets/playcord/shot1.jpg", alt: "PLAYCORD タイトル画面" },
+  { src: "/assets/playcord/shot2.jpg", alt: "PLAYCORD ドラフト候補" },
+  { src: "/assets/playcord/shot3.jpg", alt: "PLAYCORD 選手データ準備中" },
+  { src: "/assets/playcord/shot4.jpg", alt: "PLAYCORD 入団サイン式" },
+];
+
+const otherWorks = [
+  { slug: "inkpress", name: "InkPress", desc: "軽くて静かな自炊本リーダー。", icon: "/assets/apps/inkpress-icon.png" },
+  { slug: "sidewalk-defender", name: "Sidewalk Defender", desc: "80年代アーケード風アクション。", icon: "/assets/apps/sidewalk-defender-cover.png" },
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="選手になりきるリアルな野球人生シミュレーション。">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-banner">
+          <img src="/assets/hero/playcord-hero.png" alt="PLAYCORD — 選手になりきるリアルな野球人生シミュレーション" />
+        </div>
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-soon">準備中 — まもなく公開</span></div>
+          <div class="mb-chips">
+            <span class="chip">Android</span>
+            <span class="chip chip-gold">野球キャリアシミュレーション</span>
+          </div>
+          <div class="mb-actions">
+            <a class="btn btn-outline" href="https://y-m-apps-site.pages.dev/writings" target="_blank" rel="noopener noreferrer">開発の記録を読む</a>
+            <span class="btn btn-primary" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              Google Play（準備中）
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このアプリについて</h2>
+          <div class="about-text">
+            <p>野球が好きで、選手として自分のキャリアを生き直してみたくて作りました。</p>
+            <p class="pull">ドラフトされた日から引退の日まで、長く付き合える「もうひとつの野球人生」を目指しています。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>主な特徴</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">SCREENS</span>
+          <h2>ゲーム画面</h2>
+          <div class="shots four">
+            {shots.map((s) => (
+              <div class="shot"><img src={s.src} alt={s.alt} loading="lazy" decoding="async" /></div>
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>

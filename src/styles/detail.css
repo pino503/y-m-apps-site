@@ -43,9 +43,20 @@
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
   background: var(--gold); color: #3a2c10; box-shadow: 0 3px 10px -3px rgba(226, 150, 42, 0.7);
 }
+.detail-page .badge-soon {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px; border-radius: 999px; font-size: 12.5px; font-weight: 600;
+  color: #8a6a2e; background: repeating-linear-gradient(45deg, #f7ead0, #f7ead0 8px, #f3e2c0 8px, #f3e2c0 16px);
+  border: 1px dashed #e0bd78;
+}
+.detail-page .badge-soon::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold-deep); }
 
-/* CTA button: reuse the global .btn/.btn-primary, just size the icon */
+/* CTA button: reuse the global .btn/.btn-primary, just size the icon + add the
+   outline variant and disabled state used by the "coming soon" pages. */
 .detail-page .btn svg { width: 18px; height: 18px; flex: none; }
+.detail-page .btn-outline { background: transparent; color: var(--ink); border-color: var(--line-2); }
+.detail-page .btn-outline:hover { background: var(--paper); transform: translateY(-2px); box-shadow: var(--sh-2); }
+.detail-page .btn[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
 
 /* ---- Breadcrumb ---- */
 .detail-page .crumb { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--ink-3); padding: 6px 0; flex-wrap: wrap; }
