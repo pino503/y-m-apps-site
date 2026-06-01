@@ -9,7 +9,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "astro build && wrangler pages deploy dist --project-name=y-m-apps-site --branch=main --commit-dirty=true"
+    "deploy": "astro build && wrangler pages deploy dist --project-name=y-m-apps-site --branch=main --commit-dirty=true --commit-message=deploy"
   },
   "dependencies": {
     "astro": "^5.1.0"
