@@ -643,7 +643,8 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .omikuji::before{ content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.5; border-radius:inherit; overflow:hidden;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='30' viewBox='0 0 60 30'%3E%3Cg fill='none' stroke='%23d9b870' stroke-width='1' opacity='0.5'%3E%3Cpath d='M0 30a15 15 0 0130 0 15 15 0 0130 0'/%3E%3Cpath d='M-15 30a15 15 0 0130 0M45 30a15 15 0 0130 0'/%3E%3C/g%3E%3C/svg%3E");
     background-size:60px 30px; -webkit-mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent); mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent); }
-  .omi-grid{ position:relative; z-index:1; display:grid; grid-template-columns:160px minmax(0,1fr); gap:44px; align-items:center; }
+  /* 箱+パネルを固定幅にして中央寄せ（右側の大きな空白を解消／スリップ表示でもズレない） */
+  .omi-grid{ position:relative; z-index:1; display:grid; grid-template-columns:160px 460px; gap:44px; justify-content:center; align-items:center; }
   .omi-plum{ position:absolute; top:16px; left:22px; width:64px; height:auto; z-index:2; transform:rotate(-6deg); filter:drop-shadow(0 4px 7px rgba(58,48,32,.14)); pointer-events:none; }
   .omi-banner{ width:262px; max-width:78%; height:auto; display:block; margin:0 0 16px; }
 
@@ -662,7 +663,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
 
   /* --- panel + slip --- */
   .omi-panel{ position:relative; }
-  .omi-lead{ color:#7c6a44; margin:0 0 22px; font-size:14.5px; line-height:1.85; max-width:42ch; }
+  .omi-lead{ color:#7c6a44; margin:0 0 22px; font-size:16px; line-height:1.95; max-width:42ch; }
   .omi-action{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
   .omi-again{ display:none; }
   .omikuji.drawn .omi-again{ display:inline-flex; }
