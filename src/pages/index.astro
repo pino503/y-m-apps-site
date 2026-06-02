@@ -266,15 +266,44 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
           <h2 class="sec-title">Contact</h2>
           <p class="sec-sub">小さな声も、お聞かせください。アプリの不具合報告、使ってみた感想、改善アイデア、制作のご相談など、どんな小さなことでもお気軽にご連絡ください。</p>
         </div>
-        {/* ボット対策：HTML 上にメアドの完全形を出さず、ローカル部とドメイン部を data 属性に分割。JS で mailto: を組み立てる。 */}
-        <a id="contact-link" class="btn btn-primary" href="#contact" data-l="y.m_games503" data-d="protonmail.com">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18v12H3z" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-          メールで連絡する
-        </a>
       </div>
-      <p id="copy-hint" class="copy-hint" hidden aria-live="polite">
-        メーラーが開かない場合は、アドレスをクリップボードにコピー済みです。お使いのメールアプリに貼り付けてご連絡ください。
-      </p>
+
+      <form id="contact-form" class="contact-form reveal" novalidate>
+        <div class="cf-grid">
+          <label class="cf-field">
+            <span class="cf-label">お名前 <i>任意</i></span>
+            <input id="cf-name" type="text" name="name" autocomplete="name" placeholder="ぴの" />
+          </label>
+          <label class="cf-field">
+            <span class="cf-label">メールアドレス <i>返信が必要な方のみ</i></span>
+            <input id="cf-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" />
+          </label>
+        </div>
+        <label class="cf-field">
+          <span class="cf-label">種類</span>
+          <select id="cf-type" name="type">
+            <option value="">選択してください（任意）</option>
+            <option>不具合報告</option>
+            <option>感想</option>
+            <option>改善アイデア</option>
+            <option>制作のご相談</option>
+            <option>その他</option>
+          </select>
+        </label>
+        <label class="cf-field">
+          <span class="cf-label">メッセージ <i>必須</i></span>
+          <textarea id="cf-message" name="message" rows="5" required placeholder="不具合の内容、使ってみた感想、ご相談など、どんなことでもどうぞ。"></textarea>
+        </label>
+        {/* ボット対策：人間には見えない隠しフィールド。ボットが入力したら送信を無視する */}
+        <input id="cf-hp" type="text" name="_hp" class="cf-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="cf-actions">
+          <button type="submit" id="cf-submit" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 16-3-6-7-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            送信する
+          </button>
+          <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
       <div class="socials reveal">
         <a class="social" href="https://x.com/Pinopino503" target="_blank" rel="noopener noreferrer">
           <span class="social-ico ico-x"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.2 3h3.3l-7.2 8.2L23 21h-6.6l-5.2-6.8L5.3 21H2l7.7-8.8L1.5 3h6.8l4.7 6.2L18.2 3zm-1.2 16h1.8L7.1 5H5.2L17 19z"/></svg></span>
@@ -299,20 +328,58 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
 </BaseLayout>
 
 <script>
-  // --- Contact: mailto + クリップボードコピー（ボット対策で JS 組み立て）---
-  function initContact() {
-    const link = document.getElementById("contact-link") as HTMLAnchorElement | null;
-    const hint = document.getElementById("copy-hint");
-    if (!link || !hint || (link as any)._bound) return;
-    (link as any)._bound = true;
-    const email = `${link.dataset.l ?? ""}@${link.dataset.d ?? ""}`;
-    link.setAttribute("href", `mailto:${email}`);
-    let hideId: number | undefined;
-    link.addEventListener("click", () => {
-      navigator.clipboard?.writeText(email).catch(() => {});
-      window.setTimeout(() => { hint.hidden = false; }, 800);
-      if (hideId) window.clearTimeout(hideId);
-      hideId = window.setTimeout(() => { hint.hidden = true; }, 10000);
+  // --- Contact: 自前フォーム → Google フォームに送信（メアドはサイトに出さない）---
+  // no-cors で Google の formResponse に POST。レスポンスは読めないが送信は通る。
+  // 成功/失敗の表示は自前で行い、ページ遷移なしで完結させる。
+  function initContactForm() {
+    const form = document.getElementById("contact-form") as HTMLFormElement | null;
+    if (!form || (form as any)._bound) return;
+    (form as any)._bound = true;
+
+    const statusEl = document.getElementById("cf-status") as HTMLElement | null;
+    const submitBtn = document.getElementById("cf-submit") as HTMLButtonElement | null;
+    const nameEl = document.getElementById("cf-name") as HTMLInputElement | null;
+    const emailEl = document.getElementById("cf-email") as HTMLInputElement | null;
+    const typeEl = document.getElementById("cf-type") as HTMLSelectElement | null;
+    const msgEl = document.getElementById("cf-message") as HTMLTextAreaElement | null;
+    const hpEl = document.getElementById("cf-hp") as HTMLInputElement | null;
+
+    const ENDPOINT = "https://docs.google.com/forms/d/e/1FAIpQLSe68WZMRc79v9TfTqvTdm9RLC1DjTcQEBrnVbYEaYjTOMNV-g/formResponse";
+
+    function setStatus(msg: string, kind: "" | "ok" | "err") {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      statusEl.classList.toggle("is-ok", kind === "ok");
+      statusEl.classList.toggle("is-err", kind === "err");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (hpEl && hpEl.value) return; // ボットが隠しフィールドを埋めたら無視
+      const message = (msgEl?.value ?? "").trim();
+      if (!message) { setStatus("メッセージを入力してください。", "err"); msgEl?.focus(); return; }
+      const email = (emailEl?.value ?? "").trim();
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setStatus("メールアドレスの形式をご確認ください。", "err"); emailEl?.focus(); return;
+      }
+
+      const data = new FormData();
+      data.append("entry.1951498699", (nameEl?.value ?? "").trim());
+      data.append("entry.1884459089", email);
+      data.append("entry.2040029710", typeEl?.value ?? "");
+      data.append("entry.243419386", message);
+
+      if (submitBtn) submitBtn.disabled = true;
+      setStatus("送信中…", "");
+      try {
+        await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: data });
+        form.reset();
+        setStatus("送信しました。お声を届けてくれてありがとうございます！", "ok");
+      } catch {
+        setStatus("送信に失敗しました。お手数ですが時間をおいて再度お試しください。", "err");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
     });
   }
 
@@ -514,7 +581,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     });
   }
 
-  function initHome() { initContact(); initOmikuji(); }
+  function initHome() { initContactForm(); initOmikuji(); }
   document.addEventListener("astro:page-load", initHome);
   if (document.readyState !== "loading") initHome();
   else document.addEventListener("DOMContentLoaded", initHome);
@@ -744,6 +811,39 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   .ico-itch{ background:#fa5c5c; }
   .ico-line{ background:#06c755; }
 
+  /* Contact はページ末尾なので下の余白を詰める（フッターとの間が空きすぎないように）*/
+  #contact{ padding-bottom:20px; }
+
+  /* contact form（自前デザイン → 裏で Google フォームへ送信）*/
+  .contact-form{ display:grid; gap:16px; max-width:640px; margin:0 0 34px; }
+  .cf-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cf-field{ display:grid; gap:7px; }
+  .cf-label{ font-size:13px; font-weight:700; color:var(--ink-2); display:flex; align-items:baseline; gap:8px; }
+  .cf-label i{ font-style:normal; font-size:11px; font-weight:500; color:var(--ink-3); }
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea{
+    width:100%; font:inherit; font-size:15px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; transition:border-color .15s, box-shadow .15s;
+  }
+  .contact-form textarea{ resize:vertical; min-height:124px; line-height:1.7; }
+  .contact-form input:focus,
+  .contact-form select:focus,
+  .contact-form textarea:focus{
+    outline:none; border-color:var(--gold-deep);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-deep) 18%, transparent);
+  }
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder{ color:var(--ink-3); }
+  /* honeypot：人間には見えない位置に飛ばす */
+  .cf-hp{ position:absolute !important; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
+  .cf-actions{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .cf-status{ margin:0; font-size:13px; line-height:1.6; color:var(--ink-2); }
+  .cf-status.is-ok{ color:#1f8a52; }
+  .cf-status.is-err{ color:#c0392b; }
+  #cf-submit[disabled]{ opacity:.6; pointer-events:none; }
+
   @media (max-width:980px){
     .featured-card{ grid-template-columns:1fr; }
     .feat-visual{ position:relative; width:100%; height:236px; right:0; margin-top:10px; }
@@ -769,6 +869,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   }
   @media (max-width:560px){
     .socials{ grid-template-columns:1fr; }
+    .cf-grid{ grid-template-columns:1fr; }
     .feat-main h3{ font-size:32px; }
     .hero h1 .spark{ left:-10px; top:-20px; width:36px; height:36px; }
     /* Works rows: wrap so アイコン+名前+矢印 sit on top and タグ+説明 get a full

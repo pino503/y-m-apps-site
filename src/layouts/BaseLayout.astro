@@ -213,7 +213,7 @@ const siteName = "Y.M Apps";
           },
           { rootMargin: "0px 0px -6% 0px", threshold: 0.01 }
         );
-        document.querySelectorAll("[data-reveal]:not(.is-visible)").forEach((el) => revealObserver!.observe(el));
+        document.querySelectorAll("[data-reveal]:not(.is-visible), .reveal:not(.is-visible)").forEach((el) => revealObserver!.observe(el));
       }
 
       // pointer-follow sheen on cards (sets --mx/--my for a soft highlight)

@@ -55,11 +55,14 @@ html{ scroll-behavior:smooth; }
 body{
   font-family:var(--font-body);
   color:var(--ink);
+  /* ページ全体をひと続きの淡いグラデーションに。上は明るいクリーム、下へ向かって
+     ほんのり深い暖色へゆっくり流れる。上部にだけ柔らかな金の光をひとつ添える。
+     attachment を外し（=ページ全高にマップ）、セクション単位ではなくページ全体で
+     自然に抑揚が出るようにしている。 */
   background:
-    radial-gradient(900px 480px at 88% -6%, rgba(244,183,62,.10), transparent 60%),
-    radial-gradient(700px 420px at -4% 8%, rgba(244,183,62,.07), transparent 60%),
-    var(--cream);
-  background-attachment:fixed;
+    radial-gradient(1100px 560px at 84% -10%, rgba(244,183,62,.10), transparent 60%),
+    linear-gradient(to bottom, #f6efe2 0%, #efe6d3 34%, #ebe1cc 70%, #e6dbc3 100%);
+  background-repeat:no-repeat;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
   line-height:1.7;
@@ -73,8 +76,13 @@ a:hover{ opacity:1; text-decoration:none; }
 body::before{
   content:"";
   position:fixed; inset:0; z-index:-1; pointer-events:none;
-  opacity:.5;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:1;
+  /* おしゃれなテクスチャー：ごく薄いドットの格子（ソフトな小さな点）＋ 紙の地の
+     ほんのり質感。ドットは暖かいブラウンを低 alpha で。格子間隔 24px。 */
+  background-image:
+    radial-gradient(rgba(58,48,32,.055) 1px, transparent 1.7px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='pg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pg)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size:40px 40px, 160px 160px;
 }
 
 .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 24px; position:relative; z-index:1; }
@@ -168,21 +176,23 @@ body::before{
 }
 
 /* --------------------------------------------------------- Footer */
-.site-footer{ margin-top:40px; padding:30px 0 38px; border-top:1px solid var(--line); position:relative; }
+.site-footer{ margin-top:20px; padding:24px 0 32px; border-top:1px solid var(--line); position:relative; }
 .foot-inner{ display:flex; align-items:center; justify-content:space-between; gap:16px; }
 .foot-inner small{ color:var(--ink-3); font-size:13px; letter-spacing:.04em; }
 .foot-cat{ width:54px; opacity:.9; }
 
 /* --------------------------------------------------------- Entrance (CSS-only, blank-proof) */
-@keyframes ymRise{ from{ transform:translateY(16px); } to{ transform:none; } }
-.reveal{ animation:ymRise .7s cubic-bezier(.22,.61,.36,1) both; }
-@media (prefers-reduced-motion:reduce){ .reveal{ animation:none; } }
-@media print{ .reveal{ animation:none !important; transform:none !important; } }
+/* スクロールで各セクションがふわっと表示。IntersectionObserver（BaseLayout の
+   setupReveals）が画面に入った要素へ .is-visible を付与して、フェード＋上昇する。 */
+.reveal{ opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1); }
+.reveal.is-visible{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){ .reveal{ opacity:1; transform:none; transition:none; } }
+@media print{ .reveal{ opacity:1 !important; transform:none !important; } }
 
 /* --------------------------------------------------------- Responsive base */
 @media (max-width:860px){
   .nav{ display:none; }
-  .visitors{ display:none; }
+  /* visitors はモバイルでも表示（nav が消えるのでブランドと両端に並ぶ）*/
   .section{ padding:48px 0; }
   .sec-title{ font-size:25px; }
 }
