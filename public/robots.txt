@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://y-m-apps-site.pages.dev/sitemap-index.xml

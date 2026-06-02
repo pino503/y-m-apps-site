@@ -12,6 +12,7 @@
     "deploy": "astro build && wrangler pages deploy dist --project-name=y-m-apps-site --branch=main --commit-dirty=true --commit-message=deploy"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "astro": "^5.1.0"
   },
   "devDependencies": {
