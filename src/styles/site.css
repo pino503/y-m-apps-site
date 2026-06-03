@@ -192,7 +192,18 @@ body::before{
 /* --------------------------------------------------------- Responsive base */
 @media (max-width:860px){
   .nav{ display:none; }
-  /* visitors はモバイルでも表示（nav が消えるのでブランドと両端に並ぶ）*/
+  /* nav が消えるので brand と visitors を両端に並べる。狭い画面で visitors が
+     右に押し出されて見切れないよう、装飾の「by PINO」を畳み、gap と visitors を
+     一回り小さくして 6 桁カウントでも収まるようにする。 */
+  .header-inner{ gap:12px; }
+  .brand-by{ display:none; }
+  .visitors{ padding:6px 11px; gap:7px; }
+  .visitors .lbl{ font-size:9px; letter-spacing:.1em; }
+  .visitors .num{ font-size:13px; letter-spacing:.06em; }
   .section{ padding:48px 0; }
   .sec-title{ font-size:25px; }
+}
+/* 極小幅（〜340px）では VISITORS ラベルを省き、カウントのみ表示 */
+@media (max-width:340px){
+  .visitors .lbl{ display:none; }
 }

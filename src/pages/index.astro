@@ -872,6 +872,14 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
     .cf-grid{ grid-template-columns:1fr; }
     .feat-main h3{ font-size:32px; }
     .hero h1 .spark{ left:-10px; top:-20px; width:36px; height:36px; }
+    /* 極狭幅でのヒーローはみ出し対策：グリッド項目が min-content（keep-all の
+       見出しやポスター画像）で膨らんで横にはみ出すのを防ぐ。項目に min-width:0 を
+       与えて列幅まで縮められるようにし、見出しは画面幅に合わせて少し縮め、stats の
+       間隔も詰める。これで〜320px でも横はみ出しが出ない。 */
+    .hero-grid > *{ min-width:0; }
+    .poster-stack{ min-width:0; }
+    .hero h1{ font-size:clamp(26px,7.6vw,34px); }
+    .stats{ gap:18px; }
     /* Works rows: wrap so アイコン+名前+矢印 sit on top and タグ+説明 get a full
        second line (otherwise the long name squeezes the description to nothing) */
     /* let the description wrap (it shares the content column with the icon+arrow
