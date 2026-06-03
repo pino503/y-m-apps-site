@@ -1,0 +1,121 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Bespoke detail page (the generic [slug].astro skips this slug). Title comes
+// from the content collection; layout follows the InkPress handoff — banner
+// hero + "coming soon" meta-bar (GTDメモ も Google Play 未公開のため準備中表示)。
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "gtdmemo")!;
+const { data } = app;
+
+const features = [
+  { title: "GTD のワークフローで「気になること」を整理", body: "まず Inbox に全部書き出して、メモ（資料）・次のアクション・予定・いつか・捨てる に仕分けるだけ。Next Action / Projects / Waiting For / Someday まで、GTD の流れをそのまま扱えます。" },
+  { title: "習慣トラッカーで「続ける」を可視化", body: "朝・夜・いつでも の時間帯ごとに習慣を管理。連続日数（ストリーク🔥）と達成状況がひと目でわかります。服薬・ウォーキング・読書など、毎日のことを無理なく。" },
+  { title: "週次レビューで一週間を振り返る", body: "完了・未完了・期限切れのサマリー、プロジェクト進捗、習慣の進捗をまとめて確認。「できたこと」を見つけて、来週につなげるためのガイド付きレビュー。" },
+  { title: "ホーム画面ウィジェット", body: "今日のタスクとカレンダーの予定を1つのウィジェットにまとめて表示。アプリを開かなくても、今日やることが一目でわかります。" },
+  { title: "クラウド同期 & AI秘書連携", body: "Supabase 連携で複数端末のタスクを同期。Claude Code を「秘書」にすれば、話しかけるだけでスマホにタスクが届きます。" },
+];
+
+const shots = [
+  { src: "/assets/apps/gtdmemo-inbox.jpg", alt: "GTDメモ スクリーンショット（インボックス・仕分け）" },
+  { src: "/assets/apps/gtdmemo-habits.jpg", alt: "GTDメモ スクリーンショット（習慣トラッカー）" },
+  { src: "/assets/apps/gtdmemo-review.jpg", alt: "GTDメモ スクリーンショット（週次レビュー）" },
+];
+
+const otherWorks = [
+  { slug: "inkpress", name: "InkPress", desc: "軽くて静かな自炊本リーダー。", icon: "/assets/apps/inkpress-icon.png" },
+  { slug: "rainwiper", name: "雨ふりブラウザ", desc: "ブラウザに、雨を降らせる。", icon: "/assets/apps/rainwiper-icon.png" },
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="頭の中を、すっきり整理。GTD のためのタスクメモ。" ogImage={data.coverImage}>
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-banner">
+          <img src="/assets/hero/gtdmemo-hero.png" alt="GTDメモ — 頭の中を、すっきり整理。" />
+        </div>
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-soon">準備中 — まもなく公開</span></div>
+          <div class="mb-chips">
+            <span class="chip">Android</span>
+            <span class="chip">v1.0</span>
+            <span class="chip chip-gold">タスク管理</span>
+          </div>
+          <div class="mb-actions">
+            <span class="btn btn-primary" aria-disabled="true">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              Google Play（準備中）
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このアプリについて</h2>
+          <div class="about-text">
+            <p>「やることが多いのに、なかなか手につかない」── そんなとき、頭の中をぜんぶ書き出して、次の一手だけに集中できるように、と作った GTD（Getting Things Done）ベースのタスクメモです。</p>
+            <p class="pull">まず Inbox に放り込んで、あとから「メモ・次のアクション・予定・いつか」に仕分けるだけ。習慣トラッカーと週次レビューで、続ける・振り返るところまでをやさしく支えます。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>主な特徴</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">SCREENS</span>
+          <h2>スクリーンショット</h2>
+          <div class="shots">
+            {shots.map((s) => (
+              <a class="shot" href={s.src} target="_blank" rel="noopener noreferrer"><img src={s.src} alt={s.alt} loading="lazy" decoding="async" /></a>
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>
