@@ -3,7 +3,7 @@ title: GTDメモ
 tagline: 頭の中を、すっきり整理。
 world: gtdmemo
 platform: Android
-badges: ["Android", "v1.0", "タスク管理"]
+badges: ["Android", "v1.0.1", "タスク管理"]
 order: 1.5
 category: tool
 isNew: true
@@ -14,14 +14,14 @@ screenshots:
   - /assets/apps/gtdmemo-inbox.jpg
   - /assets/apps/gtdmemo-habits.jpg
   - /assets/apps/gtdmemo-review.jpg
-version: "1.0"
+version: "1.0.1"
 features:
   - title: 端末内AI（オフライン）で Inbox を自動仕分け
     body: Inbox のタスクを、端末の中で動く小さな AI が「次のアクション / プロジェクト / 予定 / いつか / 資料 / 習慣」に振り分け、最初の一歩（サブタスク）まで提案します。データは端末の外に出ず、オフラインでも動作。AI モデルは初回だけアプリ内でダウンロード。もちろん手動の仕分けシートでも整理できます。
   - title: GTD のワークフローで「気になること」を整理
     body: まず Inbox に全部書き出して、メモ（資料）・次のアクション・予定・いつか・捨てる に仕分けるだけ。Next Action / Projects / Waiting For / Someday まで、GTD の流れをそのまま扱えます。
   - title: 習慣トラッカーで「続ける」を可視化
-    body: 朝・夜・いつでも の時間帯ごとに習慣を管理。連続日数（ストリーク🔥）と達成状況がひと目でわかります。服薬・ウォーキング・読書など、毎日のことを無理なく。
+    body: 毎日の習慣をチェックして、連続日数（ストリーク🔥）と達成状況をひと目で確認。GitHub風の貢献グリッドで「続けられている」が可視化されます。服薬・ウォーキング・読書など、毎日のことを無理なく。
   - title: 週次レビューで一週間を振り返る
     body: 完了・未完了・期限切れのサマリー、プロジェクト進捗、習慣の進捗をまとめて確認。「できたこと」を見つけて、来週につなげるためのガイド付きレビュー。
   - title: ホーム画面ウィジェット
