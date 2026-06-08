@@ -95,31 +95,13 @@ const updated = "June 9, 2026";
       </p>
 
       <h2>12. Contact</h2>
-      <p>For questions about this Policy or the Services, please contact us:</p>
+      <p>For questions about this Policy or the Services, please use our contact form.</p>
       <p class="contact-row">
-        <a
-          id="privacy-mail"
-          class="btn btn-primary"
-          href="#"
-          data-l="y.m_games503"
-          data-d="protonmail.com"
-        >
-          ✉ Send an email
-        </a>
+        <a class="btn btn-primary" href="/#contact">Go to the contact form</a>
       </p>
       <p class="legal-sub">Y.M Apps / PINO (individual developer)</p>
     </div>
   </section>
-
-  <script>
-    // Assemble the email address in JS instead of writing it in full in the HTML (anti-bot).
-    const link = document.getElementById("privacy-mail") as HTMLAnchorElement | null;
-    if (link) {
-      const local = link.dataset.l ?? "";
-      const domain = link.dataset.d ?? "";
-      link.setAttribute("href", `mailto:${local}@${domain}`);
-    }
-  </script>
 
   <style>
     .legal { max-width: 760px; }

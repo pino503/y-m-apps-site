@@ -92,31 +92,13 @@ const updated = "2026年6月9日";
       </p>
 
       <h2>12. お問い合わせ</h2>
-      <p>本ポリシーや本サービスに関するお問い合わせは、以下までご連絡ください。</p>
+      <p>本ポリシーや本サービスに関するお問い合わせは、お問い合わせフォームよりご連絡ください。</p>
       <p class="contact-row">
-        <a
-          id="privacy-mail"
-          class="btn btn-primary"
-          href="#"
-          data-l="y.m_games503"
-          data-d="protonmail.com"
-        >
-          ✉ メールを送る
-        </a>
+        <a class="btn btn-primary" href="/#contact">お問い合わせフォームへ</a>
       </p>
       <p class="legal-sub">Y.M Apps / PINO（個人開発者）</p>
     </div>
   </section>
-
-  <script>
-    // メールアドレスは HTML に完全形で出さず、JS で組み立てる（ボット対策）
-    const link = document.getElementById("privacy-mail") as HTMLAnchorElement | null;
-    if (link) {
-      const local = link.dataset.l ?? "";
-      const domain = link.dataset.d ?? "";
-      link.setAttribute("href", `mailto:${local}@${domain}`);
-    }
-  </script>
 
   <style>
     .legal { max-width: 760px; }
