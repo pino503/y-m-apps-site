@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const updated = "June 9, 2026";
+---
+
+<BaseLayout
+  title="Privacy Policy — Y.M Apps"
+  description="Privacy Policy that applies to all apps, browser extensions, web games, and LINE stickers provided by Y.M Apps (individual developer, PINO)."
+>
+  <section class="stack-section">
+    <div class="container legal">
+      <p class="lang-switch"><a href="/privacy">日本語</a></p>
+
+      <h1 class="legal-title">Privacy Policy</h1>
+      <p class="legal-meta">Last updated: {updated}</p>
+
+      <p class="legal-intro">
+        Y.M Apps (an individual developer, PINO; “we”, “us”, or “our”) respects your privacy.
+        Across the apps, browser extensions, web games, LINE stickers, and other products we provide
+        (collectively, the “Services”), our core principle is to collect as little information as
+        possible. This Policy applies to all of our Services. If an individual app involves any
+        additional handling of data, we will note it in that app's store listing or in the
+        “Per-app notes” section below.
+      </p>
+
+      <h2>1. Information We Collect</h2>
+      <p>
+        We do not, as a rule, collect personal information such as your name, address, or phone number
+        on our servers. We do not operate servers for the Services. Data such as app settings, reading
+        positions, progress, and scores is, as a rule, stored locally on your device.
+      </p>
+
+      <h2>2. Cloud Sync (Optional)</h2>
+      <p>Some apps integrate with cloud storage services (e.g., Dropbox) only when you choose to enable the feature.</p>
+      <ul>
+        <li>Integration is <strong>off by default</strong> and runs only after you explicitly connect an account.</li>
+        <li>Synced data (e.g., reading position, settings, files you select) is exchanged <strong>through your own cloud account</strong> and does not pass through our servers.</li>
+        <li>Handling of data within a cloud service is governed by that service's own privacy policy.</li>
+        <li>You can disconnect the integration at any time from the app's settings.</li>
+      </ul>
+
+      <h2>3. Crash Logs & Diagnostics (Optional)</h2>
+      <p>
+        If an app terminates unexpectedly, we may ask you to share an error log to help us improve.
+        Sharing is <strong>opt-in</strong> and occurs only with your consent. Logs do not include
+        information that could identify you, such as file names, file paths, or the contents of your
+        books or other content.
+      </p>
+
+      <h2>4. Advertising, Tracking & Analytics</h2>
+      <p>
+        We do not serve third-party advertising and do not track you for the purpose of identifying you.
+        If we ever introduce usage-analytics tools, we will inform you in advance via this Policy or the
+        relevant app's listing.
+      </p>
+
+      <h2>5. Device Permissions</h2>
+      <p>Apps use device permissions only to the extent necessary to provide their features. For example:</p>
+      <ul>
+        <li><strong>Storage / file access</strong>: to open files you select (PDFs, images, etc.).</li>
+        <li><strong>Accessibility</strong>: to perform actions such as turning off the screen; it is not used to collect or record screen contents.</li>
+      </ul>
+      <p>Every permission is limited to what is required to operate the relevant feature.</p>
+
+      <h2>6. Children's Privacy</h2>
+      <p>The Services do not knowingly collect personal information from children.</p>
+
+      <h2>7. Data Retention & Deletion</h2>
+      <p>
+        Data stored on your device is removed when you uninstall the app. Data synced to the cloud can
+        be managed and deleted within your cloud service.
+      </p>
+
+      <h2>8. Third-Party Services</h2>
+      <p>The Services may use third-party services such as the following, for example when you enable them. Please review each provider's policy for how it handles data.</p>
+      <ul>
+        <li>Dropbox (cloud sync) — <a href="https://www.dropbox.com/privacy" target="_blank" rel="noopener">Privacy Policy</a></li>
+        <li>Google Play (Android app distribution) — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a></li>
+      </ul>
+
+      <h2>9. About This Website</h2>
+      <p>
+        This website (ymapps.pages.dev) uses only a simple aggregate visit counter. It does not use
+        tracking cookies or analytics to follow individuals.
+      </p>
+
+      <h2>10. Per-App Notes</h2>
+      <p>There are currently no additional matters to note beyond the above. We will add any new handling of data here.</p>
+
+      <h2>11. Changes to This Policy</h2>
+      <p>
+        We may revise this Policy in response to changes in law or improvements to the Services.
+        We will announce any significant changes on this page.
+      </p>
+
+      <h2>12. Contact</h2>
+      <p>For questions about this Policy or the Services, please contact us:</p>
+      <p class="contact-row">
+        <a
+          id="privacy-mail"
+          class="btn btn-primary"
+          href="#"
+          data-l="y.m_games503"
+          data-d="protonmail.com"
+        >
+          ✉ Send an email
+        </a>
+      </p>
+      <p class="legal-sub">Y.M Apps / PINO (individual developer)</p>
+    </div>
+  </section>
+
+  <script>
+    // Assemble the email address in JS instead of writing it in full in the HTML (anti-bot).
+    const link = document.getElementById("privacy-mail") as HTMLAnchorElement | null;
+    if (link) {
+      const local = link.dataset.l ?? "";
+      const domain = link.dataset.d ?? "";
+      link.setAttribute("href", `mailto:${local}@${domain}`);
+    }
+  </script>
+
+  <style>
+    .legal { max-width: 760px; }
+    .lang-switch { text-align: right; font-size: 12px; font-weight: 700; margin: 0 0 6px; }
+    .lang-switch a { color: var(--ink-3); }
+    .lang-switch a:hover { color: var(--ink); text-decoration: none; }
+    .legal-title { font-family: var(--font-display); font-size: 27px; font-weight: 900; color: var(--ink); margin: 4px 0 6px; }
+    .legal-meta { font-size: 12.5px; color: var(--ink-3); margin-bottom: 22px; }
+    .legal-intro { font-size: 14.5px; color: var(--ink-2); line-height: 1.95; }
+    .legal h2 {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 17px; font-weight: 800; color: var(--ink);
+      margin: 32px 0 6px; padding: 0 0 6px;
+      background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+    }
+    .legal p { font-size: 14px; color: var(--ink-2); line-height: 1.95; margin: 8px 0; }
+    .legal ul { margin: 8px 0 8px 1.15em; padding: 0; }
+    .legal li { font-size: 14px; color: var(--ink-2); line-height: 1.9; margin: 5px 0; }
+    .legal strong { color: var(--ink); font-weight: 800; }
+    .legal a:not(.btn) { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 2px; }
+    .legal a:not(.btn):hover { color: var(--ink); }
+    .contact-row { margin-top: 14px; }
+    .contact-row a { text-decoration: none; }
+    .legal-sub { font-size: 12.5px; color: var(--ink-3); margin-top: 14px; }
+    @media (max-width: 520px) { .legal-title { font-size: 23px; } }
+  </style>
+</BaseLayout>
