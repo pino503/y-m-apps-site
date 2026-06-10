@@ -10,7 +10,7 @@ order: 2.5
 category: game
 isNew: true
 iconImage: /assets/apps/zansetsu-icon.png
-coverImage: /assets/apps/zansetsu-cover.png
+coverImage: /assets/apps/zansetsu-keyart.jpg
 features:
   - title: 三段構えの読み合い
     body: 上段・中段・下段。攻撃もガードも「いまの構え」で出る。相手の振りかぶりを見て同じ段に構えないと防げない、一瞬の読み合いが核。
@@ -22,6 +22,8 @@ features:
     body: 刀・二刀流・槍・薙刀・大剣・鎖鎌。間合いも得意な段もまったく違う相手と、毎回違う立ち合いになる。
   - title: 侍 vs 野武士のドット絵
     body: 月夜の境内で向かい合う、丁髷の侍と荒くれた野武士。血しぶきが舞い、地面に血痕が残る、ドット絵の果たし合い。
+  - title: 百人斬りモード
+    body: 倒すたびに次の刺客が現れる連戦モード。敵は斬るほど強くなり、骸は戦場に残る。何人斬れるか、最高記録に挑め。
 controls:
   - icon: "🚶"
     title: "移動・ステップ"
