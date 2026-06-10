@@ -3,7 +3,7 @@ title: 斬刹 -ZANSETSU-
 tagline: 間合いを計って、一太刀で決める。月夜の果たし合い。
 world: zansetsu
 platform: Webゲーム
-badges: ["Web", "Godot", "Pixel Art", "v1.1.1"]
+badges: ["Web", "Godot", "Pixel Art", "v1.2.0"]
 storeUrl: https://pino503.github.io/zansetsu-web/
 storeLabel: Play Now
 order: 2.5
