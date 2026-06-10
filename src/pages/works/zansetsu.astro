@@ -1,0 +1,207 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// 斬刹 -ZANSETSU- の個別ページ。メタデータは content collection から取得し、
+// レイアウトは works/cosmo-cleaner.astro のパターンを踏襲する。
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "zansetsu")!;
+const { data } = app;
+
+const playUrl = data.storeUrl!;
+
+const features = [
+  { title: "三段構えの読み合い", body: "上段・中段・下段。攻撃もガードも「いまの構え」で出ます。相手の振りかぶりの高さを見て、同じ段に構えないと防げません。" },
+  { title: "HPではなく部位ダメージ", body: "頭に入れば即決着。腕を傷めれば剣速が落ち、足を斬られれば歩けなくなる。相手の身体を崩しながら、致命の一撃を狙います。" },
+  { title: "カウンターの一閃", body: "敵の振りかぶりの終わり際、▼が出た瞬間に斬撃を合わせるとカウンター。暗転とともに白い一閃が走る、このゲームいちばんの気持ちよさです。" },
+];
+
+const weapons = [
+  { k: "刀", label: "バランス型・弾きに強い" },
+  { k: "二刀", label: "二連撃・近距離" },
+  { k: "槍", label: "最長間合い・深突き" },
+  { k: "薙刀", label: "横薙ぎで足狩り" },
+  { k: "大剣", label: "ガードごと叩き割る" },
+  { k: "鎖鎌", label: "足搦めで移動封じ" },
+];
+
+const otherWorks = [
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+  { slug: "sidewalk-defender", name: "Sidewalk Defender", desc: "80年代アーケード風アクション。", icon: "/assets/apps/sidewalk-defender-cover.png" },
+  { slug: "playcord", name: "PLAYCORD", desc: "リアルな野球人生シミュレーション。", icon: "/assets/apps/playcord-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description="一太刀で決まる、夜のドット絵剣戟決闘。三段構えと部位ダメージで読み合う1対1の果たし合い。">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        <div class="hero-built hb-night">
+          <div class="hb-text">
+            <span class="hb-icon"><img src={data.iconImage} alt="" /></span>
+            <h1>{data.title}</h1>
+            <p class="hb-tag">一太刀で決まる、夜のドット絵剣戟決闘。三段構えで読み合う1対1の果たし合い。</p>
+            <div class="hb-badges"><span class="badge-new">NEW</span><span class="chip">Webゲーム</span><span class="chip">ブラウザ</span></div>
+          </div>
+          <div class="hb-visual"><img src={data.coverImage} alt={`${data.title} のゲーム画面`} /></div>
+        </div>
+
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-live">公開中 — ブラウザでプレイ可能</span></div>
+          <div class="mb-chips"><span class="chip">Webゲーム</span><span class="chip chip-gold">剣戟決闘アクション</span></div>
+          <div class="mb-actions">
+            <a class="btn btn-primary" href={playUrl} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
+              ブラウザでプレイ
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このゲームについて</h2>
+          <div class="about-text">
+            <p>月夜の境内で、侍と野武士が向かい合う ── 体力ゲージのない、部位ダメージ制の1対1剣戟決闘ゲームです。</p>
+            <p class="pull">相手の構えを読み、同じ段で受け、一瞬の▼にカウンターを合わせる。1戦30秒の緊張感を詰め込みました。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>遊びどころ</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">SCREENS</span>
+          <h2>ゲーム画面</h2>
+          <div class="shots wide">
+            <div class="shot"><img src="/assets/zansetsu/shot-title.png" alt={`${data.title} タイトル画面`} loading="lazy" decoding="async" /></div>
+            <div class="shot"><img src="/assets/zansetsu/shot-fight.png" alt={`${data.title} 決闘画面`} loading="lazy" decoding="async" /></div>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">HOW TO PLAY</span>
+          <h2>操作方法</h2>
+          <div class="howto">
+
+            <div class="howto-row">
+              <span class="howto-icon">🚶</span>
+              <div class="howto-body">
+                <h3>移動・ステップ</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>◀▶ボタンで移動、「迅」で素早いステップ。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p><kbd>A</kbd><kbd>D</kbd>（<kbd>←</kbd><kbd>→</kbd>）で移動、<kbd>Shift</kbd> でステップ。</p></div>
+                </div>
+                <p class="howto-tip">間合いの管理がすべての基本。長物相手は懐に潜ると浅当たりにできます。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">🗡️</span>
+              <div class="howto-body">
+                <h3>構えを切り替える（上段・中段・下段）</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>「上・中・下」ボタンで切替。いまの構えが光ります。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p><kbd>W</kbd> / <kbd>S</kbd>（<kbd>↑</kbd><kbd>↓</kbd>）で切替。</p></div>
+                </div>
+                <p class="howto-tip">攻撃もガードも「いまの構え」の段で出ます。振りかぶり中の相手の頭上に段（上/中/下）が表示されるので、同じ段に構えて受けましょう。段違いのガードは斬られます。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">⚔️</span>
+              <div class="howto-body">
+                <h3>攻撃</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>「斬」で斬撃、「強」で強攻撃。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p><kbd>J</kbd> で斬撃、<kbd>K</kbd> で強攻撃。</p></div>
+                </div>
+                <p class="howto-tip">上段=頭・腕狙い／中段=胴狙い／下段=足狙い。強攻撃は遅いぶん部位を深く傷つけます。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">🛡️</span>
+              <div class="howto-body">
+                <h3>ガード・弾き・受け流し</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat">スマホ</span><p>「防」長押しでガード。当たる直前に押すと<strong>弾き</strong>、◀（後ろ）も押していれば<strong>受け流し</strong>。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p><kbd>L</kbd> 長押しでガード。直前押しで弾き、＋後ろ入力で受け流し。</p></div>
+                </div>
+                <p class="howto-tip">弾きは相手をよろけさせ、受け流しは相手を前に泳がせて背後を取れます。どちらも構えの段が合っていることが条件。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">⚡</span>
+              <div class="howto-body">
+                <h3>カウンター</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat common">共通</span><p>敵の振りかぶりの終わり際、自分の頭上に <strong>▼</strong> が出た瞬間に斬撃。</p></div>
+                </div>
+                <p class="howto-tip">決まれば敵の攻撃を潰して頭・胴への致命の一閃。難易度でこの受付時間が変わります（0.35〜0.15秒）。</p>
+              </div>
+            </div>
+
+            <div class="howto-row">
+              <span class="howto-icon">⚔</span>
+              <div class="howto-body">
+                <h3>武器を選ぶ</h3>
+                <div class="howto-keys">
+                  <div class="howto-key"><span class="plat common">共通</span><p>立ち合いの前に6種の得物から選択。敵の得物は毎回変わります。</p></div>
+                </div>
+                <div class="pups">
+                  {weapons.map((w) => (
+                    <span class="pup"><b>{w.k}</b>{w.label}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>

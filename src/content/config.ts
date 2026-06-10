@@ -13,6 +13,7 @@ const apps = defineCollection({
       "pinokun-stamps",
       "cosmo-cleaner",
       "gtdmemo",
+      "zansetsu",
     ]),
     platform: z.string(),
     badges: z.array(z.string()).default([]),

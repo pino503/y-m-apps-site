@@ -99,6 +99,8 @@
 .detail-page .hb-space .hb-tag { color: #9fc3b8; }
 .detail-page .hb-line { background: linear-gradient(150deg, #d7f3df, #b7e6c6); color: #1f4a30; }
 .detail-page .hb-line .hb-tag { color: #356b48; }
+.detail-page .hb-night { background: linear-gradient(150deg, #1d1d33, #0d0d1a); color: #f0ece2; }
+.detail-page .hb-night .hb-tag { color: #b9b3c8; }
 
 /* ---- META / CTA BAR ---- */
 .detail-page .meta-bar {
