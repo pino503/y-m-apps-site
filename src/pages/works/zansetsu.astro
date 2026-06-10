@@ -12,10 +12,10 @@ const { data } = app;
 const playUrl = data.storeUrl!;
 
 const features = [
-  { title: "三段構えの読み合い", body: "上段・中段・下段。構えで攻撃の振り方と狙いやすい部位が変わります（上=頭・腕／中=胴／下=足）。同じ段で振り合えば鍔迫り合いに。" },
-  { title: "HPではなく部位ダメージ", body: "頭に入れば即決着。腕を傷めれば剣速が落ち、足を斬られれば歩けなくなる。相手の身体を崩しながら、致命の一撃を狙います。" },
+  { title: "三段構えの読み合い", body: "上段・中段・下段で、攻撃の振り方と狙える部位が変わります。相手の振りかぶりを見て、潰すか、躱すか、刃を合わせて鍔迫り合いに持ち込むか。" },
+  { title: "HPではなく部位ダメージ", body: "頭に入れば一撃で決着。腕を斬られれば剣が鈍り、足を斬られれば歩けなくなる。どこを傷つけて、どこを守るかの駆け引きです。" },
   { title: "カウンターの一閃", body: "敵の振りかぶりの終わり際、▼が出た瞬間に斬撃を合わせるとカウンター。暗転とともに白い一閃が走る、このゲームいちばんの気持ちよさです。" },
-  { title: "百人斬りモード", body: "倒すたびに次の刺客が現れる連戦モード。幕間に傷は少しだけ癒え、敵は斬るほど強くなる。骸の転がる戦場で、何人斬れるか挑戦を。" },
+  { title: "百人斬りモード", body: "倒すたびに次の刺客が現れる連戦モード。骸の転がる戦場で、何人まで斬れるか。10人ごとに傷が癒えるので、長丁場もあきらめずに。" },
 ];
 
 const weapons = [
@@ -34,7 +34,7 @@ const otherWorks = [
 ];
 ---
 
-<BaseLayout title={`${data.title} — Y.M Apps`} description="一太刀で決まる、夜のドット絵剣戟決闘。三段構えと部位ダメージで読み合う1対1の果たし合い。">
+<BaseLayout title={`${data.title} — Y.M Apps`} description="間合いを計って、一太刀で決める。月夜の境内で野武士と斬り合う、ドット絵のチャンバラゲーム。">
   <section class="stack-section">
     <div class="container detail-page">
 
@@ -49,7 +49,7 @@ const otherWorks = [
           <div class="hb-text">
             <span class="hb-icon"><img src={data.iconImage} alt="" /></span>
             <h1>{data.title}</h1>
-            <p class="hb-tag">一太刀で決まる、夜のドット絵剣戟決闘。三段構えで読み合う1対1の果たし合い。</p>
+            <p class="hb-tag">間合いを計って、一太刀で決める。月夜の境内で斬り合う、ドット絵のチャンバラゲーム。</p>
             <div class="hb-badges"><span class="badge-new">NEW</span><span class="chip">Webゲーム</span><span class="chip">ブラウザ</span></div>
           </div>
           <div class="hb-visual"><img src={data.coverImage} alt={`${data.title} のゲーム画面`} /></div>
@@ -73,8 +73,8 @@ const otherWorks = [
           <span class="lede">ABOUT</span>
           <h2>このゲームについて</h2>
           <div class="about-text">
-            <p>月夜の境内で、侍と野武士が向かい合う ── 体力ゲージのない、部位ダメージ制の1対1剣戟決闘ゲームです。</p>
-            <p class="pull">相手の構えを読み、同じ段で受け、一瞬の▼にカウンターを合わせる。1戦30秒の緊張感を詰め込みました。</p>
+            <p>時代劇の果たし合いが好きで、「一太刀で勝負が決まる斬り合い」を遊べるかたちにしたくて作りました。体力ゲージはなく、頭・胴・腕・足のどこを斬られたかで戦況が変わっていきます。</p>
+            <p class="pull">月明かりの下、間合いを計って、一瞬で決める ── そんな果たし合いの緊張感を目指した一本です。</p>
           </div>
         </section>
 
@@ -165,7 +165,7 @@ const otherWorks = [
                 <div class="howto-keys">
                   <div class="howto-key"><span class="plat common">共通</span><p>敵の振りかぶりの終わり際、自分の頭上に <strong>▼</strong> が出た瞬間に斬撃。</p></div>
                 </div>
-                <p class="howto-tip">決まれば敵の攻撃を潰して頭・胴への致命の一閃。難易度でこの受付時間が変わります（0.35〜0.15秒）。</p>
+                <p class="howto-tip">決まれば敵の攻撃を潰して、頭か胴への致命の一閃。受付時間は難易度で変わります（0.45〜0.25秒）。</p>
               </div>
             </div>
 
