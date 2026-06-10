@@ -13,9 +13,11 @@ const playUrl = data.storeUrl!;
 
 const features = [
   { title: "三段構えの読み合い", body: "上段・中段・下段で、攻撃の振り方と狙える部位が変わります。相手の振りかぶりを見て、潰すか、躱すか、刃を合わせて鍔迫り合いに持ち込むか。" },
-  { title: "HPではなく部位ダメージ", body: "頭に入れば一撃で決着。腕を斬られれば剣が鈍り、足を斬られれば歩けなくなる。どこを傷つけて、どこを守るかの駆け引きです。" },
-  { title: "カウンターの一閃", body: "敵の振りかぶりの終わり際、▼が出た瞬間に斬撃を合わせるとカウンター。暗転とともに白い一閃が走る、このゲームいちばんの気持ちよさです。" },
-  { title: "百人斬りモード", body: "倒すたびに次の刺客が現れる連戦モード。骸の転がる戦場で、何人まで斬れるか。10人ごとに傷が癒えるので、長丁場もあきらめずに。" },
+  { title: "HPではなく部位ダメージ", body: "頭に入れば一撃で決着。腕を斬られれば剣が鈍り、足を斬られれば歩けなくなる。深手は腕ごと飛びます（流血・欠損の表現は設定で変えられます）。" },
+  { title: "カウンターと見切り返し", body: "敵の頭上に▼が出た刹那に斬ればカウンターの一閃。逆に敵の見切りが白く閃いたら、その瞬間のステップで空振りさせて返せます。" },
+  { title: "溜め斬りとフェイント", body: "強攻撃は押しっぱなしで溜められ、最大の一撃は四肢を断ち飛ばします。振りかぶりは寸止め（フェイント）もできるので、溜めをわざと見せて誘う駆け引きも。" },
+  { title: "剣豪列伝と必殺技", body: "武蔵、小次郎、卜伝、巴御前……史実と伝承の剣豪十六人が、それぞれの姿と剣風で現れます。金の技名が閃いたら必殺の合図。どの技にも必ず対処があります。" },
+  { title: "百人斬りと全国ランキング", body: "倒すたびに次の刺客が現れる連戦モード。傷は治らず、10人ごとに剣豪が、100人目には鎧武者が立ちはだかります。記録はかな文字で名を刻んで全国で競えます。" },
 ];
 
 const weapons = [
@@ -24,7 +26,7 @@ const weapons = [
   { k: "槍", label: "最長間合い・深突き" },
   { k: "薙刀", label: "横薙ぎで足狩り" },
   { k: "大剣", label: "ガードごと叩き割る" },
-  { k: "鎖鎌", label: "足搦めで移動封じ" },
+  { k: "鎖鎌", label: "遠間の分銅・足搦め" },
 ];
 
 const otherWorks = [
@@ -137,12 +139,12 @@ const otherWorks = [
             <div class="howto-row">
               <span class="howto-icon">⚔️</span>
               <div class="howto-body">
-                <h3>攻撃</h3>
+                <h3>攻撃・溜め斬り</h3>
                 <div class="howto-keys">
-                  <div class="howto-key"><span class="plat">スマホ</span><p>「斬」で斬撃、「強」で強攻撃。</p></div>
-                  <div class="howto-key"><span class="plat">PC</span><p><kbd>J</kbd> で斬撃、<kbd>K</kbd> で強攻撃。</p></div>
+                  <div class="howto-key"><span class="plat">スマホ</span><p>「斬」で斬撃、「強」で強攻撃。「強」長押しで溜め斬り。</p></div>
+                  <div class="howto-key"><span class="plat">PC</span><p><kbd>J</kbd> で斬撃、<kbd>K</kbd> で強攻撃。<kbd>K</kbd> 押しっぱなしで溜め斬り。</p></div>
                 </div>
-                <p class="howto-tip">上段=頭・腕狙い／中段=胴狙い／下段=足狙い。強攻撃は遅いぶん部位を深く傷つけます。</p>
+                <p class="howto-tip">上段=頭・腕狙い／中段=胴狙い／下段=足狙い。最大まで溜めた一撃は四肢を断ち飛ばしますが、溜めるほどカウンターの的に。振りかぶりはガードで寸止め（フェイント）、ステップで仕切り直しできます。</p>
               </div>
             </div>
 
@@ -154,7 +156,7 @@ const otherWorks = [
                   <div class="howto-key"><span class="plat">スマホ</span><p>「防」長押しでガード。当たる直前に押すと<strong>弾き</strong>。</p></div>
                   <div class="howto-key"><span class="plat">PC</span><p><kbd>L</kbd> 長押しでガード。直前押しで弾き。</p></div>
                 </div>
-                <p class="howto-tip">弾きは相手をよろけさせ、受け流しは相手を前に泳がせて大きな隙を作ります。ジャスト（直前押し）なら構えの段が違っても成立。押しっぱなしの置きガードだけは同じ段が必要です。</p>
+                <p class="howto-tip">ガードは構えの段に関係なく受けられます。弾きは相手をよろけさせ、受け流し（当たる直前のステップ）は相手を前に泳がせて大きな隙を作ります。強攻撃だけはガードの上から体勢を崩されるので注意。</p>
               </div>
             </div>
 
@@ -163,9 +165,9 @@ const otherWorks = [
               <div class="howto-body">
                 <h3>カウンター</h3>
                 <div class="howto-keys">
-                  <div class="howto-key"><span class="plat common">共通</span><p>敵の振りかぶりの終わり際、自分の頭上に <strong>▼</strong> が出た瞬間に斬撃。</p></div>
+                  <div class="howto-key"><span class="plat common">共通</span><p>敵の振りかぶりの終わり際、<strong>敵の頭上に ▼ が出た瞬間</strong>に斬撃。</p></div>
                 </div>
-                <p class="howto-tip">決まれば敵の攻撃を潰して、頭か胴への致命の一閃。受付時間は難易度で変わります（0.45〜0.25秒）。</p>
+                <p class="howto-tip">決まれば敵の攻撃を潰して、頭か胴への致命の一閃。逆にこちらが読まれると敵の見切りが白く閃きます——その刹那にステップすれば「見切り返し」で大きな隙を作れます。</p>
               </div>
             </div>
 
