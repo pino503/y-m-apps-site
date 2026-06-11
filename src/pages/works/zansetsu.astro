@@ -108,6 +108,23 @@ const otherWorks = [
         </section>
 
         <section class="block" data-reveal>
+          <span class="lede">RANKING</span>
+          <h2>全国ランキング — 百人斬り</h2>
+          <p class="rank-lead">
+            百人斬りで散るまでに何人斬れたか。全国の番付がここに並びます。
+            討死の画面で「全国に名を刻む」と入れた名前が、そのまま載ります。
+          </p>
+          <div class="rank-grid">
+            {['易しい', '普通', '難しい'].map((label, d) => (
+              <div class="rank-col card" data-diff={d}>
+                <h3 class="rank-head">{label}</h3>
+                <ol class="rank-list"><li class="rank-empty">読み込み中…</li></ol>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
           <span class="lede">HOW TO PLAY</span>
           <h2>操作方法</h2>
           <div class="howto">
@@ -210,3 +227,44 @@ const otherWorks = [
     </div>
   </section>
 </BaseLayout>
+
+<style is:global>
+  .rank-lead { margin: 14px 0 18px; }
+  .rank-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 720px) { .rank-grid { grid-template-columns: 1fr; } }
+  .rank-col { padding: 16px 18px; }
+  .rank-head { margin: 0 0 8px; font-size: 16px; color: var(--ink); }
+  .rank-list { list-style: none; margin: 0; padding: 0; }
+  .rank-list li { display: flex; align-items: baseline; gap: 10px; padding: 6px 2px; border-top: 1px dashed var(--line); font-size: 14px; }
+  .rank-list li:first-child { border-top: 0; }
+  .rank-no { width: 1.8em; text-align: right; color: var(--gold); font-weight: 700; }
+  .rank-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank-kills { font-weight: 700; }
+  .rank-empty { color: color-mix(in srgb, var(--ink) 55%, transparent); }
+</style>
+
+<script>
+  function initZansetsuRanking() {
+    const cols = document.querySelectorAll('.rank-col');
+    if (!cols.length) return;
+    const esc = (s: string) =>
+      s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c);
+    cols.forEach(async (col) => {
+      const list = col.querySelector('.rank-list');
+      if (!list) return;
+      try {
+        const res = await fetch(`https://zansetsu-rank.yamada2089.workers.dev/top?diff=${(col as HTMLElement).dataset.diff}`);
+        const data = await res.json();
+        const top = (data.top || []).slice(0, 10);
+        list.innerHTML = top.length
+          ? top.map((e: { n: string; k: number }, i: number) =>
+              `<li><span class="rank-no">${i + 1}</span><span class="rank-name">${esc(String(e.n))}</span><span class="rank-kills">${e.k | 0}人</span></li>`
+            ).join('')
+          : '<li class="rank-empty">まだ記録がありません</li>';
+      } catch {
+        list.innerHTML = '<li class="rank-empty">いま記録を取得できませんでした</li>';
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', initZansetsuRanking);
+</script>
