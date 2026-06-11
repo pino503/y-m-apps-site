@@ -20,6 +20,25 @@ const features = [
   { title: "百人斬りと全国ランキング", body: "倒すたびに次の刺客が現れる連戦モード。傷は治らず、10人ごとに剣豪が、100人目には鎧武者が立ちはだかります。記録はかな文字で名を刻んで全国で競えます。" },
 ];
 
+const kengo = [
+  { n: "佐々木小次郎", w: "刀", t: "燕返し" },
+  { n: "塚原卜伝", w: "刀", t: "一の太刀" },
+  { n: "伊東一刀斎", w: "刀", t: "一の太刀" },
+  { n: "柳生石舟斎", w: "刀", t: "無刀取り" },
+  { n: "沖田総司", w: "刀", t: "三段突き" },
+  { n: "宮本武蔵", w: "二刀", t: "十字斬り" },
+  { n: "富田勢源", w: "二刀", t: "一の太刀" },
+  { n: "宝蔵院胤栄", w: "槍", t: "十文字突き" },
+  { n: "本多忠勝", w: "槍", t: "蜻蛉切り" },
+  { n: "可児才蔵", w: "槍", t: "三段突き" },
+  { n: "巴御前", w: "薙刀", t: "巴薙ぎ" },
+  { n: "武蔵坊弁慶", w: "薙刀", t: "鬼薙ぎ" },
+  { n: "真柄直隆", w: "大剣", t: "怪力割り" },
+  { n: "薄田兼相", w: "大剣", t: "怪力割り" },
+  { n: "宍戸梅軒", w: "鎖鎌", t: "二連分銅" },
+  { n: "山田真龍軒", w: "鎖鎌", t: "二連分銅" },
+];
+
 const weapons = [
   { k: "刀", label: "バランス型・弾きに強い" },
   { k: "二刀", label: "二連撃・近距離" },
@@ -91,6 +110,32 @@ const otherWorks = [
                   <h3>{f.title}</h3>
                   <p>{f.body}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">KENGO</span>
+          <h2>名のある剣豪と立ち合う</h2>
+          <p class="kengo-lead">
+            立ちはだかるのは名も無き刺客だけではありません。武蔵、小次郎、卜伝、巴御前——
+            史実と伝承から十六人の剣豪を呼びました。姿も得物も剣風も、一人ずつ違います。
+          </p>
+          <div class="kengo-shot">
+            <img src="/assets/zansetsu/shot-kengo.png" alt="斬刹に登場する剣豪十六人の立ち姿" loading="lazy" decoding="async" />
+          </div>
+          <p class="kengo-lead">
+            金色の技名が大きく閃いたら、それが必殺の合図。燕返しは下から斬り上がり、無刀取りは
+            金色に構えて待ちます。どの技にも必ず対処があるので、初見で散っても次は読めます。
+            一本勝負では毎回ちがう剣豪と、百人斬りでは十人ごとの節目に現れます。
+          </p>
+          <div class="kengo-grid">
+            {kengo.map((k) => (
+              <div class="kengo-card">
+                <span class="kengo-name">{k.n}</span>
+                <span class="kengo-waza">必殺「{k.t}」</span>
+                <span class="kengo-wpn">{k.w}</span>
               </div>
             ))}
           </div>
@@ -238,6 +283,35 @@ const otherWorks = [
 
 <style is:global>
   .rank-lead { margin: 14px 0 18px; }
+
+  /* ── 剣豪列伝 ── */
+  .kengo-lead { margin: 14px 0; }
+  .kengo-shot {
+    margin: 18px 0; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--line); box-shadow: 0 4px 18px rgba(20, 16, 34, 0.25);
+  }
+  .kengo-shot img { display: block; width: 100%; height: auto; }
+  .kengo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+  @media (max-width: 860px) { .kengo-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kengo-card {
+    background: linear-gradient(165deg, #242031, #191722);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px; padding: 12px 14px; position: relative;
+  }
+  .kengo-name {
+    display: block; font-family: 'Yuji Syuku', serif;
+    color: #f1ede2; font-size: 17px; line-height: 1.3;
+  }
+  .kengo-waza {
+    display: block; margin-top: 3px; font-family: 'Yuji Syuku', serif;
+    color: #d9b860; font-size: 12.5px;
+  }
+  .kengo-wpn {
+    position: absolute; top: 10px; right: 10px;
+    font-size: 10.5px; color: #9a93a8;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 1px 7px; border-radius: 999px;
+  }
 
   /* ── 瓦版（和紙・墨枠・朱印） ── */
   .kwr {
