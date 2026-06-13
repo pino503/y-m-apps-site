@@ -1,9 +1,9 @@
 # Y.M Apps — プロダクト一覧
 
 ## InkPress
-Android の E-Ink 端末向けの軽量リーダー。Android。
-PDF / CBZ / CBR / 画像フォルダ対応、見開き・縦スクロール・RTL、フォルダ単位の設定継承。
-ストア: https://play.google.com/store/apps/details?id=com.pino.inkpress
+Android の E-Ink 端末向けの軽量リーダー。Android。完全無料・広告なし。
+PDF / CBZ / CBR / 画像フォルダ対応、見開き・縦スクロール・RTL、フォルダ単位の設定継承、Dropbox 同期、手書きメモ・マーカー。
+ストア: https://play.google.com/store/apps/details?id=io.github.pino503.inkpress
 
 ## PLAYCORD
 国内/海外リーグをまたぐ野球選手キャリアシミュレーション。Android。

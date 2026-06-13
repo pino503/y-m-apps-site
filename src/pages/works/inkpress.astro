@@ -14,6 +14,7 @@ const features = [
   { title: "Android の E-Ink 端末向け", body: "ディザリング・コントラスト調整・E-Ink ディスプレイの残像と反応速度に合わせた描画。各種 Android E-Ink 端末で、紙の本に近い読み心地を狙っています。" },
   { title: "PDF・CBZ・CBR・画像、まとめて", body: "PDF / ZIP / CBZ / RAR / CBR / 画像フォルダに対応。自炊した本もダウンロードしたコミックも、1つのアプリでそのまま開けます。" },
   { title: "見開き・縦スクロール・RTL", body: "LTR、RTL（漫画）、縦スクロール（ウェブトゥーン）、見開き表示。フォルダ単位で設定を継承するので、いちいち調整しなおさずに読み進められます。" },
+  { title: "Dropbox 同期と手書きメモ", body: "読書位置・書き込み・本ごとの設定を Dropbox で複数端末に同期。スマホで読んだ続きを E-Ink 端末からそのまま。ページには手書きのメモやマーカー、しおりを残せます。" },
 ];
 
 const shots = [
@@ -44,18 +45,19 @@ const otherWorks = [
           <img src="/assets/hero/inkpress-hero.png" alt="InkPress — 軽くて静かな自炊本リーダー" />
         </div>
         <div class="card meta-bar">
-          <div class="mb-status"><span class="badge-soon">準備中 — まもなく公開</span></div>
+          <div class="mb-status"><span class="badge-live">公開中 — Google Play</span></div>
           <div class="mb-chips">
             <span class="chip">Android</span>
-            <span class="chip">v1.1.7</span>
+            <span class="chip">v1.2.0</span>
+            <span class="chip">完全無料</span>
             <span class="chip chip-gold">読書アプリ</span>
           </div>
           <div class="mb-actions">
             <a class="btn btn-outline" href="https://note.com/y_m656/n/n7a510107a6ff" target="_blank" rel="noopener noreferrer">開発日誌を読む</a>
-            <span class="btn btn-primary" aria-disabled="true">
+            <a class="btn btn-primary" href={data.storeUrl} target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
-              Google Play（準備中）
-            </span>
+              Google Play で見る
+            </a>
           </div>
         </div>
       </section>
@@ -68,6 +70,7 @@ const otherWorks = [
           <div class="about-text">
             <p>E-Ink端末で本を読むことが好きで、自分が「これだ」と思えるリーダーが欲しくて作りました。</p>
             <p class="pull">PDF も自炊コミックも、紙の本のように構えずに開ける ── そういう静かな道具を目指しています。</p>
+            <p>昨年から少しずつ作り続けて、ようやく正式公開にこぎつけました。広告は一切なし、完全無料で、すべての機能が使えます。</p>
           </div>
         </section>
 
