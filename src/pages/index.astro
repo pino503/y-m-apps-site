@@ -93,7 +93,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
           <p><strong>E-Ink 端末向けの読書アプリ。</strong>読みやすさに特化し、読書に集中できるシンプルな自炊本リーダーです。</p>
           <div class="feat-chips">
             <span class="chip">Android</span>
-            <span class="chip">v1.2.0</span>
+            <span class="chip">v1.2.2</span>
             <span class="chip">完全無料</span>
             <span class="chip chip-gold">読書アプリ</span>
           </div>
@@ -619,11 +619,12 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   /* ============ FEATURED ============ */
   .featured{ padding-top:18px; }
   .featured-card{ display:grid; grid-template-columns:1.62fr 1fr; gap:0; overflow:hidden; padding:0; }
-  .feat-main{ padding:38px 36px; position:relative; display:flex; flex-direction:column; min-height:340px; }
+  .feat-main{ padding:38px 36px; position:relative; display:flex; flex-direction:column; min-height:360px; }
   .feat-label{ font-size:11.5px; letter-spacing:.18em; font-weight:700; text-transform:uppercase; color:var(--gold-deep); }
   .feat-main h3{ font-family:var(--font-display); font-weight:900; font-size:40px; margin:8px 0 12px; color:var(--ink); }
   .feat-main p{ color:var(--ink-2); font-size:15.5px; max-width:30ch; margin:0 0 18px; }
-  .feat-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:auto; }
+  /* Constrain to the left text column so chips never run under the absolute visual (was being clipped by overflow:hidden). */
+  .feat-chips{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:auto; max-width:300px; }
   .feat-more{ display:inline-flex; align-items:center; gap:8px; font-weight:700; color:var(--ink); margin-top:24px; width:max-content; }
   .feat-more svg{ width:17px; transition:transform .2s; }
   .feat-more:hover{ opacity:1; text-decoration:none; }
@@ -631,11 +632,11 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   /* 代表作 InkPress の導線はボタン寄りにして主役感を出す */
   .feat-main .feat-more{ padding:12px 22px; border-radius:999px; background:var(--ink); color:var(--ink-on); box-shadow:var(--sh-2); }
   .feat-main .feat-more:hover{ color:var(--ink-on); transform:translateY(-2px); box-shadow:var(--sh-3); }
-  .feat-visual{ position:absolute; right:48px; bottom:0; width:52%; height:100%; pointer-events:none; }
-  .feat-phone{ position:absolute; border-radius:16px; box-shadow:var(--sh-3); border:3px solid #fff; width:166px; }
-  .feat-phone.a{ right:112px; bottom:54px; transform:rotate(-9deg); z-index:2; }
-  .feat-phone.b{ right:0; bottom:94px; transform:rotate(7deg); z-index:1; width:152px; }
-  .feat-cat{ position:absolute; right:212px; bottom:14px; width:120px; z-index:3; }
+  .feat-visual{ position:absolute; right:44px; bottom:0; width:54%; height:100%; pointer-events:none; }
+  .feat-phone{ position:absolute; border-radius:18px; box-shadow:var(--sh-3); border:4px solid #fff; width:174px; }
+  .feat-phone.a{ right:104px; bottom:42px; transform:rotate(-7deg); z-index:2; }
+  .feat-phone.b{ right:6px; bottom:86px; transform:rotate(8deg); z-index:1; width:160px; }
+  .feat-cat{ position:absolute; right:232px; bottom:6px; width:112px; z-index:3; }
 
   .feat-side{ background:linear-gradient(160deg,#312b25,#211c18); color:#f3ece0; padding:26px 24px; display:flex; flex-direction:column; position:relative; }
   .feat-side .badge-new{ position:absolute; top:18px; left:20px; z-index:3; }

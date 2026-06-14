@@ -3,7 +3,7 @@ title: InkPress
 tagline: 軽くて静かな自炊本リーダー。
 world: inkpress
 platform: Android
-badges: ["Android", "v1.2.0", "読書アプリ"]
+badges: ["Android", "v1.2.2", "読書アプリ"]
 storeUrl: https://play.google.com/store/apps/details?id=io.github.pino503.inkpress
 storeLabel: Google Play
 order: 1
@@ -25,7 +25,7 @@ features:
     body: LTR、RTL（漫画）、縦スクロール（ウェブトゥーン）、見開き表示。フォルダ単位で設定を継承するので、いちいち調整しなおさずに読み進められます。
   - title: Dropbox 同期と手書きメモ
     body: 読書位置・書き込み・本ごとの設定を Dropbox で複数端末に同期。スマホで読んだ続きを E-Ink 端末からそのまま。ページには手書きのメモやマーカー、しおりを残せます。
-version: "1.2.0"
+version: "1.2.2"
 releaseDate: "2026-06-13"
 ---
 
