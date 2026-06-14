@@ -28,6 +28,11 @@ const otherWorks = [
   { slug: "rainwiper", name: "雨ふりブラウザ", desc: "ブラウザに、雨を降らせる。", icon: "/assets/apps/rainwiper-icon.png" },
   { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
 ];
+
+// InkPress 関連の note 記事を新しい順に（開発の記録として一覧表示）
+const relatedWritings = (await getCollection("writings"))
+  .filter((w) => w.data.relatedApp === "inkpress")
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 ---
 
 <BaseLayout title={`${data.title} — Y.M Apps`} description="軽くて静かな自炊本リーダー。">
@@ -48,12 +53,11 @@ const otherWorks = [
           <div class="mb-status"><span class="badge-live">公開中 — Google Play</span></div>
           <div class="mb-chips">
             <span class="chip">Android</span>
-            <span class="chip">v1.2.0</span>
+            <span class="chip">v1.2.2</span>
             <span class="chip">完全無料</span>
             <span class="chip chip-gold">読書アプリ</span>
           </div>
           <div class="mb-actions">
-            <a class="btn btn-outline" href="https://note.com/y_m656/n/n7a510107a6ff" target="_blank" rel="noopener noreferrer">開発日誌を読む</a>
             <a class="btn btn-primary" href={data.storeUrl} target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
               Google Play で見る
@@ -100,6 +104,22 @@ const otherWorks = [
           </div>
         </section>
 
+        <section class="block" data-reveal>
+          <span class="lede">ARTICLES</span>
+          <h2>開発の記録</h2>
+          <p class="art-intro">作りはじめから正式リリースまで、noteに書いてきた記事です。</p>
+          <ul class="article-list">
+            {relatedWritings.map((w) => (
+              <li>
+                <a href={w.data.url} target="_blank" rel="noopener noreferrer">
+                  <time datetime={w.data.date}>{w.data.date.replaceAll("-", ".")}</time>
+                  <span class="art-title">{w.data.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
       </div>
 
       <section class="other" data-reveal>
@@ -121,3 +141,21 @@ const otherWorks = [
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .art-intro { color: var(--ink-2); font-size: 15px; margin: 0 0 18px; }
+  .article-list { list-style: none; margin: 0; padding: 0; }
+  .article-list li + li { border-top: 1px solid var(--line); }
+  .article-list a {
+    display: flex; align-items: baseline; gap: 16px;
+    padding: 14px 8px; color: var(--ink); text-decoration: none;
+    border-radius: 10px; transition: background .15s ease, transform .15s ease;
+  }
+  .article-list a:hover { background: rgba(44, 39, 34, 0.04); transform: translateX(2px); }
+  .article-list time { flex: none; min-width: 92px; font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .article-list .art-title { font-size: 15px; font-weight: 600; line-height: 1.65; }
+  @media (max-width: 560px) {
+    .article-list a { flex-direction: column; gap: 3px; padding: 12px 6px; }
+    .article-list time { min-width: 0; }
+  }
+</style>
