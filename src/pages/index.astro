@@ -101,9 +101,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
           <div class="feat-visual">
-            <img class="feat-phone a" src="/assets/apps/inkpress-onboarding.png" alt="" loading="lazy" />
-            <img class="feat-phone b" src="/assets/apps/inkpress-settings.png" alt="" loading="lazy" />
-            <img class="feat-cat" src="/assets/pinokun/pinokun-reading-color.png" alt="" loading="lazy" />
+            <img class="feat-art" src="/assets/apps/inkpress-featured.png" alt="InkPress のライブラリ・設定・読書画面" loading="lazy" />
           </div>
         </div>
         <div class="feat-side">
@@ -631,11 +629,8 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   /* 代表作 InkPress の導線はボタン寄りにして主役感を出す */
   .feat-main .feat-more{ padding:12px 22px; border-radius:999px; background:var(--ink); color:var(--ink-on); box-shadow:var(--sh-2); }
   .feat-main .feat-more:hover{ color:var(--ink-on); transform:translateY(-2px); box-shadow:var(--sh-3); }
-  .feat-visual{ position:absolute; right:48px; bottom:0; width:52%; height:100%; pointer-events:none; }
-  .feat-phone{ position:absolute; border-radius:16px; box-shadow:var(--sh-3); border:3px solid #fff; width:166px; }
-  .feat-phone.a{ right:112px; bottom:54px; transform:rotate(-9deg); z-index:2; }
-  .feat-phone.b{ right:0; bottom:94px; transform:rotate(7deg); z-index:1; width:152px; }
-  .feat-cat{ position:absolute; right:212px; bottom:14px; width:120px; z-index:3; }
+  .feat-visual{ position:absolute; right:30px; bottom:22px; width:52%; max-width:404px; pointer-events:none; }
+  .feat-art{ width:100%; height:auto; display:block; border-radius:16px; box-shadow:var(--sh-2); }
 
   .feat-side{ background:linear-gradient(160deg,#312b25,#211c18); color:#f3ece0; padding:26px 24px; display:flex; flex-direction:column; position:relative; }
   .feat-side .badge-new{ position:absolute; top:18px; left:20px; z-index:3; }
@@ -847,10 +842,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
 
   @media (max-width:980px){
     .featured-card{ grid-template-columns:1fr; }
-    .feat-visual{ position:relative; width:100%; height:236px; right:0; margin-top:10px; }
-    .feat-phone.a{ left:24%; right:auto; bottom:34px; }
-    .feat-phone.b{ left:46%; right:auto; bottom:58px; }
-    .feat-cat{ left:6%; right:auto; bottom:10px; }
+    .feat-visual{ position:relative; width:100%; max-width:420px; right:auto; bottom:auto; margin:14px auto 0; }
     .socials{ grid-template-columns:repeat(2,1fr); }
     /* minmax(0,1fr) (not 1fr) so a long nowrap .app-desc can't blow the track
        out past the card → caused horizontal scroll on phones */
