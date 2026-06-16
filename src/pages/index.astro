@@ -848,10 +848,13 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
 
   @media (max-width:980px){
     .featured-card{ grid-template-columns:1fr; }
-    .feat-visual{ position:relative; width:100%; height:236px; right:0; margin-top:10px; }
-    .feat-phone.a{ left:24%; right:auto; bottom:34px; }
-    .feat-phone.b{ left:46%; right:auto; bottom:58px; }
-    .feat-cat{ left:6%; right:auto; bottom:10px; }
+    /* mobile: drop fragile absolute positioning — lay the phones + ぴのくん out
+       in normal flow as a centered row so nothing rides up over the CTA button */
+    .feat-visual{ position:relative; display:flex; align-items:flex-end; justify-content:center; gap:6px; width:100%; height:auto; right:0; margin-top:26px; pointer-events:none; }
+    .feat-phone{ position:relative; width:132px; }
+    .feat-phone.a{ left:auto; right:auto; bottom:auto; transform:rotate(-5deg); }
+    .feat-phone.b{ left:auto; right:auto; bottom:auto; width:120px; transform:rotate(5deg); }
+    .feat-cat{ position:relative; left:auto; right:auto; bottom:auto; width:80px; align-self:flex-end; }
     .socials{ grid-template-columns:repeat(2,1fr); }
     /* minmax(0,1fr) (not 1fr) so a long nowrap .app-desc can't blow the track
        out past the card → caused horizontal scroll on phones */
