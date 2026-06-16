@@ -33,11 +33,19 @@ const otherWorks = [
 const relatedWritings = (await getCollection("writings"))
   .filter((w) => w.data.relatedApp === "inkpress")
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const alternates = [
+  { hreflang: "ja", href: "/works/inkpress" },
+  { hreflang: "en", href: "/works/inkpress/en" },
+  { hreflang: "x-default", href: "/works/inkpress" },
+];
 ---
 
-<BaseLayout title={`${data.title} — Y.M Apps`} description="軽くて静かな自炊本リーダー。">
+<BaseLayout title={`${data.title} — Y.M Apps`} description="軽くて静かな自炊本リーダー。" lang="ja" alternates={alternates}>
   <section class="stack-section">
     <div class="container detail-page">
+
+      <p class="lang-switch"><a href="/works/inkpress/en">English</a></p>
 
       <nav class="crumb">
         <a href="/">Home</a><span class="sep">/</span>
@@ -143,6 +151,9 @@ const relatedWritings = (await getCollection("writings"))
 </BaseLayout>
 
 <style>
+  .lang-switch { text-align: right; font-size: 12px; font-weight: 700; margin: 0 0 6px; }
+  .lang-switch a { color: var(--ink-3); }
+  .lang-switch a:hover { color: var(--ink); text-decoration: none; }
   .art-intro { color: var(--ink-2); font-size: 15px; margin: 0 0 18px; }
   .article-list { list-style: none; margin: 0; padding: 0; }
   .article-list li + li { border-top: 1px solid var(--line); }

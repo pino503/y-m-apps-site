@@ -12,23 +12,30 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  lang?: string;
+  alternates?: { hreflang: string; href: string }[];
 }
 
 const {
   title = "Y.M Apps — 暮らしに溶ける、小さな道具",
   description = "PINO が個人で作っているアプリ・拡張機能・Webゲーム・LINEスタンプの公式サイト。InkPress / PLAYCORD / RainWiper / Sidewalk Defender / COSMO CLEANER / LINEスタンプと絵文字。",
   ogImage = "/assets/hero/poster-1120.png",
+  lang = "ja",
+  alternates = [],
 } = Astro.props;
 
 const siteName = "Y.M Apps";
 ---
 <!DOCTYPE html>
-<html lang="ja">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
+    {alternates.map((a) => (
+      <link rel="alternate" hreflang={a.hreflang} href={new URL(a.href, Astro.site).href} />
+    ))}
     <meta name="theme-color" content="#efe6d3" />
     <link rel="icon" type="image/png" href="/assets/favicon.png" />
     <link rel="apple-touch-icon" href="/assets/favicon.png" />
