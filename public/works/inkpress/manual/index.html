@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FAF5EB; }
+  .doc { box-sizing: border-box; max-width: 8.6in; margin: 0 auto; background: inherit;
+         padding: 44px clamp(20px, 5vw, 0.72in) 90px;
+         font-family: 'Zen Kaku Gothic New', sans-serif; color: #56575A;
+         -webkit-font-smoothing: antialiased; }
+  .doc-frame { width: 100%; border-collapse: collapse; }
+  .doc-frame td { padding: 0; }
+  .running-hdr, .running-ftr, .hdr-space, .ftr-space { display: none; }
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  .doc a.toc-link { transition: border-color .15s, background .15s, transform .15s; }
+  .hide-demo .demo-block { display: none !important; }
+  .hide-toc .toc-block { display: none !important; }
+  ::selection { background: #FFE89A; }
+  @page { size: letter; margin: 0; }
+  @media print {
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; scroll-behavior: auto; }
+    html, body { margin: 0; padding: 0; }
+    .doc { max-width: none !important; margin: 0 !important; padding: 0 0.7in !important;
+           box-shadow: none !important; border: none !important; }
+    #dc-root, .sc-host { height: auto !important; }
+    .hdr-space, .ftr-space { display: table-cell; height: 0.6in !important; }
+    h1, h2, h3, h4 { break-after: avoid; }
+    figure, blockquote, img, tr, table { break-inside: avoid; }
+    p, li { orphans: 3; widows: 3; }
+    .screen-only { display: none !important; }
+  }
+</style>
+
+<title>InkPress 取扱説明書</title>
+<style>.doc a.toc-link:hover{border-color:#FFD84D;background:#FFFBEF;transform:translateY(-1px)}</style>
+</head>
+<body>
+
+
+<main class="doc">
+<table class="doc-frame" role="presentation">
+<thead><tr><td class="hdr-space"></td></tr></thead>
+<tbody><tr><td>
+
+<header style="text-align:center;padding:22px 14px 34px;border-bottom:1px solid #ECE3D0;margin-bottom:30px;">
+  <img src="/assets/apps/inkpress-icon.png" alt="InkPress" style="width:90px;height:90px;border-radius:21px;display:block;margin:0 auto 16px;box-shadow:0 5px 16px rgba(140,115,60,.18);">
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:500;font-size:14px;color:#A0905F;letter-spacing:.14em;margin-bottom:14px;">E-INK PDF / COMIC VIEWER</div>
+  <h1 style="margin:0 0 8px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:clamp(34px,6vw,54px);color:#3F4042;letter-spacing:.02em;line-height:1.16;">InkPress 取扱説明書</h1>
+  <p style="max-width:580px;margin:18px auto 22px;font-size:16px;line-height:2;color:#56575A;">BOOX などの E-ink（電子ペーパー）端末に最適化した、PDF・コミック・自炊書籍のための<strong style="color:#46474A;font-weight:700;">静かなビューア</strong>です。残像やちらつきを抑え、紙のように落ち着いて読めます。</p>
+  <div style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">バージョン 1.2.4</span>
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">対応 Android 8.0 以上</span>
+  </div>
+</header>
+
+<div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 22px;margin:0 0 32px;border-left:5px solid #FFD84D;">
+  <p style="margin:0;font-size:15.5px;line-height:1.85;color:#5C5746;">本書は全機能を網羅した説明書です。<strong style="color:#46474A;font-weight:700;">目次</strong>から知りたい項目へ飛んでください。</p>
+</div>
+
+<section class="toc-block" style="margin:0 0 36px;">
+  <h2 style="margin:0 0 16px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>目次</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;">
+    <a class="toc-link" href="#s1" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">01</span><span style="font-size:14.5px;color:#4A4B4D;">対応ファイルと端末</span></a>
+    <a class="toc-link" href="#s2" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">02</span><span style="font-size:14.5px;color:#4A4B4D;">はじめに（本棚の設定）</span></a>
+    <a class="toc-link" href="#s3" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">03</span><span style="font-size:14.5px;color:#4A4B4D;">ライブラリ（本棚）の使い方</span></a>
+    <a class="toc-link" href="#s4" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">04</span><span style="font-size:14.5px;color:#4A4B4D;">本を読む（リーダー操作）</span></a>
+    <a class="toc-link" href="#s5" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">05</span><span style="font-size:14.5px;color:#4A4B4D;">レイアウト設定</span></a>
+    <a class="toc-link" href="#s6" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">06</span><span style="font-size:14.5px;color:#4A4B4D;">E-ink 最適化</span></a>
+    <a class="toc-link" href="#s7" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">07</span><span style="font-size:14.5px;color:#4A4B4D;">注釈・しおり・メモ</span></a>
+    <a class="toc-link" href="#s8" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">08</span><span style="font-size:14.5px;color:#4A4B4D;">クラウド同期（Dropbox）</span></a>
+    <a class="toc-link" href="#s9" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">09</span><span style="font-size:14.5px;color:#4A4B4D;">ホーム画面ウィジェット</span></a>
+    <a class="toc-link" href="#s10" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">10</span><span style="font-size:14.5px;color:#4A4B4D;">設定</span></a>
+    <a class="toc-link" href="#s11" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">11</span><span style="font-size:14.5px;color:#4A4B4D;">困ったときに（FAQ）</span></a>
+  </div>
+</section>
+
+<section class="demo-block" style="margin:0 0 38px;">
+  <h2 style="margin:0 0 6px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>主な機能</h2>
+  <p style="margin:0 0 18px;font-size:15px;line-height:1.85;color:#6A6B6E;">よく使う操作をまとめました。詳しい手順は各章を参照してください。</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/swap.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">ページめくり</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">画面の左右タップで前後のページへ。漫画は右→左めくりにも対応。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">見開き表示</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">横画面で2ページを並べて表示。ズレ補正もワンタップ。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">余白の自動トリミング</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">紙面の余白を自動で切り取り、文字や絵を大きく表示。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">手書きメモ</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">ペンアイコンで手書きモードに入り、ページへ直接書き込み。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/new_folder.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">フォルダ作成</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">本を別の本へ重ねてドラッグすると、フォルダにまとめられます。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">クラウド同期</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Dropbox 連携で、複数の端末から続きを読めます。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s1" data-screen-label="01 対応ファイルと端末" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">1</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">対応ファイルと端末</h2><img src="/assets/inkpress-manual/icons/book.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <ul style="margin:0 0 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">対応フォーマット</strong>：PDF / ZIP / CBZ / RAR / CBR / 画像（JPG・PNG・WEBP・BMP・GIF）</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">対応端末</strong>：Android 8.0 以上。BOOX/Onyx などの E-ink 端末に最適化（一般の Android 端末でも動作）</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>暗号化された PDF は<strong style="color:#46474A;font-weight:700;">パスワード</strong>を入力して開けます。</li>
+  </ul>
+</section>
+
+<section id="s2" data-screen-label="02 はじめに" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">2</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">はじめに（本棚の設定）</h2><img src="/assets/inkpress-manual/icons/new_folder.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 8px;font-size:16px;line-height:1.95;color:#56575A;">初回起動時に<strong style="color:#46474A;font-weight:700;">オンボーディング（4ページの案内）</strong>が表示されます：①本棚の設定 ②読み方と設定 ③しおり・メモ ④ウィジェット。後から「設定 → システム・その他 → オンボーディングを見る」で再生できます。</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:4px 0 22px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_library.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 1</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">本棚の設定</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_reading.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 2</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">読み方と設定</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_notes.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 3</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">しおり・メモ</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_widget.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 4</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">ウィジェット</div></div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>本棚フォルダの登録</h3>
+  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">1</span>空の画面の「フォルダを選択」、または「設定 → ライブラリ → 本棚を変更／本棚を追加」をタップ。</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">2</span>端末内の本が入ったフォルダを選びます（複数フォルダを登録できます）。</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">3</span>登録後、フォルダ内の本が自動でスキャンされ、表紙サムネイルが生成されます。</li>
+  </ol>
+</section>
+
+<section id="s3" data-screen-label="03 ライブラリ" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">3</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">ライブラリ（本棚）の使い方</h2><img src="/assets/inkpress-manual/icons/sort.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <h3 style="margin:4px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>本を開く・探す</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>本をタップすると開きます。フォルダはタップで中に入り、上部の<strong style="color:#46474A;font-weight:700;">ホーム／戻る</strong>ボタンや端末の戻るキーで移動します。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>画面上部の<strong style="color:#46474A;font-weight:700;">「最近読んだ本」カード</strong>から直前の本をすぐ再開できます（× で非表示）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">引っ張って更新</strong>で本棚を再スキャンします（フォルダに変更がなければ高速にスキップ）。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>並べ替え・整理</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>上部の<strong style="color:#46474A;font-weight:700;">並べ替えアイコン</strong>で、名前（A-Z / Z-A）・日付（新しい / 古い）・<strong style="color:#46474A;font-weight:700;">カスタム（手動）</strong>を選べます。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">ドラッグ＆ドロップ</strong>：本を長押ししてドラッグで並べ替え。本を別の本に重ねると<strong style="color:#46474A;font-weight:700;">フォルダが作成</strong>されます（自動でカスタム順に切替）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">複数選択</strong>：本を長押し →「複数選択」で、まとめて操作できます。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>本ごとのメニュー（長押し）</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">本を長押しすると、次の操作ができます。</p>
+  <div style="display:flex;flex-wrap:wrap;gap:9px;">
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">読書設定（レイアウト）</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">表紙：ページ指定／トリミング</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">名前変更</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">情報（ファイル詳細）</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">履歴から削除</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">削除</span>
+  </div>
+  <h3 id="s3-del" style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>削除について</h3>
+  <div style="background:#FFEFF3;border:1px solid #F8C9D6;border-radius:16px;padding:18px 20px;margin:0 0 14px;break-inside:avoid;border-left:5px solid #F08BA6;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#B23A5B;font-size:14px;margin-bottom:6px;">⚠ 注意</div>
+    <p style="margin:0 0 8px;font-size:14.5px;line-height:1.8;color:#7A4453;">既定の「削除」は<strong style="color:#993A53;font-weight:700;">ライブラリから隠すだけ</strong>で、ファイル自体は残ります。隠した本は「設定 → ライブラリ → 非表示の本を管理」で元に戻せます。</p>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#7A4453;">ファイルごと消したい場合は、「設定 → ライブラリ」で<strong style="color:#993A53;font-weight:700;">物理削除を有効化</strong>してください（赤字の警告つき。本棚のルートフォルダは削除できません）。</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>表紙とファイル名の表示</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>表紙サイズは<strong style="color:#46474A;font-weight:700;">小／中／大</strong>から選べます（設定 → ライブラリ）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>サムネイル下の<strong style="color:#46474A;font-weight:700;">ファイル名・拡張子の表示</strong>は個別に ON/OFF できます。</li>
+  </ul>
+</section>
+
+<section id="s4" data-screen-label="04 本を読む" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">4</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">本を読む（リーダー操作）</h2><img src="/assets/inkpress-manual/icons/zoom.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 4px;font-size:16px;line-height:1.95;color:#56575A;">初回は読み方向に応じた<strong style="color:#46474A;font-weight:700;">操作ガイド（タップ位置の図示）</strong>が一度だけ表示されます。</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:16px 0 4px;break-inside:avoid;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;letter-spacing:.04em;margin-bottom:12px;">リーダーのメニューバー（中央タップで表示）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/sleep.png" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">スリープ</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/list.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">目次</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/photo.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">表紙に設定</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">自動トリミング</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/tune.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">クイック調整</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/settings.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">本の設定</span></div>
+    </div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>ページ送り</h3>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;margin:0 0 14px;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14.5px;color:#46474A;margin-bottom:8px;">タップ</div>
+    <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>横（ページめくり）モード … 画面の<strong style="color:#46474A;font-weight:700;">左 30%・右 30%</strong>がページ送り、<strong style="color:#46474A;font-weight:700;">中央 40%＝メニュー</strong>。<strong style="color:#46474A;font-weight:700;">漫画（右→左・既定）では左＝次・右＝前</strong>、左→右モードでは左＝前・右＝次</li>
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>縦スクロールモード … <strong style="color:#46474A;font-weight:700;">上 25%＝前</strong>、<strong style="color:#46474A;font-weight:700;">下 25%＝次</strong>、<strong style="color:#46474A;font-weight:700;">中央 50%＝メニュー</strong></li>
+    </ul>
+  </div>
+  <figure style="margin:0 0 14px;break-inside:avoid;">
+    <div style="display:flex;border:2px solid #E7DEC9;border-radius:14px;overflow:hidden;height:158px;">
+      <div style="flex:0 0 30%;background:#FFF3C9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">次ページ</span><span style="font-size:11px;color:#A0905F;">左 30%</span></div>
+      <div style="flex:0 0 40%;background:#F4F1E9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#5C5746;">メニュー</span><span style="font-size:11px;color:#A0905F;">中央 40%</span></div>
+      <div style="flex:0 0 30%;background:#FFF8DD;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">前ページ</span><span style="font-size:11px;color:#A0905F;">右 30%</span></div>
+    </div>
+    <figcaption style="margin-top:9px;font-size:12.5px;color:#6A6B6E;line-height:1.65;">図は既定の<strong style="color:#46474A;font-weight:700;">漫画（右→左）モード</strong>の割り当て。左右<strong style="color:#46474A;font-weight:700;">各 30%</strong>がページ送り、<strong style="color:#46474A;font-weight:700;">中央 40% がメニュー</strong>です。<strong style="color:#46474A;font-weight:700;">左→右モードでは左＝前・右＝次</strong>と反転し、縦スクロールでは上 25%＝前・下 25%＝次・中央 50%＝メニューになります。</figcaption>
+  </figure>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">スワイプ</strong>：左右（縦モードは上下）にスワイプしてめくります（設定で ON）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">音量ボタン</strong>：音量↓＝次、音量↑＝前。設定で反転できます。</li>
+  </ul>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:16px;padding:16px 20px;margin:16px 0;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7A6310;font-size:14px;margin-bottom:4px;">💡 ヒント</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5320;">電源・音量ボタンだけで読めるので、E-ink 端末でとても便利です。</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>拡大・表示</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">ピンチ</strong>で拡大縮小（最大 4 倍）、<strong style="color:#46474A;font-weight:700;">ダブルタップ</strong>で全体表示に戻す（拡大の解除）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">自動トリミング（Auto Crop）</strong>：余白を検出して自動で拡大し、文字を大きく表示します（リーダーのメニューボタン）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">ズーム／位置ロック</strong>：拡大率と位置を固定し、全ページを同じ枠で読みます（自炊本の余白カットに便利）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">クイック調整</strong>：コントラスト／彩度／モノクロをその場でプレビューしながら調整できます。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>移動・ナビゲーション</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">中央タップ</strong>で上下のメニューバーを表示。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">目次（TOC）</strong>：PDF の目次タブと<strong style="color:#46474A;font-weight:700;">サムネイル一覧タブ</strong>からジャンプ。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">ページ番号ジャンプ</strong>：番号を入力して移動。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>進捗の保存</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">読書位置はアプリを切り替えたり画面が消えたときに自動保存され、次回は続きから開けます（「設定 → リーダー → 最後の本を再開」で起動時に自動で開くこともできます）。</p>
+</section>
+
+<section id="s5" data-screen-label="05 レイアウト設定" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">5</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">レイアウト設定（本ごと・フォルダごと）</h2><img src="/assets/inkpress-manual/icons/tune.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 12px;font-size:16px;line-height:1.95;color:#56575A;">リーダー内の<strong style="color:#46474A;font-weight:700;">「本の設定」</strong>ボタン、またはライブラリで本／フォルダを長押し →「読書設定／フォルダ設定」から開きます。</p>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">設定は <strong style="color:#46474A;font-weight:700;">フォルダ → サブフォルダ → 本</strong> の順で継承されます（優先度：本 ＞ サブフォルダ ＞ 親フォルダ）。「フォルダの既定にする／フォルダ内すべてに適用」ボタンでまとめて設定できます。</p>
+  <div style="margin:0 0 18px;padding:16px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">親フォルダ</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">›</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">サブフォルダ</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">›</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">本</span></div>
+</div>
+    <div style="margin-top:14px;display:inline-block;background:#FFF3C9;border:1px solid #F0DC93;border-radius:10px;padding:9px 14px;font-size:12.5px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;line-height:1.5;">優先度&nbsp;&nbsp;本 ＞ サブフォルダ ＞ 親</div>
+  </div>
+  <div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-left-radius:10px;white-space:nowrap;">設定項目</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-right-radius:10px;">内容・選択肢</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">読み方向</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">右→左（漫画・既定）／ 左→右 ／ 縦スクロール（ウェブトゥーン）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">見開き2ページ表示</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">ON / OFF</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">見開きのズレ補正</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">奇数／偶数ページの組合せをワンタップで切替（表紙を単独表示するか等）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">横画面で自動見開き</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">端末を横にすると自動で見開きに（既定 ON）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">1ページずらし</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">見開き内で 1 ページ前後にずらす</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">コントラスト</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">スライダーで調整（薄い文字をくっきり）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">彩度</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">スライダー（カラー E-ink 向け）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">モノクロ／ディザリング</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">ON で白黒化（標準 E-ink で文字がくっきり）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">背景色</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">既定／白／黒</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">描画品質</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">高品質／パフォーマンス</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">ズーム／位置ロック</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">ON / OFF</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">リセット</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">本：個別設定を消去して親の設定に戻す ／ フォルダ：アプリ標準に戻す</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="s6" data-screen-label="06 E-ink 最適化" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">6</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">E-ink 最適化</h2><img src="/assets/inkpress-manual/icons/sleep.png" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.9;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">E-ink（電子ペーパー）端末で快適に読むための機能です。</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">全体リフレッシュ（残像クリア）</strong>：BOOX/Onyx 端末では GC16 ハードフラッシュで残像（ゴースト）を一掃します（非 Onyx 端末ではソフトフラッシュ）。「設定 → リーダー → E-ink リフレッシュ」で <strong style="color:#46474A;font-weight:700;">OFF／自動／1・3・5 ページごと</strong>を選べます。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">コントラスト調整・ディザリング</strong>：薄い文字をくっきり、画像を E-ink 向け白黒に。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">描画品質モード</strong>：高品質／速度を選択。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">スリープ（画面オフ）</strong>：リーダー左上の<strong style="color:#46474A;font-weight:700;">月アイコン</strong>で画面を消灯（端末をロック）。電源ボタンが押しにくい E-ink 端末向けです。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">BOOX 純正ペン対応</strong>：BOOX 端末ではハードウェアペンで手書き注釈ができます。</li>
+  </ul>
+  <div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 20px;margin:18px 0 0;break-inside:avoid;border-left:5px solid #C9B98D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7B6A45;font-size:14px;margin-bottom:5px;">🔒 プライバシーについて</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5746;">スリープ機能は端末の<strong style="color:#46474A;font-weight:700;">アクセシビリティサービス</strong>を使い、<strong style="color:#46474A;font-weight:700;">有効化した場合のみ</strong>動作します。画面の内容は一切読み取らず、データの収集・送信もありません。</p>
+  </div>
+</section>
+
+<section id="s7" data-screen-label="07 注釈・しおり・メモ" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">7</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">注釈・しおり・メモ</h2><img src="/assets/inkpress-manual/icons/pen.svg" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">注釈ツールは <strong style="color:#46474A;font-weight:700;">ナビゲート／ペン（手書き）／消しゴム／投げ縄（範囲選択）</strong> の 4 種です。</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:0 0 16px;break-inside:avoid;">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/move.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">ナビゲート</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">ペン</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/eraser.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">消しゴム</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/lasso.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">投げ縄</span></div>
+    </div>
+    <div style="border-top:1px solid #ECE3D0;margin-top:14px;padding-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:12.5px;color:#7A6310;">色付きしおり</span>
+      <div style="display:flex;gap:9px;"><span title="赤" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#E53935;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="青" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#1E88E5;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="緑" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#43A047;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="黄" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#FDD835;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="紫" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#8E24AA;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span></div>
+    </div>
+  </div>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">色付きしおり</strong>：しおりゾーンをタップ → 赤・青・緑・黄・紫の 5 色から選択（見開きでは左右ページを判定）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">テキストメモ</strong>：ページ上の位置にメモを残す／編集／削除。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">手書き注釈（ペン）</strong>：フリーハンドで描き込み。サイドツールバーでペン色（5 色）・太さを調整。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">消しゴム・投げ縄</strong>：描き込みを消す、範囲選択して移動・削除（サイズ調整可）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">注釈リスト（本内）</strong>：その本のしおり・メモ・手書きを一覧表示してジャンプ。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">全注釈ビュー（横断）</strong>：ライブラリ上部の注釈アイコンから、<strong style="color:#46474A;font-weight:700;">全ての本</strong>の注釈をタブ（すべて／しおり／メモ／手書き／履歴）で横断表示。件数バッジつき。フォルダ移動などで切れたリンクは「再リンク」で復旧できます。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">エクスポート／インポート</strong>：全注釈＋履歴＋表紙を JSON で書き出し・取り込み（端末の移行用。「設定 → ライブラリ」）。</li>
+  </ul>
+</section>
+
+<section id="s8" data-screen-label="08 クラウド同期" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">8</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">クラウド同期（Dropbox）</h2><img src="/assets/inkpress-manual/icons/cloud.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">複数の端末（例：スマホと E-ink 端末）で読書状態を引き継げます。</p>
+  <div style="margin:0 0 18px;padding:18px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">スマホ</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:14px 22px;min-width:110px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:28px;height:28px;"><span style="font-size:13px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Dropbox</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">E-ink 端末</span></div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px;"><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">読書位置＝最も先を採用</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">注釈・履歴＝統合</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">レイアウト＝新しい方</span></div>
+  </div>
+  <h3 style="margin:18px 0 10px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>連携のしかた</h3>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">「設定 → ライブラリ → クラウドアカウント →『Dropbox と連携』」。連携すると、下の<strong style="color:#46474A;font-weight:700;">進捗同期・注釈同期</strong>のトグルが有効になります（連携前はグレーアウト）。</p>
+  <h3 style="margin:0 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>同期される内容</h3>
+  <div style="overflow-x:auto;margin:0 0 16px;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;white-space:nowrap;">対象</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;">仕組み</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">読書位置</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">最も先まで読んだ位置を採用（後退しても下げない）。別端末で開くと「リモートが先まで読んでいます」と確認ダイアログが出て、続きへジャンプできます（Kindle 風）。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">レイアウト設定</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">新しい方を静かに反映（見開き・読み方向・ズームロック等）。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">注釈</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">しおり・メモ・手書きをそれぞれ突き合わせて統合。削除も他端末へ伝わります。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">読書履歴</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">統合（別端末で読んだ本が「最近読んだ」に出る）。</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <ul style="margin:0 0 16px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>本の同定は<strong style="color:#46474A;font-weight:700;">ファイルの内容</strong>で行うため、端末ごとに保存場所が違っても同じ本として扱われます。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">クラウドから取り込み</strong>：Dropbox 上のファイルを選び、保存先の本棚フォルダを指定してダウンロードできます。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>アカウントは一覧で確認でき、切断もできます（認証情報は暗号化して保存）。</li>
+  </ul>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:14px;padding:14px 18px;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <p style="margin:0;font-size:14.5px;line-height:1.75;color:#5C5320;">クラウド連携は <strong style="color:#46474A;font-weight:700;">Dropbox</strong> のみ対応です。</p>
+  </div>
+</section>
+
+<section id="s9" data-screen-label="09 ウィジェット" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">9</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">ホーム画面ウィジェット</h2><img src="/assets/inkpress-manual/icons/home.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 16px;font-size:16px;line-height:1.95;color:#56575A;">ホーム画面に置いて、アプリを開かずに本へアクセスできます（4 種）。</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0 0 18px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">続きから読む</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">直近の本へワンタップで復帰。</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/history.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">読書履歴</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">最近読んだ本のリスト。</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/bookmark.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">しおり</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">しおり一覧から該当ページへジャンプ。</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/home.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">統合ウィジェット</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">上記をまとめた複合表示。</p></div>
+  </div>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;"><strong style="color:#46474A;font-weight:700;">ウィジェットの見た目</strong>は「設定 → ウィジェット」または配置時の設定画面で調整できます：<strong style="color:#46474A;font-weight:700;">背景の透過 ON/OFF・不透明度（0〜100%）・文字サイズ（70〜180%）</strong>。E-ink でも見やすいデザインです。</p>
+</section>
+
+<section id="s10" data-screen-label="10 設定" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">10</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">設定</h2><img src="/assets/inkpress-manual/icons/settings.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 18px;font-size:16px;line-height:1.95;color:#56575A;">設定画面は <strong style="color:#46474A;font-weight:700;">ライブラリ／リーダー／システム・その他</strong> の 3 タブです。</p>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:16px;padding:18px 20px;">
+      <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;margin-bottom:7px;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:16px;border-radius:3px;background:#FFD84D;display:inline-block;"></span><img src="/assets/inkpress-manual/icons/folder.svg" style="width:20px;height:20px;">ライブラリ</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.85;color:#56575A;">本棚フォルダ管理、ファイル名・拡張子の表示、表紙サイズ、物理削除、非表示の本の管理、クラウドアカウント＋進捗／注釈同期、注釈のエクスポート／インポート</p>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:16px;padding:18px 20px;">
+      <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;margin-bottom:7px;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:16px;border-radius:3px;background:#FFD84D;display:inline-block;"></span><img src="/assets/inkpress-manual/icons/book.svg" style="width:20px;height:20px;">リーダー</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.85;color:#56575A;">描画品質、E-ink リフレッシュと間隔、スクロール方向（横／縦）、既定の見開き、横画面の自動見開き、音量ボタン反転、スワイプ操作、最後の本を再開、リーダーの背景色、アプリのテーマ（ライト／ダーク／システム）</p>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:16px;padding:18px 20px;">
+      <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;margin-bottom:7px;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:16px;border-radius:3px;background:#FFD84D;display:inline-block;"></span><img src="/assets/inkpress-manual/icons/settings.svg" style="width:20px;height:20px;">システム・その他</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.85;color:#56575A;">バージョン情報、オンボーディングの再生、ヘルプ、開発者を応援する（Ko-fi）リンク</p>
+    </div>
+  </div>
+</section>
+
+<section id="s11" data-screen-label="11 FAQ" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">11</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">困ったときに（FAQ）</h2><img src="/assets/inkpress-manual/icons/info.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">本が表示されない</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">「設定 → ライブラリ」で本棚フォルダが登録されているか確認し、本棚を引っ張って更新してください。対応していない形式は表示されません（→ 01章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">削除したのにファイルが残る／消したくない</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">既定の削除はライブラリから隠すだけです。完全に消すには物理削除を有効化（→ 03章）。隠した本は「非表示の本を管理」から戻せます。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">別の端末で続きから読めない</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">両方の端末で同じ Dropbox に連携し、進捗同期を ON にしてください（→ 08章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">残像（ゴースト）が残る</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">「E-ink リフレッシュ」を自動または短い間隔に設定してください（→ 06章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">画面が消せない（E-ink 端末）</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">リーダー左上の月アイコンでスリープ。初回はアクセシビリティの有効化が必要です（→ 06章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">文字が薄い／読みにくい</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">本の設定でコントラストを上げる、モノクロ（ディザリング）を ON、自動トリミングで拡大してください（→ 04章・05章）。</p></div>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:34px 20px 6px;margin-top:4px;border-top:1px solid #ECE3D0;">
+  <img src="/assets/inkpress-manual/icons/coffee.svg" alt="" style="width:30px;height:30px;display:block;margin:0 auto 12px;opacity:.7;">
+  <p style="margin:0 auto;max-width:520px;font-size:15px;line-height:1.9;color:#56575A;">開発を応援いただける方は、アプリ内<strong style="color:#46474A;font-weight:700;">「設定 → 開発者を応援する（Ko-fi）」</strong>からどうぞ。いつもありがとうございます。</p>
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:12.5px;color:#A89B7E;margin-top:16px;letter-spacing:.04em;">InkPress v1.2.4 ・ E-ink PDF / Comic Viewer</div>
+</footer>
+
+</td></tr></tbody>
+<tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+</table>
+</main>
+
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 900, &quot;height&quot;: 1240 },
+  &quot;showDemo&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
+  &quot;showTOC&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const c = [];
+    if (this.props.showDemo === false) c.push('hide-demo');
+    if (this.props.showTOC === false) c.push('hide-toc');
+    return { rootClass: c.join(' ') };
+  }
+}
+</script>
+</body>
+</html>
