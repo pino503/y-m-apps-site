@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FAF5EB; }
+  .doc { box-sizing: border-box; max-width: 8.6in; margin: 0 auto; background: inherit;
+         padding: 44px clamp(20px, 5vw, 0.72in) 90px;
+         font-family: 'Zen Kaku Gothic New', sans-serif; color: #56575A;
+         -webkit-font-smoothing: antialiased; }
+  .doc-frame { width: 100%; border-collapse: collapse; }
+  .doc-frame td { padding: 0; }
+  .running-hdr, .running-ftr, .hdr-space, .ftr-space { display: none; }
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  .doc a.toc-link { transition: border-color .15s, background .15s, transform .15s; }
+  .hide-demo .demo-block { display: none !important; }
+  .hide-toc .toc-block { display: none !important; }
+  ::selection { background: #FFE89A; }
+  @page { size: letter; margin: 0; }
+  @media print {
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; scroll-behavior: auto; }
+    html, body { margin: 0; padding: 0; }
+    .doc { max-width: none !important; margin: 0 !important; padding: 0 0.7in !important;
+           box-shadow: none !important; border: none !important; }
+    #dc-root, .sc-host { height: auto !important; }
+    .hdr-space, .ftr-space { display: table-cell; height: 0.6in !important; }
+    h1, h2, h3, h4 { break-after: avoid; }
+    figure, blockquote, img, tr, table { break-inside: avoid; }
+    p, li { orphans: 3; widows: 3; }
+    .screen-only { display: none !important; }
+  }
+</style>
+
+<title>InkPress User Manual</title>
+<style>.doc a.toc-link:hover{border-color:#FFD84D;background:#FFFBEF;transform:translateY(-1px)}</style>
+</head>
+<body>
+
+
+<main class="doc">
+<table class="doc-frame" role="presentation">
+<thead><tr><td class="hdr-space"></td></tr></thead>
+<tbody><tr><td>
+
+<p style="text-align:right;margin:0 0 10px;"><a href="/works/inkpress/manual" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#A0905F;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 14px;background:#FFFFFF;display:inline-block;">日本語</a></p>
+<header style="text-align:center;padding:22px 14px 34px;border-bottom:1px solid #ECE3D0;margin-bottom:30px;">
+  <img src="/assets/apps/inkpress-icon.png" alt="InkPress" style="width:90px;height:90px;border-radius:21px;display:block;margin:0 auto 16px;box-shadow:0 5px 16px rgba(140,115,60,.18);">
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:500;font-size:14px;color:#A0905F;letter-spacing:.14em;margin-bottom:14px;">E-INK PDF / COMIC VIEWER</div>
+  <h1 style="margin:0 0 8px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:clamp(34px,6vw,54px);color:#3F4042;letter-spacing:.02em;line-height:1.16;">InkPress User Manual</h1>
+  <p style="max-width:580px;margin:18px auto 22px;font-size:16px;line-height:2;color:#56575A;">A <strong style="color:#46474A;font-weight:700;">quiet viewer</strong> for PDFs, comics, and scanned books, optimized for E-ink (electronic paper) devices such as BOOX. It suppresses ghosting and flicker so you can read calmly, just like paper.</p>
+  <div style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">Version 1.2.4</span>
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">Requires Android 8.0 or later</span>
+  </div>
+</header>
+
+<div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 22px;margin:0 0 32px;border-left:5px solid #FFD84D;">
+  <p style="margin:0;font-size:15.5px;line-height:1.85;color:#5C5746;">This manual covers every feature. Use the <strong style="color:#46474A;font-weight:700;">Contents</strong> to jump straight to the topic you need.</p>
+</div>
+
+<section class="toc-block" style="margin:0 0 36px;">
+  <h2 style="margin:0 0 16px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>Contents</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;">
+    <a class="toc-link" href="#s1" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">01</span><span style="font-size:14.5px;color:#4A4B4D;">Supported files &amp; devices</span></a>
+    <a class="toc-link" href="#s2" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">02</span><span style="font-size:14.5px;color:#4A4B4D;">Getting started (set up your library)</span></a>
+    <a class="toc-link" href="#s3" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">03</span><span style="font-size:14.5px;color:#4A4B4D;">Using the library</span></a>
+    <a class="toc-link" href="#s4" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">04</span><span style="font-size:14.5px;color:#4A4B4D;">Reading (reader controls)</span></a>
+    <a class="toc-link" href="#s5" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">05</span><span style="font-size:14.5px;color:#4A4B4D;">Layout settings</span></a>
+    <a class="toc-link" href="#s6" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">06</span><span style="font-size:14.5px;color:#4A4B4D;">E-ink optimization</span></a>
+    <a class="toc-link" href="#s7" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">07</span><span style="font-size:14.5px;color:#4A4B4D;">Annotations, bookmarks &amp; notes</span></a>
+    <a class="toc-link" href="#s8" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">08</span><span style="font-size:14.5px;color:#4A4B4D;">Cloud sync (Dropbox)</span></a>
+    <a class="toc-link" href="#s9" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">09</span><span style="font-size:14.5px;color:#4A4B4D;">Home screen widget</span></a>
+    <a class="toc-link" href="#s10" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">10</span><span style="font-size:14.5px;color:#4A4B4D;">Settings</span></a>
+    <a class="toc-link" href="#s11" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">11</span><span style="font-size:14.5px;color:#4A4B4D;">Troubleshooting (FAQ)</span></a>
+  </div>
+</section>
+
+<section class="demo-block" style="margin:0 0 38px;">
+  <h2 style="margin:0 0 6px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>Key features</h2>
+  <p style="margin:0 0 18px;font-size:15px;line-height:1.85;color:#6A6B6E;">Here are the actions you'll use most often. See each chapter for detailed steps.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/swap.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">Page turning</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Tap the left or right side of the screen to move between pages. Right-to-left turning is also supported for comics.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">Two-page spread</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Show two pages side by side in landscape. Fix page alignment with a single tap.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">Auto margin trimming</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Automatically crops away the page margins so text and artwork appear larger.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">Handwritten notes</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Tap the pen icon to enter handwriting mode and write directly on the page.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/new_folder.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">Create folders</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Drag one book onto another to group them into a folder.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">Cloud sync</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Link Dropbox to keep reading where you left off across multiple devices.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s1" data-screen-label="01 Supported files &amp; devices" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">1</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Supported files &amp; devices</h2><img src="/assets/inkpress-manual/icons/book.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <ul style="margin:0 0 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Supported formats</strong>: PDF / ZIP / CBZ / RAR / CBR / images (JPG, PNG, WEBP, BMP, GIF)</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Supported devices</strong>: Android 8.0 or later. Optimized for E-ink devices such as BOOX/Onyx (also works on regular Android devices).</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>Encrypted PDFs can be opened by entering the <strong style="color:#46474A;font-weight:700;">password</strong>.</li>
+  </ul>
+</section>
+
+<section id="s2" data-screen-label="02 Getting started" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">2</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Getting started (set up your library)</h2><img src="/assets/inkpress-manual/icons/new_folder.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 8px;font-size:16px;line-height:1.95;color:#56575A;">On first launch, an <strong style="color:#46474A;font-weight:700;">onboarding tour (4 pages)</strong> appears: (1) Set up your library, (2) Reading &amp; settings, (3) Bookmarks &amp; notes, (4) Widgets. You can replay it later from "Settings &rarr; System &amp; other &rarr; View onboarding."</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:4px 0 22px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_library.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 1</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">Set up your library</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_reading.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 2</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">Reading &amp; settings</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_notes.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 3</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">Bookmarks &amp; notes</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_widget.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 4</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">Widgets</div></div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Registering library folders</h3>
+  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">1</span>Tap "Choose folder" on the empty screen, or go to "Settings &rarr; Library &rarr; Change library / Add library."</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">2</span>Select a folder on your device that contains books (you can register multiple folders).</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">3</span>Once registered, the books in the folder are scanned automatically and cover thumbnails are generated.</li>
+  </ol>
+</section>
+
+<section id="s3" data-screen-label="03 Library" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">3</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Using the library</h2><img src="/assets/inkpress-manual/icons/sort.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <h3 style="margin:4px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Opening &amp; finding books</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>Tap a book to open it. Tap a folder to go inside, and use the <strong style="color:#46474A;font-weight:700;">Home / Back</strong> buttons at the top or your device's back key to move around.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>Resume the most recent book instantly from the <strong style="color:#46474A;font-weight:700;">"Recently read" card</strong> at the top of the screen (tap &times; to hide it).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Pull to refresh</strong> to rescan your library (it skips quickly if nothing in the folder has changed).</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Sorting &amp; organizing</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>Use the <strong style="color:#46474A;font-weight:700;">sort icon</strong> at the top to choose name (A-Z / Z-A), date (newest / oldest), or <strong style="color:#46474A;font-weight:700;">custom (manual)</strong>.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Drag &amp; drop</strong>: Long-press a book and drag to reorder. Drop one book onto another to <strong style="color:#46474A;font-weight:700;">create a folder</strong> (it switches to custom order automatically).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Multi-select</strong>: Long-press a book &rarr; "Select multiple" to act on several at once.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Per-book menu (long-press)</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">Long-press a book to access the following actions.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:9px;">
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">Reading settings (layout)</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">Cover: choose page / crop</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">Rename</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">Info (file details)</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">Remove from history</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">Delete</span>
+  </div>
+  <h3 id="s3-del" style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>About deleting</h3>
+  <div style="background:#FFEFF3;border:1px solid #F8C9D6;border-radius:16px;padding:18px 20px;margin:0 0 14px;break-inside:avoid;border-left:5px solid #F08BA6;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#B23A5B;font-size:14px;margin-bottom:6px;">⚠ Note</div>
+    <p style="margin:0 0 8px;font-size:14.5px;line-height:1.8;color:#7A4453;">The default "Delete" only <strong style="color:#993A53;font-weight:700;">hides the book from your library</strong>; the file itself remains. Hidden books can be restored from "Settings &rarr; Library &rarr; Manage hidden books."</p>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#7A4453;">If you want to delete the file itself, turn on <strong style="color:#993A53;font-weight:700;">permanent deletion</strong> in "Settings &rarr; Library" (it comes with a warning in red text; the library's root folder cannot be deleted).</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Covers &amp; file name display</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>Choose a cover size of <strong style="color:#46474A;font-weight:700;">small / medium / large</strong> (Settings &rarr; Library).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>Showing the <strong style="color:#46474A;font-weight:700;">file name and extension</strong> below the thumbnail can be turned on/off independently.</li>
+  </ul>
+</section>
+
+<section id="s4" data-screen-label="04 Reading" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">4</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Reading (reader controls)</h2><img src="/assets/inkpress-manual/icons/zoom.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 4px;font-size:16px;line-height:1.95;color:#56575A;">The first time you open a book, an <strong style="color:#46474A;font-weight:700;">operation guide (a diagram of tap zones)</strong> for your reading direction is shown once.</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:16px 0 4px;break-inside:avoid;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;letter-spacing:.04em;margin-bottom:12px;">Reader menu bar (tap the center to show it)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/sleep.png" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">Sleep</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/list.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">Table of contents</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/photo.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">Set as cover</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">Auto trim</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/tune.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">Quick adjust</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/settings.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">Book settings</span></div>
+    </div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Turning pages</h3>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;margin:0 0 14px;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14.5px;color:#46474A;margin-bottom:8px;">Tapping</div>
+    <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>Horizontal (page-turn) mode &hellip; the <strong style="color:#46474A;font-weight:700;">left 30% and right 30%</strong> of the screen turn pages, and the <strong style="color:#46474A;font-weight:700;">center 40% = menu</strong>. In <strong style="color:#46474A;font-weight:700;">comic mode (right-to-left, the default), left = next and right = previous</strong>; in left-to-right mode, left = previous and right = next.</li>
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>Vertical scroll mode &hellip; <strong style="color:#46474A;font-weight:700;">top 25% = previous</strong>, <strong style="color:#46474A;font-weight:700;">bottom 25% = next</strong>, <strong style="color:#46474A;font-weight:700;">center 50% = menu</strong>.</li>
+    </ul>
+  </div>
+  <figure style="margin:0 0 14px;break-inside:avoid;">
+    <div style="display:flex;border:2px solid #E7DEC9;border-radius:14px;overflow:hidden;height:158px;">
+      <div style="flex:0 0 30%;background:#FFF3C9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">Next page</span><span style="font-size:11px;color:#A0905F;">Left 30%</span></div>
+      <div style="flex:0 0 40%;background:#F4F1E9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#5C5746;">Menu</span><span style="font-size:11px;color:#A0905F;">Center 40%</span></div>
+      <div style="flex:0 0 30%;background:#FFF8DD;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">Previous page</span><span style="font-size:11px;color:#A0905F;">Right 30%</span></div>
+    </div>
+    <figcaption style="margin-top:9px;font-size:12.5px;color:#6A6B6E;line-height:1.65;">The diagram shows the default <strong style="color:#46474A;font-weight:700;">comic (right-to-left) mode</strong> assignment. The <strong style="color:#46474A;font-weight:700;">left and right 30% each</strong> turn pages, and the <strong style="color:#46474A;font-weight:700;">center 40% is the menu</strong>. In <strong style="color:#46474A;font-weight:700;">left-to-right mode this is reversed: left = previous, right = next</strong>, and in vertical scroll, top 25% = previous, bottom 25% = next, center 50% = menu.</figcaption>
+  </figure>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Swipe</strong>: Swipe left/right (up/down in vertical mode) to turn pages (enable it in settings).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Volume buttons</strong>: Volume down = next, volume up = previous. You can reverse this in settings.</li>
+  </ul>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:16px;padding:16px 20px;margin:16px 0;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7A6310;font-size:14px;margin-bottom:4px;">💡 Tip</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5320;">You can read using only the power and volume buttons, which is very handy on E-ink devices.</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Zoom &amp; display</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Pinch</strong> to zoom in and out (up to 4&times;), and <strong style="color:#46474A;font-weight:700;">double-tap</strong> to return to the full-page view (reset zoom).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Auto Crop</strong>: Detects the margins and zooms automatically to display text larger (via the reader's menu button).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Zoom / position lock</strong>: Fix the zoom level and position so every page is read within the same frame (handy for trimming margins on scanned books).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Quick adjust</strong>: Tune contrast, saturation, and monochrome on the spot while previewing the result.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Moving &amp; navigation</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Tap the center</strong> to show the top and bottom menu bars.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Table of contents (TOC)</strong>: Jump from the PDF's TOC tab and the <strong style="color:#46474A;font-weight:700;">thumbnail list tab</strong>.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Jump to page number</strong>: Enter a number to go there.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>Saving your progress</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">Your reading position is saved automatically when you switch apps or the screen turns off, so you can pick up where you left off next time (you can also have it open automatically on startup via "Settings &rarr; Reader &rarr; Resume last book").</p>
+</section>
+
+<section id="s5" data-screen-label="05 Layout settings" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">5</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Layout settings (per book &amp; per folder)</h2><img src="/assets/inkpress-manual/icons/tune.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 12px;font-size:16px;line-height:1.95;color:#56575A;">Open these from the <strong style="color:#46474A;font-weight:700;">"Book settings"</strong> button inside the reader, or by long-pressing a book/folder in the library &rarr; "Reading settings / Folder settings."</p>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">Settings are inherited in the order <strong style="color:#46474A;font-weight:700;">folder &rarr; subfolder &rarr; book</strong> (priority: book &gt; subfolder &gt; parent folder). Use the "Make folder default / Apply to entire folder" buttons to set them in bulk.</p>
+  <div style="margin:0 0 18px;padding:16px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Parent folder</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">&rsaquo;</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Subfolder</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">&rsaquo;</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Book</span></div>
+</div>
+    <div style="margin-top:14px;display:inline-block;background:#FFF3C9;border:1px solid #F0DC93;border-radius:10px;padding:9px 14px;font-size:12.5px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;line-height:1.5;">Priority&nbsp;&nbsp;Book &gt; Subfolder &gt; Parent</div>
+  </div>
+  <div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-left-radius:10px;white-space:nowrap;">Setting</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-right-radius:10px;">Details &amp; options</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Reading direction</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Right-to-left (comics, default) / left-to-right / vertical scroll (webtoon)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Two-page spread</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">ON / OFF</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Spread alignment fix</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Switch the odd/even page pairing with one tap (e.g. whether to show the cover on its own)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Auto spread in landscape</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Switch to a two-page spread automatically when you turn the device sideways (ON by default)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Offset by one page</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Shift the spread forward or back by one page</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Contrast</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Adjust with a slider (sharpen faint text)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Saturation</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Slider (for color E-ink)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Monochrome / dithering</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Turn ON to convert to black and white (makes text sharper on standard E-ink)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Background color</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Default / white / black</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Rendering quality</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">High quality / performance</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Zoom / position lock</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">ON / OFF</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Reset</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">Book: clear the book's own settings and revert to the parent's settings / Folder: revert to the app defaults</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="s6" data-screen-label="06 E-ink optimization" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">6</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">E-ink optimization</h2><img src="/assets/inkpress-manual/icons/sleep.png" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.9;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">These features make reading comfortable on E-ink (electronic paper) devices.</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Full refresh (clear ghosting)</strong>: On BOOX/Onyx devices, a GC16 hard flash wipes out ghosting completely (a soft flash on non-Onyx devices). In "Settings &rarr; Reader &rarr; E-ink refresh" you can choose <strong style="color:#46474A;font-weight:700;">OFF / auto / every 1, 3, or 5 pages</strong>.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Contrast adjustment &amp; dithering</strong>: Sharpen faint text and convert images to E-ink-friendly black and white.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Rendering quality mode</strong>: Choose high quality or speed.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Sleep (screen off)</strong>: Tap the <strong style="color:#46474A;font-weight:700;">moon icon</strong> at the top left of the reader to turn off the screen (lock the device). Useful on E-ink devices where the power button is hard to press.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">BOOX stylus support</strong>: On BOOX devices, you can make handwritten annotations with the hardware pen.</li>
+  </ul>
+  <div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 20px;margin:18px 0 0;break-inside:avoid;border-left:5px solid #C9B98D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7B6A45;font-size:14px;margin-bottom:5px;">🔒 About privacy</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5746;">The sleep feature uses your device's <strong style="color:#46474A;font-weight:700;">Accessibility service</strong> and only works <strong style="color:#46474A;font-weight:700;">when you have enabled it</strong>. It never reads the screen contents, and no data is collected or sent.</p>
+  </div>
+</section>
+
+<section id="s7" data-screen-label="07 Annotations, bookmarks &amp; notes" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">7</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Annotations, bookmarks &amp; notes</h2><img src="/assets/inkpress-manual/icons/pen.svg" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">There are 4 annotation tools: <strong style="color:#46474A;font-weight:700;">Navigate / Pen (handwriting) / Eraser / Lasso (range selection)</strong>.</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:0 0 16px;break-inside:avoid;">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/move.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">Navigate</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">Pen</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/eraser.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">Eraser</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/lasso.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">Lasso</span></div>
+    </div>
+    <div style="border-top:1px solid #ECE3D0;margin-top:14px;padding-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:12.5px;color:#7A6310;">Colored bookmarks</span>
+      <div style="display:flex;gap:9px;"><span title="Red" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#E53935;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="Blue" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#1E88E5;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="Green" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#43A047;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="Yellow" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#FDD835;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="Purple" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#8E24AA;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span></div>
+    </div>
+  </div>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">Colored bookmarks</strong>: Tap the bookmark zone &rarr; choose from 5 colors: red, blue, green, yellow, and purple (in a spread, the left/right page is detected).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">Text notes</strong>: Leave a note at a position on the page, then edit or delete it.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">Handwritten annotations (pen)</strong>: Draw freehand. Adjust the pen color (5 colors) and thickness from the side toolbar.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">Eraser &amp; lasso</strong>: Erase your drawings, or select a range to move or delete it (size is adjustable).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">Annotation list (within a book)</strong>: List all of that book's bookmarks, notes, and handwriting, and jump to them.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">All-annotations view (across books)</strong>: From the annotation icon at the top of the library, view annotations from <strong style="color:#46474A;font-weight:700;">all your books</strong> across tabs (All / Bookmarks / Notes / Handwriting / History), with count badges. Links broken by moving folders, for example, can be restored with "Relink."</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">Export / import</strong>: Export and import all annotations, history, and covers as JSON (for moving to a new device; in "Settings &rarr; Library").</li>
+  </ul>
+</section>
+
+<section id="s8" data-screen-label="08 Cloud sync" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">8</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Cloud sync (Dropbox)</h2><img src="/assets/inkpress-manual/icons/cloud.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">Carry your reading state across multiple devices (for example, your phone and an E-ink device).</p>
+  <div style="margin:0 0 18px;padding:18px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Phone</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:14px 22px;min-width:110px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:28px;height:28px;"><span style="font-size:13px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Dropbox</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">E-ink device</span></div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px;"><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">Reading position = furthest read wins</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">Annotations &amp; history = merged</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">Layout = newer wins</span></div>
+  </div>
+  <h3 style="margin:18px 0 10px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>How to connect</h3>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">Go to "Settings &rarr; Library &rarr; Cloud account &rarr; 'Connect to Dropbox'." Once connected, the <strong style="color:#46474A;font-weight:700;">progress sync and annotation sync</strong> toggles below become available (they are grayed out before connecting).</p>
+  <h3 style="margin:0 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>What gets synced</h3>
+  <div style="overflow-x:auto;margin:0 0 16px;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;white-space:nowrap;">Item</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;">How it works</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Reading position</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">The furthest-read position wins (it never goes backward even if you move back). When you open the book on another device, a confirmation dialog says "The remote has read further" and lets you jump ahead (Kindle-style).</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Layout settings</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">The newer one is applied quietly (spread, reading direction, zoom lock, etc.).</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Annotations</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Bookmarks, notes, and handwriting are each reconciled and merged. Deletions are propagated to other devices too.</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">Reading history</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">Merged (books read on another device appear in "Recently read").</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <ul style="margin:0 0 16px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>Books are identified by <strong style="color:#46474A;font-weight:700;">file content</strong>, so they are treated as the same book even if the storage location differs from device to device.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">Import from cloud</strong>: Pick a file on Dropbox, specify the destination library folder, and download it.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>You can review your accounts in a list and disconnect them too (credentials are stored encrypted).</li>
+  </ul>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:14px;padding:14px 18px;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <p style="margin:0;font-size:14.5px;line-height:1.75;color:#5C5320;">Cloud connection supports <strong style="color:#46474A;font-weight:700;">Dropbox</strong> only.</p>
+  </div>
+</section>
+
+<section id="s9" data-screen-label="09 Widget" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">9</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Home screen widget</h2><img src="/assets/inkpress-manual/icons/home.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 16px;font-size:16px;line-height:1.95;color:#56575A;">Place one on your home screen to reach your books without opening the app (4 types).</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0 0 18px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">Continue reading</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">Return to your most recent book with one tap.</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/history.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">Reading history</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">A list of recently read books.</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/bookmark.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">Bookmarks</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">Jump to the relevant page from your bookmark list.</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/home.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">Combined widget</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">A combined display of all of the above.</p></div>
+  </div>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">You can adjust the <strong style="color:#46474A;font-weight:700;">widget's appearance</strong> in "Settings &rarr; Widgets" or on the setup screen when you place it: <strong style="color:#46474A;font-weight:700;">background transparency ON/OFF, opacity (0&ndash;100%), and text size (70&ndash;180%)</strong>. The design stays easy to read on E-ink, too.</p>
+</section>
+
+<section id="s10" data-screen-label="10 Settings" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">10</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Settings</h2><img src="/assets/inkpress-manual/icons/settings.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 18px;font-size:16px;line-height:1.95;color:#56575A;">The settings screen has 3 tabs: <strong style="color:#46474A;font-weight:700;">Library / Reader / System &amp; other</strong>.</p>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:16px;padding:18px 20px;">
+      <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;margin-bottom:7px;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:16px;border-radius:3px;background:#FFD84D;display:inline-block;"></span><img src="/assets/inkpress-manual/icons/folder.svg" style="width:20px;height:20px;">Library</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.85;color:#56575A;">Manage library folders, show file names and extensions, cover size, permanent deletion, manage hidden books, cloud account plus progress/annotation sync, and annotation export/import</p>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:16px;padding:18px 20px;">
+      <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;margin-bottom:7px;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:16px;border-radius:3px;background:#FFD84D;display:inline-block;"></span><img src="/assets/inkpress-manual/icons/book.svg" style="width:20px;height:20px;">Reader</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.85;color:#56575A;">Rendering quality, E-ink refresh and interval, scroll direction (horizontal/vertical), default spread, auto spread in landscape, reverse volume buttons, swipe gestures, resume last book, reader background color, and app theme (light/dark/system)</p>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:16px;padding:18px 20px;">
+      <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;margin-bottom:7px;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:16px;border-radius:3px;background:#FFD84D;display:inline-block;"></span><img src="/assets/inkpress-manual/icons/settings.svg" style="width:20px;height:20px;">System &amp; other</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.85;color:#56575A;">Version info, replay onboarding, help, and a "Support the developer (Ko-fi)" link</p>
+    </div>
+  </div>
+</section>
+
+<section id="s11" data-screen-label="11 FAQ" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">11</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">Troubleshooting (FAQ)</h2><img src="/assets/inkpress-manual/icons/info.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">My books don't show up</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">Check that a library folder is registered in "Settings &rarr; Library," then pull to refresh the library. Unsupported formats are not shown (&rarr; Chapter 01).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">The file remains after deleting / I don't want to delete it</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">The default delete only hides the book from your library. To remove it completely, turn on permanent deletion (&rarr; Chapter 03). Hidden books can be restored from "Manage hidden books."</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">I can't continue reading on another device</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">Connect both devices to the same Dropbox and turn on progress sync (&rarr; Chapter 08).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">Ghosting remains on the screen</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">Set "E-ink refresh" to auto or a short interval (&rarr; Chapter 06).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">I can't turn off the screen (E-ink device)</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">Use the moon icon at the top left of the reader to sleep. The first time, you'll need to enable Accessibility (&rarr; Chapter 06).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">The text is faint / hard to read</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">In the book settings, raise the contrast, turn on monochrome (dithering), and enlarge with auto trim (&rarr; Chapters 04 &amp; 05).</p></div>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:34px 20px 6px;margin-top:4px;border-top:1px solid #ECE3D0;">
+  <img src="/assets/inkpress-manual/icons/coffee.svg" alt="" style="width:30px;height:30px;display:block;margin:0 auto 12px;opacity:.7;">
+  <p style="margin:0 auto;max-width:520px;font-size:15px;line-height:1.9;color:#56575A;">If you'd like to support development, please do so from <strong style="color:#46474A;font-weight:700;">"Settings &rarr; Support the developer (Ko-fi)"</strong> in the app. Thank you, always.</p>
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:12.5px;color:#A89B7E;margin-top:16px;letter-spacing:.04em;">InkPress v1.2.4 ・ E-ink PDF / Comic Viewer</div>
+</footer>
+
+</td></tr></tbody>
+<tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+</table>
+</main>
+</body>
+</html>

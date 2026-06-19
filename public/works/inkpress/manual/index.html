@@ -50,6 +50,7 @@
 <thead><tr><td class="hdr-space"></td></tr></thead>
 <tbody><tr><td>
 
+<p style="text-align:right;margin:0 0 10px;"><a href="/works/inkpress/manual/en" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#A0905F;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 14px;background:#FFFFFF;display:inline-block;">English</a></p>
 <header style="text-align:center;padding:22px 14px 34px;border-bottom:1px solid #ECE3D0;margin-bottom:30px;">
   <img src="/assets/apps/inkpress-icon.png" alt="InkPress" style="width:90px;height:90px;border-radius:21px;display:block;margin:0 auto 16px;box-shadow:0 5px 16px rgba(140,115,60,.18);">
   <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:500;font-size:14px;color:#A0905F;letter-spacing:.14em;margin-bottom:14px;">E-INK PDF / COMIC VIEWER</div>
@@ -455,20 +456,5 @@
 <tfoot><tr><td class="ftr-space"></td></tr></tfoot>
 </table>
 </main>
-
-<script type="text/x-dc" data-dc-script data-props="{
-  &quot;$preview&quot;: { &quot;width&quot;: 900, &quot;height&quot;: 1240 },
-  &quot;showDemo&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
-  &quot;showTOC&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; }
-}">
-class Component extends DCLogic {
-  renderVals() {
-    const c = [];
-    if (this.props.showDemo === false) c.push('hide-demo');
-    if (this.props.showTOC === false) c.push('hide-toc');
-    return { rootClass: c.join(' ') };
-  }
-}
-</script>
 </body>
 </html>
