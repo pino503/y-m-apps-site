@@ -170,8 +170,8 @@ const siteName = "Y.M Apps";
         if (el === hoverLast) hoverLast = null;
       });
       document.addEventListener("pointerdown", (e) => {
-        if ((e.target as Element)?.closest?.("#sound-toggle")) return;
-        if (isInteractive(e.target as Element)) Sound.press();
+        // tap/press sound only when a link is pressed (not buttons or other controls)
+        if ((e.target as Element)?.closest?.("a")) Sound.press();
       });
 
       // sound toggle
