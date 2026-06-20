@@ -1,11 +1,11 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import StandaloneLayout from "../../layouts/StandaloneLayout.astro";
 import { getCollection } from "astro:content";
 
-// Bespoke landing page for キクログ (a live web tool, not a store app).
+// Standalone landing page for キクログ (a live web tool, not a store app).
 // Ported from the Claude Design file「キクログ紹介.dc.html」(project キクログUI).
-// We keep BaseLayout's site header/footer/SEO/transitions and drop the design's
-// own <nav>/<footer> so the page stays consistent with the other works pages.
+// Uses StandaloneLayout (no Y.M Apps header/footer/visitor-count/sound) so it
+// reads as its own product page, with only a quiet maker credit at the bottom.
 // Title / tagline / tool URL come from the content collection (apps/kikulog.md).
 const apps = await getCollection("apps");
 const app = apps.find((a) => a.slug === "kikulog")!;
@@ -13,19 +13,13 @@ const { data } = app;
 const tool = data.storeUrl;
 ---
 
-<BaseLayout title={`${data.title} — Y.M Apps`} description={data.tagline} lang="ja">
+<StandaloneLayout
+  title="キクログ｜就労支援・福祉の現場のための面談支援ツール"
+  description={data.tagline}
+  ogImage="/assets/apps/kikulog-hero.webp"
+  favicon="/assets/apps/kikulog-icon.png"
+>
   <div class="kk-landing" style="width: 100%; background: #F6F2E9; color: #2D3B41; line-height: 1.85; font-family: 'Zen Kaku Gothic New', sans-serif; overflow-x: hidden;">
-
-    <!-- breadcrumb (site navigation) -->
-    <div style="max-width: 1080px; margin: 0 auto; padding: 20px 28px 0;">
-      <nav style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #8A9499; font-weight: 500;">
-        <a href="/" style="color: #5E6E74;">Home</a>
-        <span style="color: #C9BFA8;">/</span>
-        <a href="/#works" style="color: #5E6E74;">Works</a>
-        <span style="color: #C9BFA8;">/</span>
-        <span style="color: #2E7E99; font-weight: 700;">{data.title}</span>
-      </nav>
-    </div>
 
     <!-- ===== Hero ===== -->
     <header id="top" style="position: relative; overflow: hidden; padding: 64px 28px 64px;">
@@ -365,8 +359,15 @@ const tool = data.storeUrl;
       </div>
     </section>
 
+    <!-- maker credit (standalone, no nav back to Y.M Apps) -->
+    <footer style="border-top: 1px solid #E7E0D2; padding: 30px 28px 46px; text-align: center;">
+      <p style="margin: 0; font-size: 12.5px; color: #9AA3A8; line-height: 1.9;">
+        キクログは Y.M Apps が個人で開発・運営している、就労支援・福祉の現場のための面談支援ツールです。
+      </p>
+    </footer>
+
   </div>
-</BaseLayout>
+</StandaloneLayout>
 
 <style>
   .kk-landing :global(::selection) { background: #BFE0D0; }
