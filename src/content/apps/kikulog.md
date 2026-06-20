@@ -10,6 +10,7 @@ order: 1.2
 category: tool
 unpublished: false
 isNew: true
+iconImage: /assets/apps/kikulog-icon.png
 features:
   - title: 面談の流れをそのままガイド
     body: 事前準備・インテーク・アセスメント・整理・記録作成までを5ステップで案内。聞きたいことや声かけのヒントも出るので、面談そのものに集中できます。
