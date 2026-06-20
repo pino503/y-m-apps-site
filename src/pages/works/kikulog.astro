@@ -1,0 +1,117 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/detail.css";
+import { getCollection } from "astro:content";
+
+// Bespoke detail page for キクログ (a live web tool, not a store app).
+// Title/tagline/features come from the content collection (apps/kikulog.md).
+// The primary CTA links to the live tool (data.storeUrl).
+const apps = await getCollection("apps");
+const app = apps.find((a) => a.slug === "kikulog")!;
+const { data } = app;
+
+const features = data.features;
+
+const otherWorks = [
+  { slug: "inkpress", name: "InkPress", desc: "軽くて静かな自炊本リーダー。", icon: "/assets/apps/inkpress-icon.png" },
+  { slug: "rainwiper", name: "雨ふりブラウザ", desc: "ブラウザに、雨を降らせる。", icon: "/assets/apps/rainwiper-icon.png" },
+  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+];
+---
+
+<BaseLayout title={`${data.title} — Y.M Apps`} description={data.tagline} lang="ja">
+  <section class="stack-section">
+    <div class="container detail-page">
+
+      <nav class="crumb">
+        <a href="/">Home</a><span class="sep">/</span>
+        <a href="/#works">Works</a><span class="sep">/</span>
+        <span class="cur">{data.title}</span>
+      </nav>
+
+      <section class="detail-hero" data-reveal>
+        {/* TODO: 専用のヒーロー画像ができたら、この .kk-hero をInkPress同様の .hero-banner（img）に差し替え可 */}
+        <div class="kk-hero">
+          <h1>{data.title}</h1>
+          <p>{data.tagline}</p>
+        </div>
+        <div class="card meta-bar">
+          <div class="mb-status"><span class="badge-live">公開中 — Web（PC・スマホ）</span></div>
+          <div class="mb-chips">
+            <span class="chip">Web</span>
+            <span class="chip">ブラウザで使える</span>
+            <span class="chip">完全無料</span>
+            <span class="chip chip-gold">面談支援</span>
+          </div>
+          <div class="mb-actions">
+            <a class="btn btn-primary" href={data.storeUrl} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M10 5H4v15h15v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              ツールを開く（ブラウザで使う）
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-body">
+
+        <section class="block" data-reveal>
+          <span class="lede">ABOUT</span>
+          <h2>このツールについて</h2>
+          <div class="about-text">
+            <p>介護・福祉の現場で、利用者さんと話しながら面談の記録をその場で形にできる道具がほしくて作りました。</p>
+            <p class="pull">記録づくりの負担を減らして、目の前の相手との時間に集中できるように ── そんな静かな業務ツールを目指しています。</p>
+            <p>ブラウザだけで動き、面談データも録音した音声も、あなたの端末から外に出ません。インストール不要で、スマホでもPCでも使えます。</p>
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">FEATURES</span>
+          <h2>主な特徴</h2>
+          <div class="features">
+            {features.map((f, i) => (
+              <div class="feature">
+                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      <section class="other" data-reveal>
+        <h2>ほかの作品</h2>
+        <div class="other-grid">
+          {otherWorks.map((w) => (
+            <a class="owork" href={`/works/${w.slug}`}>
+              <span class="oi"><img src={w.icon} alt="" /></span>
+              <span><b>{w.name}</b><span>{w.desc}</span></span>
+            </a>
+          ))}
+        </div>
+        <a class="back-link" href="/#works">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Works に戻る
+        </a>
+      </section>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .kk-hero {
+    display: flex; flex-direction: column; justify-content: center;
+    min-height: 200px; padding: 36px 28px; border-radius: 18px;
+    background: linear-gradient(135deg, #f1f5fb 0%, #fbfcfe 60%, #eef4fc 100%);
+    border: 1px solid var(--line);
+  }
+  .kk-hero h1 {
+    margin: 0 0 8px; font-size: clamp(28px, 5vw, 44px);
+    color: var(--ink); letter-spacing: .02em;
+  }
+  .kk-hero p { margin: 0; font-size: clamp(14px, 2.4vw, 18px); color: var(--ink-2); }
+</style>

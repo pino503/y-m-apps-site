@@ -7,6 +7,7 @@ const apps = defineCollection({
     tagline: z.string(),
     world: z.enum([
       "inkpress",
+      "kikulog",
       "playcord",
       "rainwiper",
       "sidewalk-defender",
