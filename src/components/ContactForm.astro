@@ -1,0 +1,150 @@
+---
+// ContactForm.astro
+// 共有の問い合わせフォーム。トップの #contact と独立した /contact ページの
+// 両方で使う。自前デザイン → 裏で Google フォームへ no-cors POST（メアドは
+// サイトに出さない）。?from=<app> が付いていれば、送信時にどのアプリ宛かを
+// メッセージ冒頭に付記する（Google フォーム側の項目追加は不要）。
+---
+
+<form id="contact-form" class="contact-form" novalidate>
+  <div class="cf-grid">
+    <label class="cf-field">
+      <span class="cf-label">お名前 <i>任意</i></span>
+      <input id="cf-name" type="text" name="name" autocomplete="name" placeholder="ぴの" />
+    </label>
+    <label class="cf-field">
+      <span class="cf-label">メールアドレス <i>返信が必要な方のみ</i></span>
+      <input id="cf-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" />
+    </label>
+  </div>
+  <label class="cf-field">
+    <span class="cf-label">種類</span>
+    <select id="cf-type" name="type">
+      <option value="">選択してください（任意）</option>
+      <option>不具合報告</option>
+      <option>感想</option>
+      <option>改善アイデア</option>
+      <option>制作のご相談</option>
+      <option>その他</option>
+    </select>
+  </label>
+  <label class="cf-field">
+    <span class="cf-label">メッセージ <i>必須</i></span>
+    <textarea id="cf-message" name="message" rows="5" required placeholder="不具合の内容、使ってみた感想、ご相談など、どんなことでもどうぞ。"></textarea>
+  </label>
+  {/* ボット対策：人間には見えない隠しフィールド。ボットが入力したら送信を無視する */}
+  <input id="cf-hp" type="text" name="_hp" class="cf-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <div class="cf-actions">
+    <button type="submit" id="cf-submit" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 16-3-6-7-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      送信する
+    </button>
+    <p id="cf-status" class="cf-status" role="status" aria-live="polite"></p>
+  </div>
+</form>
+
+<style>
+  .contact-form{ display:grid; gap:16px; max-width:640px; margin:0 auto; }
+  .cf-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cf-field{ display:grid; gap:7px; }
+  .cf-label{ font-size:13px; font-weight:700; color:var(--ink-2); display:flex; align-items:baseline; gap:8px; }
+  .cf-label i{ font-style:normal; font-size:11px; font-weight:500; color:var(--ink-3); }
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea{
+    width:100%; font:inherit; font-size:15px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; transition:border-color .15s, box-shadow .15s;
+  }
+  .contact-form textarea{ resize:vertical; min-height:124px; line-height:1.7; }
+  .contact-form input:focus,
+  .contact-form select:focus,
+  .contact-form textarea:focus{
+    outline:none; border-color:var(--gold-deep);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--gold-deep) 18%, transparent);
+  }
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder{ color:var(--ink-3); }
+  /* honeypot：人間には見えない位置に飛ばす */
+  .cf-hp{ position:absolute !important; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
+  .cf-actions{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .cf-status{ margin:0; font-size:13px; line-height:1.6; color:var(--ink-2); }
+  .cf-status.is-ok{ color:#1f8a52; }
+  .cf-status.is-err{ color:#c0392b; }
+  #cf-submit[disabled]{ opacity:.6; pointer-events:none; }
+
+  @media (max-width:980px){
+    .cf-grid{ grid-template-columns:1fr; }
+  }
+</style>
+
+<script>
+  // 自前フォーム → Google フォームに送信（メアドはサイトに出さない）。
+  // no-cors で formResponse に POST。レスポンスは読めないが送信は通る。
+  // 成功/失敗は自前表示、ページ遷移なしで完結。?from=<app> があれば送信時に付記。
+  const SOURCE_LABELS: Record<string, string> = { kikulog: "キクログ" };
+
+  function initContactForm() {
+    const form = document.getElementById("contact-form") as HTMLFormElement | null;
+    if (!form || (form as any)._bound) return;
+    (form as any)._bound = true;
+
+    const statusEl = document.getElementById("cf-status") as HTMLElement | null;
+    const submitBtn = document.getElementById("cf-submit") as HTMLButtonElement | null;
+    const nameEl = document.getElementById("cf-name") as HTMLInputElement | null;
+    const emailEl = document.getElementById("cf-email") as HTMLInputElement | null;
+    const typeEl = document.getElementById("cf-type") as HTMLSelectElement | null;
+    const msgEl = document.getElementById("cf-message") as HTMLTextAreaElement | null;
+    const hpEl = document.getElementById("cf-hp") as HTMLInputElement | null;
+
+    const ENDPOINT = "https://docs.google.com/forms/d/e/1FAIpQLSe68WZMRc79v9TfTqvTdm9RLC1DjTcQEBrnVbYEaYjTOMNV-g/formResponse";
+
+    // ?from=<app> → どのアプリ宛かのラベル（キクログ等）
+    const fromKey = new URLSearchParams(location.search).get("from") ?? "";
+    const sourceLabel = fromKey ? (SOURCE_LABELS[fromKey] ?? fromKey) : "";
+
+    function setStatus(msg: string, kind: "" | "ok" | "err") {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      statusEl.classList.toggle("is-ok", kind === "ok");
+      statusEl.classList.toggle("is-err", kind === "err");
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (hpEl && hpEl.value) return; // ボットが隠しフィールドを埋めたら無視
+      const message = (msgEl?.value ?? "").trim();
+      if (!message) { setStatus("メッセージを入力してください。", "err"); msgEl?.focus(); return; }
+      const email = (emailEl?.value ?? "").trim();
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setStatus("メールアドレスの形式をご確認ください。", "err"); emailEl?.focus(); return;
+      }
+
+      const finalMessage = sourceLabel
+        ? `【${sourceLabel}についてのお問い合わせ】\n${message}`
+        : message;
+
+      const data = new FormData();
+      data.append("entry.1951498699", (nameEl?.value ?? "").trim());
+      data.append("entry.1884459089", email);
+      data.append("entry.2040029710", typeEl?.value ?? "");
+      data.append("entry.243419386", finalMessage);
+
+      if (submitBtn) submitBtn.disabled = true;
+      setStatus("送信中…", "");
+      try {
+        await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: data });
+        form.reset();
+        setStatus("送信しました。お声を届けてくれてありがとうございます！", "ok");
+      } catch {
+        setStatus("送信に失敗しました。お手数ですが時間をおいて再度お試しください。", "err");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", initContactForm);
+  if (document.readyState !== "loading") initContactForm();
+  else document.addEventListener("DOMContentLoaded", initContactForm);
+</script>

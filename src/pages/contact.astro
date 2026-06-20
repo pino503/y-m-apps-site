@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContactForm from "../components/ContactForm.astro";
+
+// 独立した問い合わせページ。トップの #contact と同じ ContactForm を使う。
+// キクログなど各アプリからは /contact?from=<app> でリンクし、どのアプリ宛か
+// が送信時にメッセージへ付記される。
+---
+
+<BaseLayout
+  title="お問い合わせ — Y.M Apps"
+  description="Y.M Apps とアプリ（キクログ など）へのお問い合わせ。不具合のご報告、使ってみたご感想、改善アイデア、制作のご相談などをお送りいただけます。"
+>
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head reveal" style="margin-bottom:26px;">
+        <h1 class="sec-title">Contact</h1>
+        <p class="sec-sub">小さな声も、お聞かせください。アプリの不具合報告、使ってみた感想、改善アイデア、制作のご相談など、どんな小さなことでもお気軽にどうぞ。返信が必要な場合は、メールアドレスもあわせてご記入ください。</p>
+      </div>
+      <div class="reveal">
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
