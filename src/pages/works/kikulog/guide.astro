@@ -1,0 +1,460 @@
+---
+import StandaloneLayout from "../../../layouts/StandaloneLayout.astro";
+
+// Standalone usage guide for キクログ. Ported from the Claude Design file
+// 「キクログ使い方.dc.html」(project キクログUI). Uses StandaloneLayout (no
+// Y.M Apps chrome); keeps the guide's own section jump-nav, links back to the
+// intro page (/works/kikulog) and the live tool. Mobile responsiveness added.
+---
+
+<StandaloneLayout
+  title="キクログの使い方｜面談支援ツール"
+  description="面談の準備から記録づくりまで、ひとりの利用者さんの例で順番にご案内します。3つのモード、5ステップ、ニーズ整理票の書き方、個別支援計画の読み込みまで。"
+  ogImage="/assets/apps/kikulog-hero.webp"
+  favicon="/assets/apps/kikulog-icon.png"
+>
+  <div class="kk-guide" style="width: 100%; background: #F6F2E9; color: #2D3B41; line-height: 1.85; font-family: 'Zen Kaku Gothic New', sans-serif; overflow-x: hidden;">
+
+    <!-- ===== Top nav (guide's own section nav) ===== -->
+    <nav style="position: sticky; top: 0; z-index: 50; background: rgba(246,242,233,.92); backdrop-filter: blur(10px); border-bottom: 1px solid #E7E0D2;">
+      <div style="max-width: 1080px; margin: 0 auto; padding: 11px 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <a href="/works/kikulog" style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 36px; height: 36px; border-radius: 11px; background: #EAF3EF; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <img src="/assets/apps/kikulog-icon.png" alt="キクログ" style="width: 30px; height: 30px; object-fit: contain;" />
+          </span>
+          <span style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 19px; color: #2E7E99; letter-spacing: .02em;">キクログ</span>
+          <span style="font-size: 13px; color: #9AA3A8; font-weight: 600; margin-left: 1px;">使い方</span>
+        </a>
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <a class="kk-guide-seclink" href="#modes" style="font-size: 14px; font-weight: 500; color: #5E6E74;">3つのモード</a>
+          <a class="kk-guide-seclink" href="#steps" style="font-size: 14px; font-weight: 500; color: #5E6E74;">5ステップ</a>
+          <a class="kk-guide-seclink" href="#needs" style="font-size: 14px; font-weight: 500; color: #5E6E74;">ニーズ整理票</a>
+          <a class="kk-guide-seclink" href="#plan" style="font-size: 14px; font-weight: 500; color: #5E6E74;">個別支援計画</a>
+          <a href="https://kikulog.pages.dev" target="_blank" rel="noopener noreferrer" style="padding: 9px 18px; border-radius: 12px; background: #2E7E99; color: #fff; font-size: 14px; font-weight: 700; white-space: nowrap;">ツールを開く</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ===== Hero ===== -->
+    <header style="padding: 56px 28px 40px;">
+      <div style="max-width: 820px; margin: 0 auto; text-align: center;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 15px; border-radius: 30px; background: #EAF3EF; border: 1px solid #D2E6DC; margin-bottom: 22px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4A8268" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          <span style="font-size: 13px; font-weight: 700; color: #4A8268;">はじめての方へ・実例つきガイド</span>
+        </div>
+        <h1 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 900; font-size: 40px; line-height: 1.5; color: #28373D; margin: 0 0 18px;">キクログの使い方</h1>
+        <p style="font-size: 17px; color: #5E6E74; margin: 0 auto; max-width: 600px; line-height: 1.95;">面談の準備から記録づくりまで、ひとりの利用者さん（<span style="color: #2E7E99; font-weight: 700;">佐藤ゆうきさん</span>）の例で順番にご案内します。</p>
+      </div>
+    </header>
+
+    <!-- ===== 全体像 ===== -->
+    <section style="padding: 8px 28px 56px;">
+      <div style="max-width: 880px; margin: 0 auto; background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 30px 32px;">
+        <div style="font-size: 13px; font-weight: 700; color: #9A8E73; letter-spacing: .1em; margin-bottom: 16px;">まずは全体の流れ</div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center">
+          <span style="display: inline-flex; align-items: center; gap: 8px; background: #EEF4F2; border-radius: 11px; padding: 9px 15px; font-size: 14px; font-weight: 700; color: #2E7E99;"><span style="width: 20px; height: 20px; border-radius: 50%; background: #2E7E99; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center;">1</span>準備</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C4BBA6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+          <span style="display: inline-flex; align-items: center; gap: 8px; background: #EEF4F2; border-radius: 11px; padding: 9px 15px; font-size: 14px; font-weight: 700; color: #2E7E99;"><span style="width: 20px; height: 20px; border-radius: 50%; background: #2E7E99; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center;">2</span>導入</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C4BBA6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+          <span style="display: inline-flex; align-items: center; gap: 8px; background: #EEF4F2; border-radius: 11px; padding: 9px 15px; font-size: 14px; font-weight: 700; color: #2E7E99;"><span style="width: 20px; height: 20px; border-radius: 50%; background: #2E7E99; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center;">3</span>聞き取り</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C4BBA6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+          <span style="display: inline-flex; align-items: center; gap: 8px; background: #EEF4F2; border-radius: 11px; padding: 9px 15px; font-size: 14px; font-weight: 700; color: #2E7E99;"><span style="width: 20px; height: 20px; border-radius: 50%; background: #2E7E99; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center;">4</span>整理</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C4BBA6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+          <span style="display: inline-flex; align-items: center; gap: 8px; background: #EDF3EE; border-radius: 11px; padding: 9px 15px; font-size: 14px; font-weight: 700; color: #4F8E6C;"><span style="width: 20px; height: 20px; border-radius: 50%; background: #5C9E7C; color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center;">5</span>記録</span>
+        </div>
+        <p style="font-size: 14.5px; color: #6B7A80; margin: 18px 0 0; line-height: 1.9;">回答を入れていくと、<span style="color: #2E7E99; font-weight: 700;">記録は終わったときにはもうできあがっています。</span>最後に確認して、コピーまたはCSVに書き出すだけです。</p>
+      </div>
+    </section>
+
+    <!-- ===== Modes ===== -->
+    <section id="modes" style="padding: 28px 28px 64px;">
+      <div style="max-width: 1000px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 38px;">
+          <h2 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 30px; color: #28373D; margin: 0 0 10px;">まず、3つのモードから選ぶ</h2>
+          <p style="font-size: 15.5px; color: #7A878C; margin: 0;">面談の目的に合わせて、聞く項目がまるごと切り替わります。</p>
+        </div>
+        <div class="kk-modes" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;">
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 18px; padding: 26px 24px; border-top: 4px solid #2E7E99;">
+            <div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; color: #2A3A40; margin-bottom: 8px;">初回アセスメント</div>
+            <div style="font-size: 13.5px; color: #6B7A80; line-height: 1.85; margin-bottom: 16px;">希望・生活・就労適性などを、はじめて詳しく確認します。</div>
+            <div style="background: #FBF6EC; border-radius: 10px; padding: 11px 13px; font-size: 12.5px; color: #7C6B45; line-height: 1.7;"><span style="font-weight: 700; color: #B0792E;">こんなとき</span><br />新しく通所を始めた佐藤さんと、はじめて面談する。</div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 18px; padding: 26px 24px; border-top: 4px solid #4A97A0;">
+            <div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; color: #2A3A40; margin-bottom: 8px;">再アセスメント</div>
+            <div style="font-size: 13.5px; color: #6B7A80; line-height: 1.85; margin-bottom: 16px;">前回からの変化・振り返り・新たな課題を整理します。</div>
+            <div style="background: #FBF6EC; border-radius: 10px; padding: 11px 13px; font-size: 12.5px; color: #7C6B45; line-height: 1.7;"><span style="font-weight: 700; color: #B0792E;">こんなとき</span><br />半年ごとの個別支援計画の見直しのとき。</div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 18px; padding: 26px 24px; border-top: 4px solid #5C9E7C;">
+            <div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; color: #2A3A40; margin-bottom: 8px;">定期面談（月1回）</div>
+            <div style="font-size: 13.5px; color: #6B7A80; line-height: 1.85; margin-bottom: 16px;">体調・困りごと・相談事項を、短時間で確認します。</div>
+            <div style="background: #FBF6EC; border-radius: 10px; padding: 11px 13px; font-size: 12.5px; color: #7C6B45; line-height: 1.7;"><span style="font-weight: 700; color: #B0792E;">こんなとき</span><br />毎月のモニタリングで、最近の様子を聞く。</div>
+          </div>
+        </div>
+        <p style="text-align: center; font-size: 13px; color: #9AA3A8; margin: 20px 0 0;">※ モードを途中で変えると入力済みのデータは消えます。はじめに選んでおきましょう。</p>
+      </div>
+    </section>
+
+    <!-- ===== 5 Steps detailed ===== -->
+    <section id="steps" style="padding: 64px 28px; background: #EFEADD; border-top: 1px solid #E7E0D2; border-bottom: 1px solid #E7E0D2;">
+      <div style="max-width: 880px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 44px;">
+          <h2 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 30px; color: #28373D; margin: 0 0 10px;">5つのステップを、例で見る</h2>
+          <p style="font-size: 15.5px; color: #7A878C; margin: 0;">初回アセスメントのモードで進めた場合の例です。</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+
+          <!-- Step 1 -->
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 28px 30px;">
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+              <span style="flex: none; width: 44px; height: 44px; border-radius: 50%; background: #2E7E99; color: #fff; font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">1</span>
+              <div><div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 20px; color: #28373D;">事前準備</div><div style="font-size: 13px; color: #8A9499; font-weight: 600;">過去の記録から「確認したいこと（仮説）」を整理</div></div>
+            </div>
+            <p style="font-size: 15px; margin: 0 0 16px; line-height: 1.95; color: #4C5A60;">左の「参照メモ」に前回の記録や申し送りを貼り付け、気になることをメモしておきます。面談中ずっと見えるので、聞き忘れを防げます。</p>
+            <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 13px; padding: 16px 18px;">
+              <div style="display: inline-block; font-size: 11px; font-weight: 700; color: #2E7E99; background: #EAF3EF; padding: 3px 10px; border-radius: 20px; margin-bottom: 11px;">記入例：確認したいこと</div>
+              <div style="font-size: 14px; color: #4C5A60; line-height: 1.95; white-space: pre-wrap;">・最近あくびが多い → 睡眠の質を確認したい
+・新しい作業に移ってから表情が硬い。負担になっていないか？
+・「働きたい」発言が増えた。具体的な希望を一緒に整理したい。</div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 28px 30px;">
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+              <span style="flex: none; width: 44px; height: 44px; border-radius: 50%; background: #3C8AA3; color: #fff; font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">2</span>
+              <div><div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 20px; color: #28373D;">導入</div><div style="font-size: 13px; color: #8A9499; font-weight: 600;">話しやすい雰囲気をつくる</div></div>
+            </div>
+            <p style="font-size: 15px; color: #4C5A60; margin: 0 0 16px; line-height: 1.95;">チェックリストに沿って、挨拶・目的説明・アイスブレイクを。各項目に<strong style="color: #3E5C66;">声かけ例</strong>が出るので、そのまま読み上げてもOKです。</p>
+            <div style="background: #EEF4F2; border-radius: 13px; padding: 14px 16px; display: flex; gap: 11px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3F93AC" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 0 1 4 11.5 8.38 8.38 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"></path></svg>
+              <div style="font-size: 14px; color: #3E5C66; line-height: 1.85;"><span style="font-weight: 700;">声かけ例：</span>「こんにちは。今日は暑いですね。ここまで来るの大変じゃなかったですか？」「今日は、佐藤さんが今後どう過ごしたいか、一緒に考える時間です。」</div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 28px 30px;">
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+              <span style="flex: none; width: 44px; height: 44px; border-radius: 50%; background: #4A97A0; color: #fff; font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">3</span>
+              <div><div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 20px; color: #28373D;">アセスメント</div><div style="font-size: 13px; color: #8A9499; font-weight: 600;">本人の言葉を大切に聞き取る</div></div>
+            </div>
+            <p style="font-size: 15px; color: #4C5A60; margin: 0 0 16px; line-height: 1.95;">設問に沿って聞き取り、答えを入力します。文章で書く欄、ボタンで選ぶ欄などがあります。入力すると<strong style="color: #2E7E99;">右側に記録が自動でまとまっていきます。</strong></p>
+            <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 13px; padding: 18px;">
+              <div style="display: inline-block; font-size: 11px; font-weight: 700; color: #4A97A0; background: #E8F1F1; padding: 3px 10px; border-radius: 20px; margin-bottom: 13px;">画面の例</div>
+              <div style="background: #fff; border: 1px solid #EAE6DE; border-radius: 12px; padding: 15px 16px;">
+                <div style="font-size: 14.5px; font-weight: 700; color: #2E3A40; margin-bottom: 9px;">将来どんな暮らし・働き方をしたいですか（本人の言葉で）</div>
+                <div style="display: flex; gap: 7px; padding: 8px 11px; background: #EEF4F2; border-radius: 9px; margin-bottom: 11px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3F93AC" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.5 8.5 0 0 1 4 11.5 8.38 8.38 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z"></path></svg>
+                  <span style="font-size: 12px; color: #4A6671; line-height: 1.65;">声かけ例:「3年後、どんな1日を過ごせていたら『いい感じ』だと思いますか？」</span>
+                </div>
+                <div style="border: 1px solid #E2DED6; border-radius: 11px; background: #fff; padding: 11px 13px; font-size: 13.5px; color: #3C474D; line-height: 1.8;">一人暮らしをしながら、パン屋さんで働きたい。自分のペースで、午前中中心に働けるとうれしい。</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 7px; margin-top: 11px; font-size: 12.5px; color: #8A9499;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5C9E7C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                この答えが、そのまま右の記録に反映されます。
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 28px 30px;">
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+              <span style="flex: none; width: 44px; height: 44px; border-radius: 50%; background: #549B8A; color: #fff; font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">4</span>
+              <div><div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 20px; color: #28373D;">情報の整理</div><div style="font-size: 13px; color: #8A9499; font-weight: 600;">聞き取りを振り返り、支援の方向性を決める</div></div>
+            </div>
+            <p style="font-size: 15px; color: #4C5A60; margin: 0 0 16px; line-height: 1.95;">これまでの回答が一覧で表示されます。それを見ながら、最後に<strong style="color: #549B8A;">「支援方針・次にやること」</strong>を書きます。</p>
+            <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 13px; padding: 16px 18px;">
+              <div style="display: inline-block; font-size: 11px; font-weight: 700; color: #549B8A; background: #E9F2EE; padding: 3px 10px; border-radius: 20px; margin-bottom: 11px;">記入例：支援方針</div>
+              <div style="font-size: 14px; color: #4C5A60; line-height: 1.95;">午前中心の軽作業から段階的に。指示は一度に1つ、写真など視覚的に提示する配慮を継続。次回までに週4通所をトライする。</div>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 28px 30px;">
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+              <span style="flex: none; width: 44px; height: 44px; border-radius: 50%; background: #5C9E7C; color: #fff; font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center;">5</span>
+              <div><div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 20px; color: #28373D;">記録作成</div><div style="font-size: 13px; color: #8A9499; font-weight: 600;">できあがった記録を確認して、書き出す</div></div>
+            </div>
+            <p style="font-size: 15px; color: #4C5A60; margin: 0 0 16px; line-height: 1.95;">面談が終わるころには、記録は<strong style="color: #4F8E6C;">もうできあがっています。</strong>自由に手直しして、コピーまたはCSVに書き出せます。</p>
+            <div style="background: #FBFAF7; border: 1px solid #EFE8DA; border-radius: 13px; padding: 18px 20px;">
+              <div style="display: inline-block; font-size: 11px; font-weight: 700; color: #5C9E7C; background: #E9F2EE; padding: 3px 10px; border-radius: 20px; margin-bottom: 13px;">自動生成された記録の例</div>
+              <pre style="margin: 0; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 13px; color: #3C474D; line-height: 1.95; white-space: pre-wrap; word-break: break-word;">【面談記録】
+利用者：佐藤 ゆうき 様
+面談種別：初回アセスメント
+実施日：2026/06/21
+
+■ ① 本人の希望（デマンドとニーズ）
+・将来どんな暮らし・働き方をしたいですか：一人暮らしをしながら、パン屋さんで働きたい。午前中中心に働けるとうれしい。
+・この希望は誰の意向ですか：本人
+
+■ ② 健康・身体・生活基盤
+・生活リズム・睡眠：就寝23時・起床6時半で安定。週末はやや夜更かし気味。
+
+■ 支援方針・次にやること
+午前中心の軽作業から段階的に。指示は一度に1つ、視覚的に提示する配慮を継続。次回までに週4通所をトライ。</pre>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+              <span style="display: inline-flex; align-items: center; gap: 7px; background: #2E7E99; color: #fff; font-size: 13px; font-weight: 700; padding: 9px 16px; border-radius: 10px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>記録をコピー</span>
+              <span style="display: inline-flex; align-items: center; gap: 7px; background: #EDF3EE; color: #4F8E6C; font-size: 13px; font-weight: 700; padding: 9px 16px; border-radius: 10px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>CSVに書き出し</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Needs table how-to ===== -->
+    <section id="needs" style="padding: 76px 28px;">
+      <div style="max-width: 940px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <h2 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 30px; color: #28373D; margin: 0 0 10px;">ニーズ整理票の書き方</h2>
+          <p style="font-size: 15.5px; color: #7A878C; margin: 0 auto; max-width: 640px; line-height: 1.9;">アセスメントの最後に出てくる4列の表です。<span style="color: #2E7E99; font-weight: 700;">「事実」と「解釈（仮説）」を混ぜない</span>のがいちばんのコツです。</p>
+        </div>
+
+        <!-- 4 columns explained -->
+        <div class="kk-needs4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 32px 0 26px;">
+          <div style="background: #EAF3EF; border: 1px solid #D2E6DC; border-radius: 14px; padding: 16px;">
+            <div style="font-size: 13px; font-weight: 700; color: #2E7E99; margin-bottom: 6px;">① 情報（事実）</div>
+            <div style="font-size: 12.5px; color: #5A6E72; line-height: 1.7;">見たこと・聴いたこと・データ。<strong>事実だけ</strong>を書く。</div>
+          </div>
+          <div style="background: #EAF3EF; border: 1px solid #D2E6DC; border-radius: 14px; padding: 16px;">
+            <div style="font-size: 13px; font-weight: 700; color: #2E7E99; margin-bottom: 6px;">② 理解・解釈</div>
+            <div style="font-size: 12.5px; color: #5A6E72; line-height: 1.7;"><strong>なぜ？</strong>の仮説。生物・心理・社会・環境の4つの目で。</div>
+          </div>
+          <div style="background: #EDF3EE; border: 1px solid #D5E6D9; border-radius: 14px; padding: 16px;">
+            <div style="font-size: 13px; font-weight: 700; color: #4F8E6C; margin-bottom: 6px;">③ 支援課題</div>
+            <div style="font-size: 12.5px; color: #5A6E72; line-height: 1.7;">取り組むべきこと。</div>
+          </div>
+          <div style="background: #EDF3EE; border: 1px solid #D5E6D9; border-radius: 14px; padding: 16px;">
+            <div style="font-size: 13px; font-weight: 700; color: #4F8E6C; margin-bottom: 6px;">④ 対応・方針</div>
+            <div style="font-size: 12.5px; color: #5A6E72; line-height: 1.7;">誰が・何を・どうするか。</div>
+          </div>
+        </div>
+
+        <!-- worked example table -->
+        <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 18px; padding: 24px 26px;">
+          <div style="display: inline-block; font-size: 11px; font-weight: 700; color: #2E7E99; background: #EAF3EF; padding: 3px 11px; border-radius: 20px; margin-bottom: 16px;">記入例（佐藤さんの場合）</div>
+          <div style="display: flex; align-items: center; gap: 9px; background: #EAF3EF; border: 1px solid #D2E6DC; border-radius: 10px; padding: 9px 14px; margin-bottom: 14px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E7E99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M3 5h18M3 12h18M3 19h18"></path></svg>
+            <span style="font-size: 12.5px; color: #3E6470; line-height: 1.6;"><strong style="color: #2E7E99;">1行 ＝ 1つのニーズ。</strong>「＋行を追加」で、ニーズの数だけ行を増やせます。下は2つのニーズを入れた例です。</span>
+          </div>
+
+          <div class="kk-tablewrap" style="overflow-x: auto;">
+            <div style="min-width: 640px;">
+              <!-- column headers -->
+              <div style="display: grid; grid-template-columns: 56px 1fr 1.3fr 1fr 1fr; gap: 10px 12px; margin-bottom: 9px;">
+                <div></div>
+                <div style="font-size: 11px; font-weight: 700; color: #2E7E99;">① 情報（事実）</div>
+                <div style="font-size: 11px; font-weight: 700; color: #2E7E99;">② 理解・解釈（4つの目）</div>
+                <div style="font-size: 11px; font-weight: 700; color: #4F8E6C;">③ 支援課題</div>
+                <div style="font-size: 11px; font-weight: 700; color: #4F8E6C;">④ 対応・方針</div>
+              </div>
+
+              <!-- need rows -->
+              <div style="display: grid; grid-template-columns: 56px 1fr 1.3fr 1fr 1fr; gap: 12px; align-items: stretch; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; justify-content: center; background: #2E7E99; color: #fff; border-radius: 10px; font-size: 12px; font-weight: 700; text-align: center; line-height: 1.45;">ニーズ①</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #4C5A60; line-height: 1.8;">新しい盛り付け作業に移ってから表情が硬い。3日目から笑顔。</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12px; color: #4C5A60; line-height: 1.85;"><span style="color: #2E7E99; font-weight: 700;">生物：</span>立ち作業による疲労<br /><span style="color: #2E7E99; font-weight: 700;">心理：</span>新環境への不安<br /><span style="color: #2E7E99; font-weight: 700;">社会：</span>関係は良好<br /><span style="color: #2E7E99; font-weight: 700;">環境：</span>手順提示が口頭のみ</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #4C5A60; line-height: 1.8;">新しい作業に移る際の不安を減らす。</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #4C5A60; line-height: 1.8;">手順を写真付きで掲示。最初の3日は職員が横につく。</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 56px 1fr 1.3fr 1fr 1fr; gap: 12px; align-items: stretch;">
+                <div style="display: flex; align-items: center; justify-content: center; background: #4A97A0; color: #fff; border-radius: 10px; font-size: 12px; font-weight: 700; text-align: center; line-height: 1.45;">ニーズ②</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #4C5A60; line-height: 1.8;">昼食後に眠気が強く、午後の集中が続かない。</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12px; color: #4C5A60; line-height: 1.85;"><span style="color: #2E7E99; font-weight: 700;">生物：</span>服薬の影響<br /><span style="color: #2E7E99; font-weight: 700;">環境：</span>静かに休める場所がない</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #4C5A60; line-height: 1.8;">午後の活動量を保てるようにする。</div>
+                <div style="background: #FBF9F4; border: 1px solid #EFE8DA; border-radius: 10px; padding: 12px; font-size: 12.5px; color: #4C5A60; line-height: 1.8;">昼休みに休憩スペースを用意。午後は軽作業から始める。</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 9px; margin: 20px 0 12px;">
+            <span style="height: 1px; flex: 1; background: #ECE4D4;"></span>
+            <span style="font-size: 12px; color: #9AA3A8; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">記録にはこう出力されます<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9AA3A8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"></path></svg></span>
+            <span style="height: 1px; flex: 1; background: #ECE4D4;"></span>
+          </div>
+          <div style="background: #FBFAF7; border: 1px solid #EFE8DA; border-radius: 12px; padding: 16px 18px;">
+            <pre style="margin: 0; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 12.5px; color: #3C474D; line-height: 1.95; white-space: pre-wrap; word-break: break-word;">■ ニーズ整理
+・情報: 新しい盛り付け作業に移ってから表情が硬い。3日目から笑顔。
+  解釈[生物]: 立ち作業による疲労／[心理]: 新環境への不安／[社会]: 周囲との関係は良好／[環境]: 手順提示が口頭のみ
+  支援課題: 新しい作業に移る際の不安を減らす
+  対応方針: 手順を写真付きで掲示。最初の3日は職員が横につく。
+・情報: 昼食後に眠気が強く、午後の集中が続かない。
+  解釈[生物]: 服薬の影響／[環境]: 静かに休める場所がない
+  支援課題: 午後の活動量を保てるようにする
+  対応方針: 昼休みに休憩スペースを用意。午後は軽作業から始める。</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 個別支援計画 ===== -->
+    <section id="plan" style="padding: 8px 28px 76px;">
+      <div style="max-width: 940px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <h2 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 30px; color: #28373D; margin: 0 0 10px;">個別支援計画を、手元に置いて面談する</h2>
+          <p style="font-size: 15.5px; color: #7A878C; margin: 0 auto; max-width: 640px; line-height: 1.9;">左パネルの「個別支援計画」タブに計画書を貼り付けておくと、<span style="color: #2E7E99; font-weight: 700;">面談中ずっと見やすい形で参照</span>できます。目標に沿った聞き取りがしやすくなります。</p>
+        </div>
+
+        <div class="kk-plan" style="display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 22px; margin-top: 30px; align-items: start;">
+
+          <!-- how to import -->
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 18px; padding: 28px 28px;">
+            <div style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 18px; color: #28373D; margin-bottom: 18px;">読み込ませる手順</div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; gap: 13px;">
+                <span style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #EAF3EF; color: #2E7E99; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">1</span>
+                <div style="font-size: 14.5px; color: #4C5A60; line-height: 1.8;">左パネルの<strong style="color: #2E3A40;">「個別支援計画」</strong>タブを開く</div>
+              </div>
+              <div style="display: flex; gap: 13px;">
+                <span style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #EAF3EF; color: #2E7E99; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">2</span>
+                <div style="font-size: 14.5px; color: #4C5A60; line-height: 1.8;">お使いの計画書のテキストをコピーして<strong style="color: #2E3A40;">貼り付け</strong></div>
+              </div>
+              <div style="display: flex; gap: 13px;">
+                <span style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #EAF3EF; color: #2E7E99; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;">3</span>
+                <div style="font-size: 14.5px; color: #4C5A60; line-height: 1.8;"><strong style="color: #2E3A40;">「読み込み」</strong>を押すと、自動で項目に整理されます</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 22px; background: #FBF6EC; border: 1px solid #F0E3CC; border-radius: 12px; padding: 14px 16px;">
+              <div style="display: flex; align-items: center; gap: 7px; margin-bottom: 8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C28A3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
+                <span style="font-size: 12px; font-weight: 700; color: #B0792E;">読み取れる項目</span>
+              </div>
+              <div style="font-size: 12.5px; color: #7C6B45; line-height: 1.9;">作成日／利用者氏名／総合的な援助の方針／長期目標／短期目標／優先順位ごとの目標・課題・支援内容・期限。<br />形式が合わないときは、「参照メモ」に貼り付けてそのまま見ることもできます。</div>
+            </div>
+          </div>
+
+          <!-- parsed result mock -->
+          <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 18px; padding: 14px;">
+            <div style="background: #F1ECE1; border-radius: 12px 12px 0 0; padding: 8px 14px; display: flex; gap: 6px; align-items: center; margin: -14px -14px 14px;">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #D8D3C8;"></span>
+              <span style="font-size: 11px; font-weight: 700; padding: 4px 12px; background: #EAF3EF; border-radius: 7px; color: #2E7E99;">個別支援計画</span>
+              <span style="font-size: 11px; color: #B6AE9D; padding: 4px 8px;">参照メモ</span>
+              <span style="margin-left: auto; font-size: 10.5px; font-weight: 700; color: #2E7E99; background: #EAF3EF; padding: 3px 9px; border-radius: 20px;">読み込み後の表示</span>
+            </div>
+            <div style="padding: 4px 8px 8px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+                <div>
+                  <div style="font-size: 16px; font-weight: 700; color: #283238;">佐藤 ゆうき 様</div>
+                  <div style="font-size: 11px; color: #94A0A6; margin-top: 2px;">作成日: 2026年3月15日</div>
+                </div>
+              </div>
+              <div style="background: #EEF4F2; border: 1px solid #DCEAE5; border-radius: 12px; padding: 12px 13px; margin-bottom: 10px;">
+                <div style="font-size: 10.5px; font-weight: 700; color: #2E7E99; margin-bottom: 5px; letter-spacing: .03em;">総合的な援助の方針</div>
+                <div style="font-size: 12.5px; color: #335; line-height: 1.7;">本人の「働きたい」気持ちを尊重し、無理のないペースで就労に向けた力を育む。</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 12px;">
+                <div style="background: #EDF3EE; border: 1px solid #DCEADF; border-radius: 12px; padding: 11px 12px;">
+                  <div style="font-size: 10.5px; font-weight: 700; color: #4F8E6C; margin-bottom: 4px;">長期目標</div>
+                  <div style="font-size: 11.5px; color: #344; line-height: 1.6;">一般就労に向けた基礎体力と生活リズムの確立</div>
+                </div>
+                <div style="background: #FBF4E8; border: 1px solid #F0E3CC; border-radius: 12px; padding: 11px 12px;">
+                  <div style="font-size: 10.5px; font-weight: 700; color: #B0792E; margin-bottom: 4px;">短期目標</div>
+                  <div style="font-size: 11.5px; color: #443; line-height: 1.6;">週4日の安定通所と立ち作業への段階的な慣れ</div>
+                </div>
+              </div>
+              <div style="font-size: 11.5px; font-weight: 700; color: #5E6B73; border-bottom: 1px solid #EFECE5; padding-bottom: 6px; margin-bottom: 10px;">支援計画詳細</div>
+              <div style="border: 1px solid #E6E2DA; border-radius: 12px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="font-size: 10px; font-weight: 700; background: #EFECE5; color: #6B7780; padding: 2px 9px; border-radius: 20px;">優先順位 1</span>
+                  <span style="font-size: 10px; color: #94A0A6;">期限: 6か月</span>
+                </div>
+                <div style="font-size: 10px; font-weight: 700; color: #94A0A6; margin-bottom: 3px;">目標・課題</div>
+                <div style="font-size: 12px; color: #3C474D; line-height: 1.6; margin-bottom: 9px;">通所日数を増やし、生活リズムを整える</div>
+                <div style="font-size: 10px; font-weight: 700; color: #94A0A6; margin-bottom: 3px;">支援内容</div>
+                <div style="font-size: 12px; color: #3C474D; line-height: 1.6;">朝の声かけ・体調確認。負担の少ない作業から段階的に。</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <p style="text-align: center; font-size: 13px; color: #9AA3A8; margin: 20px 0 0;">※ 貼り付けた計画データも端末の中だけに保存されます。サーバーには送られません。</p>
+      </div>
+    </section>
+
+    <!-- ===== 録音・CSV ===== -->
+    <section style="padding: 8px 28px 72px;">
+      <div class="kk-two" style="max-width: 940px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 30px;">
+          <div style="width: 50px; height: 50px; border-radius: 14px; background: #EDF3EE; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4F8E6C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0M12 17v5"></path></svg>
+          </div>
+          <h3 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 19px; color: #2A3A40; margin: 0 0 12px;">録音して、文字起こしは外部で</h3>
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #4C5A60; line-height: 1.8;">
+            <div style="display: flex; gap: 10px;"><span style="flex: none; width: 21px; height: 21px; border-radius: 50%; background: #EDF3EE; color: #4F8E6C; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">1</span>録音前に<strong style="color: #3E5C66;">同意確認</strong>のダイアログが出ます。</div>
+            <div style="display: flex; gap: 10px;"><span style="flex: none; width: 21px; height: 21px; border-radius: 50%; background: #EDF3EE; color: #4F8E6C; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">2</span>面談を録音し、MP3で書き出せます。</div>
+            <div style="display: flex; gap: 10px;"><span style="flex: none; width: 21px; height: 21px; border-radius: 50%; background: #EDF3EE; color: #4F8E6C; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">3</span>NotebookLM等に渡して文字起こし。</div>
+          </div>
+          <p style="font-size: 12.5px; color: #8A9499; margin: 16px 0 0; line-height: 1.75; border-top: 1px dashed #E7E0D2; padding-top: 14px;">音声は端末の中だけに保持されます。マイク録音は https のページで開いたときに使えます。</p>
+        </div>
+        <div style="background: #FFFFFF; border: 1px solid #ECE4D4; border-radius: 20px; padding: 30px;">
+          <div style="width: 50px; height: 50px; border-radius: 14px; background: #EAF3EF; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2E7E99" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+          </div>
+          <h3 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 19px; color: #2A3A40; margin: 0 0 12px;">CSVで履歴を残す・共有する</h3>
+          <p style="font-size: 14px; color: #4C5A60; line-height: 1.9; margin: 0 0 12px;">「CSVに書き出し」を押すと、この面談が履歴に保存され、これまでの記録をまとめてCSV（スプレッドシート）で書き出せます。</p>
+          <p style="font-size: 14px; color: #4C5A60; line-height: 1.9; margin: 0;">利用者ごと・日付ごとに整理されるので、ふだんの支援記録ツールへの転記やチームでの共有に使えます。</p>
+          <p style="font-size: 12.5px; color: #8A9499; margin: 16px 0 0; line-height: 1.75; border-top: 1px dashed #E7E0D2; padding-top: 14px;">同じ利用者・同じ日の記録は上書き保存されます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Tips ===== -->
+    <section style="padding: 8px 28px 76px;">
+      <div style="max-width: 940px; margin: 0 auto; background: #28373D; border-radius: 22px; padding: 40px 44px;">
+        <h3 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 22px; color: #FBF9F3; margin: 0 0 22px;">つまずきやすいポイント</h3>
+        <div class="kk-tips" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px 30px;">
+          <div style="display: flex; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7BC0A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div><div style="font-size: 14.5px; font-weight: 700; color: #EAF1EF; margin-bottom: 3px;">記録を手で直したあと</div><div style="font-size: 13px; color: #AFC0BD; line-height: 1.8;">自動更新は止まります。回答から作り直したいときは「最新の内容で上書き」を押します。</div></div></div>
+          <div style="display: flex; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7BC0A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div><div style="font-size: 14.5px; font-weight: 700; color: #EAF1EF; margin-bottom: 3px;">モードの変更は最初に</div><div style="font-size: 13px; color: #AFC0BD; line-height: 1.8;">途中で変えると入力済みデータが消えます。面談の種類は始める前に選びましょう。</div></div></div>
+          <div style="display: flex; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7BC0A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div><div style="font-size: 14.5px; font-weight: 700; color: #EAF1EF; margin-bottom: 3px;">事実と仮説を分ける</div><div style="font-size: 13px; color: #AFC0BD; line-height: 1.8;">ニーズ整理票では、①は見たこと（事実）、②はなぜか（仮説）。混ぜないと支援が考えやすくなります。</div></div></div>
+          <div style="display: flex; gap: 12px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7BC0A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg><div><div style="font-size: 14.5px; font-weight: 700; color: #EAF1EF; margin-bottom: 3px;">複数の利用者を切り替え</div><div style="font-size: 13px; color: #AFC0BD; line-height: 1.8;">上のタブで利用者を追加・切り替えできます（最大10名）。それぞれのデータは分けて保持されます。</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section style="padding: 8px 28px 80px;">
+      <div style="max-width: 820px; margin: 0 auto; text-align: center;">
+        <h2 style="font-family: 'Zen Maru Gothic', sans-serif; font-weight: 700; font-size: 28px; color: #28373D; margin: 0 0 14px;">さっそく、開いてみましょう。</h2>
+        <p style="font-size: 15.5px; color: #6B7A80; margin: 0 0 28px; line-height: 1.9;">読むより、触るのがいちばんの近道です。登録もインストールもいりません。</p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;">
+          <a href="https://kikulog.pages.dev" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 9px; padding: 15px 30px; border-radius: 14px; background: #2E7E99; color: #fff; font-size: 16px; font-weight: 700; box-shadow: 0 8px 22px rgba(46,126,153,.26);">キクログを開く<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <a href="/works/kikulog" style="display: inline-flex; align-items: center; gap: 8px; padding: 15px 26px; border-radius: 14px; background: #FFFFFF; color: #3C5158; font-size: 16px; font-weight: 700; border: 1px solid #E2DBCC;">紹介ページを見る</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== maker credit + contact (standalone) ===== -->
+    <footer style="border-top: 1px solid #E7E0D2; padding: 30px 28px 46px; text-align: center;">
+      <p style="margin: 0 0 12px; font-size: 13px; color: #5E6E74; line-height: 1.9;">
+        ご不明な点・不具合のご報告・使ってみたご感想は
+        <a href="/contact?from=kikulog" style="color: #2E7E99; font-weight: 700; text-decoration: underline; text-underline-offset: 2px;">お問い合わせ</a>
+        からどうぞ。
+      </p>
+      <p style="margin: 0; font-size: 12.5px; color: #9AA3A8; line-height: 1.9;">
+        キクログは Y.M Apps が個人で開発・運営している、就労支援・福祉の現場のための面談支援ツールです。
+      </p>
+    </footer>
+
+  </div>
+</StandaloneLayout>
+
+<style>
+  .kk-guide :global(::selection) { background: #BFE0D0; }
+  .kk-guide *, .kk-guide *::before, .kk-guide *::after { box-sizing: border-box; }
+  /* sticky nav offset so anchored sections aren't hidden under the bar */
+  .kk-guide section[id] { scroll-margin-top: 72px; }
+  /* responsive headings */
+  .kk-guide h1 { font-size: clamp(27px, 7vw, 40px) !important; }
+  .kk-guide h2 { font-size: clamp(23px, 6vw, 30px) !important; }
+
+  @media (max-width: 760px) {
+    .kk-guide .kk-guide-seclink { display: none; }
+    .kk-guide .kk-modes { grid-template-columns: 1fr !important; }
+    .kk-guide .kk-needs4 { grid-template-columns: 1fr 1fr !important; }
+    .kk-guide .kk-plan { grid-template-columns: 1fr !important; }
+    .kk-guide .kk-two { grid-template-columns: 1fr !important; }
+    .kk-guide .kk-tips { grid-template-columns: 1fr !important; }
+  }
+</style>
