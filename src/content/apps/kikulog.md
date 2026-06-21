@@ -11,6 +11,7 @@ category: tool
 unpublished: false
 isNew: true
 iconImage: /assets/apps/kikulog-icon.png
+coverImage: /assets/apps/kikulog-hero.webp
 features:
   - title: 面談の流れをそのままガイド
     body: 事前準備・導入・アセスメント・整理・記録作成までを5ステップで案内。聞きたいことや声かけのヒントも出るので、面談そのものに集中できます。

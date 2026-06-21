@@ -9,7 +9,7 @@ storeLabel: Google Play
 order: 1
 category: tool
 unpublished: false
-isNew: true
+isNew: false
 iconImage: /assets/apps/inkpress-icon.png
 coverImage: /assets/apps/inkpress-reader-controls.png
 screenshots:

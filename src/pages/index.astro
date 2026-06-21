@@ -6,7 +6,7 @@ import { getCollection } from "astro:content";
 const apps = (await getCollection("apps")).sort((a, b) => a.data.order - b.data.order);
 
 const lead = apps.find((a) => a.slug === "inkpress") ?? apps[0];
-const featured = apps.find((a) => a.slug === "zansetsu") ?? apps[apps.length - 1];
+const featured = apps.find((a) => a.slug === "kikulog") ?? apps[apps.length - 1];
 
 // Works grouped by category — design order TOOLS → GAMES → STICKERS.
 const CAT_ORDER = ["tool", "game", "sticker"] as const;
@@ -109,9 +109,9 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
         </div>
         <div class="feat-side">
           <span class="badge-new">NEW</span>
-          <div class="feat-shot"><img src={featured.data.coverImage} alt={`${featured.data.title} のゲーム画面`} loading="lazy" /></div>
+          <div class="feat-shot"><img src={featured.data.coverImage} alt={featured.data.title} loading="lazy" /></div>
           <h4>{featured.data.title}</h4>
-          <p>間合いを計って、一太刀で決める。月夜の境内で野武士と斬り合う、1対1の果たし合いです。</p>
+          <p>話しながら、その場で面談記録。就労継続支援などの福祉の現場のための、ブラウザだけで使える面談支援ツールです。</p>
           <a class="feat-more" href={`/works/${featured.slug}`}>詳しく見る
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>

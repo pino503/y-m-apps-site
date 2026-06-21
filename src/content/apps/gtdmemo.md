@@ -6,7 +6,7 @@ platform: Android
 badges: ["Android", "v1.0.1", "タスク管理"]
 order: 1.5
 category: tool
-isNew: true
+isNew: false
 unpublished: true
 iconImage: /assets/apps/gtdmemo-icon.png
 coverImage: /assets/apps/gtdmemo-cover.png
