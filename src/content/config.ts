@@ -15,6 +15,7 @@ const apps = defineCollection({
       "cosmo-cleaner",
       "gtdmemo",
       "zansetsu",
+      "kirokunavi",
     ]),
     platform: z.string(),
     badges: z.array(z.string()).default([]),

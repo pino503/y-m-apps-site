@@ -82,7 +82,7 @@
   // 自前フォーム → Google フォームに送信（メアドはサイトに出さない）。
   // no-cors で formResponse に POST。レスポンスは読めないが送信は通る。
   // 成功/失敗は自前表示、ページ遷移なしで完結。?from=<app> があれば送信時に付記。
-  const SOURCE_LABELS: Record<string, string> = { kikulog: "キクログ" };
+  const SOURCE_LABELS: Record<string, string> = { kikulog: "キクログ", kirokunavi: "きろくナビ" };
 
   function initContactForm() {
     const form = document.getElementById("contact-form") as HTMLFormElement | null;
