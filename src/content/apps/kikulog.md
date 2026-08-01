@@ -9,7 +9,7 @@ storeLabel: ツールを開く
 order: 1.2
 category: tool
 unpublished: false
-isNew: true
+isNew: false
 iconImage: /assets/apps/kikulog-icon.png
 coverImage: /assets/apps/kikulog-hero.webp
 features:

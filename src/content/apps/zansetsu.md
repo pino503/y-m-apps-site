@@ -8,7 +8,7 @@ storeUrl: https://pino503.github.io/zansetsu-web/
 storeLabel: Play Now
 order: 2.5
 category: game
-isNew: true
+isNew: false
 iconImage: /assets/apps/zansetsu-icon.png
 coverImage: /assets/apps/zansetsu-keyart.jpg
 features:
