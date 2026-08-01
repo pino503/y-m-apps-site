@@ -88,26 +88,15 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
   <section class="section featured" style="padding-top:76px">
     <div class="wrap">
       <div class="card featured-card reveal">
-        <div class="feat-main">
-          <span class="feat-label">Featured Project</span>
-          <h3>{lead.data.title}</h3>
-          <p><strong>E-Ink 端末向けの読書アプリ。</strong>読みやすさに特化し、読書に集中できるシンプルな自炊本リーダーです。</p>
-          <div class="feat-chips">
-            <span class="chip">Android</span>
-            <span class="chip">v1.2.4</span>
-            <span class="chip">完全無料</span>
-            <span class="chip chip-gold">読書アプリ</span>
-          </div>
-          <a class="feat-more" href={`/works/${lead.slug}`}>InkPressを詳しく見る
+        <div class="feat-side">
+          <div class="feat-shot"><img src={lead.data.coverImage} alt={lead.data.title} loading="lazy" /></div>
+          <h4>{lead.data.title}</h4>
+          <p>E-Ink 端末向けの読書アプリ。読みやすさに特化し、読書に集中できるシンプルな自炊本リーダーです。Google Playで配信中。</p>
+          <a class="feat-more" href={`/works/${lead.slug}`}>詳しく見る
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
-          <div class="feat-visual">
-            <img class="feat-phone a" src="/assets/apps/inkpress-onboarding.png" alt="" loading="lazy" />
-            <img class="feat-phone b" src="/assets/apps/inkpress-settings.png" alt="" loading="lazy" />
-            <img class="feat-cat" src="/assets/pinokun/pinokun-reading-color.png" alt="" loading="lazy" />
-          </div>
         </div>
-        <div class="feat-side">
+        <div class="feat-side feat-side-divide">
           <span class="badge-new">NEW</span>
           <div class="feat-shot"><img src={featured.data.coverImage} alt={featured.data.title} loading="lazy" /></div>
           <h4>{featured.data.title}</h4>
@@ -531,7 +520,8 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
 
   /* ============ FEATURED ============ */
   .featured{ padding-top:18px; }
-  .featured-card{ display:grid; grid-template-columns:1.62fr 1fr; gap:0; overflow:hidden; padding:0; }
+  .featured-card{ display:grid; grid-template-columns:1fr 1fr; gap:0; overflow:hidden; padding:0; }
+  .feat-side-divide{ border-left:1px solid rgba(255,255,255,.08); }
   .feat-main{ padding:38px 36px; position:relative; display:flex; flex-direction:column; min-height:360px; }
   .feat-label{ font-size:11.5px; letter-spacing:.18em; font-weight:700; text-transform:uppercase; color:var(--gold-deep); }
   .feat-main h3{ font-family:var(--font-display); font-weight:900; font-size:40px; margin:8px 0 12px; color:var(--ink); }
@@ -733,6 +723,7 @@ const arrow = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path
 
   @media (max-width:980px){
     .featured-card{ grid-template-columns:1fr; }
+    .feat-side-divide{ border-left:none; border-top:1px solid rgba(255,255,255,.08); }
     /* mobile: drop fragile absolute positioning — lay the phones + ぴのくん out
        in normal flow as a centered row so nothing rides up over the CTA button */
     .feat-visual{ position:relative; display:flex; align-items:flex-end; justify-content:center; gap:6px; width:100%; height:auto; right:0; margin-top:26px; pointer-events:none; }
