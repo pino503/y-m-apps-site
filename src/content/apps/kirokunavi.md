@@ -7,7 +7,7 @@ badges: ["Android", "完全オフライン", "福祉の記録"]
 order: 1.3
 category: tool
 isNew: true
-unpublished: true
+unpublished: false
 iconImage: /assets/apps/kirokunavi-icon.png
 coverImage: /assets/apps/kirokunavi-cover.png
 screenshots:

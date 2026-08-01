@@ -12,6 +12,11 @@ const { data } = app;
 
 const features = data.features;
 
+// APK 直接配布（Google Play 未公開）。差し替え時はファイル・サイズ・ハッシュを更新
+const APK_URL = "/downloads/kirokunavi-v1.7.0.apk";
+const APK_SIZE = "5.0MB";
+const APK_SHA256 = "28f4389575f82a69d58dffbd81a391d2b0d6ea7569092c33b0ae3cf28b4270d8";
+
 const shots = [
   { src: "/assets/apps/kirokunavi-kiroku.jpg", alt: "きろくナビ スクリーンショット（日々の記録の一覧）" },
   { src: "/assets/apps/kirokunavi-sogei.jpg", alt: "きろくナビ スクリーンショット（送迎の割り当て）" },
@@ -40,7 +45,7 @@ const otherWorks = [
           <img src="/assets/hero/kirokunavi-hero.png" alt="きろくナビ — 体温・作業・送迎・欠席対応まで、1画面で。" />
         </div>
         <div class="card meta-bar">
-          <div class="mb-status"><span class="badge-soon">一般配布は準備中 — 導入のご相談を受け付けています</span></div>
+          <div class="mb-status"><span class="badge-soon">無料配布中 — APKを直接ダウンロードできます</span></div>
           <div class="mb-chips">
             <span class="chip">Android</span>
             <span class="chip">v{data.version}</span>
@@ -48,10 +53,11 @@ const otherWorks = [
             <span class="chip">完全オフライン</span>
           </div>
           <div class="mb-actions">
-            <a class="btn btn-primary" href="/contact?from=kirokunavi">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16v12H4z M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
-              導入のご相談・お問い合わせ
+            <a class="btn btn-primary" href={APK_URL} download>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              APKをダウンロード（無料・v{data.version}）
             </a>
+            <a class="btn" href="/contact?from=kirokunavi">お問い合わせ</a>
           </div>
         </div>
       </section>
@@ -81,6 +87,22 @@ const otherWorks = [
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section class="block" data-reveal>
+          <span class="lede">DOWNLOAD</span>
+          <h2>インストール方法</h2>
+          <div class="about-text">
+            <p>Google Play を通さない直接配布のため、インストール時に Android の確認画面が出ます。次の手順で進めてください。</p>
+            <p>
+              1. 上の「APKをダウンロード」ボタンでファイルを保存（{APK_SIZE}）<br />
+              2. ダウンロード完了の通知（またはファイルアプリ）から APK を開く<br />
+              3. 「不明なアプリのインストール」の確認が出たら、ブラウザからのインストールを許可する<br />
+              4. 「インストール」をタップして完了
+            </p>
+            <p>アプリの更新も同じ手順です。新しいバージョンの APK を上書きインストールすれば、記録データはそのまま引き継がれます。アンインストールすると記録データも消えるため、機種変更や再インストールの前には、アプリ内「設定 → バックアップ」でファイルを書き出しておいてください。</p>
+            <p style="font-size: 13px; color: #8A8F94; word-break: break-all;">改ざんチェック用 SHA-256: {APK_SHA256}</p>
           </div>
         </section>
 
