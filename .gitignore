@@ -21,3 +21,6 @@ pnpm-debug.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# wrangler のローカルキャッシュ（pages dev で生成される）
+.wrangler/

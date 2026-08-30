@@ -22,14 +22,23 @@
   const el = document.getElementById("visit-count");
   if (el) {
     if (isProd) {
-      fetch("https://api.counterapi.dev/v1/y-m-apps-site/visits/up")
-        .then((r) => r.json())
+      // 以前は外部サービス（counterapi.dev v1）を叩いていたが、v1 が廃止されて
+      // HTTP 410 を返すようになり、表示が「······」のまま止まっていた。
+      // いまは同じ Cloudflare 上の /api/visits（Pages Function + KV）で自前に数える。
+      fetch("/api/visits")
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status))))
         .then((d) => {
           if (d && typeof d.count === "number") {
             el.textContent = String(d.count).padStart(6, "0");
+          } else {
+            return Promise.reject(new Error("unexpected payload"));
           }
         })
-        .catch(() => { el.textContent = "······"; });
+        .catch((e) => {
+          // 黙って握りつぶすと、壊れていることに誰も気づけない（前回がそれだった）。
+          console.warn("[visitors] カウントを取得できませんでした:", e);
+          el.textContent = "······";
+        });
     } else {
       el.textContent = "DEV";
     }

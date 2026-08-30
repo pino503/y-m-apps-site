@@ -1,0 +1,14 @@
+{
+  // Cloudflare Pages（直接アップロード方式）の設定。
+  // 訪問カウンター functions/api/visits.js が使う KV をここで結び付ける。
+  // ダッシュボード側で設定するとリポジトリに残らないので、この形にしている。
+  "name": "y-m-apps-site",
+  "compatibility_date": "2026-06-02",
+  "pages_build_output_dir": "dist",
+  "kv_namespaces": [
+    {
+      "binding": "VISITS",
+      "id": "bf770f5bf88b4eb0b167396f328af5ed"
+    }
+  ]
+}
