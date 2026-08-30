@@ -14,7 +14,7 @@ screenshots:
   - /assets/apps/kirokunavi-kiroku.jpg
   - /assets/apps/kirokunavi-sogei.jpg
   - /assets/apps/kirokunavi-output.jpg
-version: "1.7.0"
+version: "1.8.0"
 features:
   - title: 日々の記録はタップが9割
     body: 曜日ごとの予定から今日の名簿を自動作成。体温・体調・作業内容はタップで選ぶだけ、様子の文章は定型文をタップすれば入ります。進み具合バーで書き漏れもひと目で分かります。
