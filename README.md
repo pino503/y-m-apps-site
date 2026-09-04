@@ -68,10 +68,15 @@ y-m-apps-site/
 | Footer | 14 | むりw |
 | 404 | 21 | どこ？ |
 
-## TBD（実装フェーズ後に対応）
+## 発信の導線
 
-- LINEスタンプ商品ページの正確なURL（`src/content/apps/pinokun-stamps.md` の `storeUrl`）
-- X (Twitter) アカウントURL
-- 各アプリストアの最終URL確認
-- カスタムドメイン取得 → `astro.config.mjs` の `site` 更新
-- Cloudflare Pages 本番デプロイ
+サイト（顔）→ note（考えたことを書く場所）→ X（途中経過を流す場所）。
+
+- X: https://x.com/Pinopino503 （About 欄・Contact 欄からリンク済み）
+- note: https://note.com/y_m656 （Writings 章の各記事からリンク）
+- 本番: https://y-m-apps-site.pages.dev （`npm run deploy` で直接アップロード。git push だけでは反映されない）
+
+## TBD
+
+- カスタムドメイン取得 → `astro.config.mjs` の `site` 更新（現在は `*.pages.dev`）
+- 各アプリストアの最終URL確認（アプリ追加・移行のたび）
