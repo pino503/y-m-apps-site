@@ -17,7 +17,7 @@ screenshots:
   - /assets/apps/inkpress-settings.png
   - /assets/apps/inkpress-reader-controls.png
 features:
-  - title: Android の E-Ink 端末向け
+  - title: E-Ink 端末にも最適化
     body: ディザリング・コントラスト調整・E-Ink ディスプレイの残像と反応速度に合わせた描画。各種 Android E-Ink 端末で、紙の本に近い読み心地を狙っています。
   - title: PDF・CBZ・CBR・画像、まとめて
     body: PDF / ZIP / CBZ / RAR / CBR / 画像フォルダに対応。自炊した本もダウンロードしたコミックも、1 つのアプリでそのまま開けます。
