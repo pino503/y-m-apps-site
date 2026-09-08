@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && python tools/build_app_manual.py",
+    "build:manual": "python tools/build_app_manual.py",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "astro build && wrangler pages deploy --project-name=y-m-apps-site --branch=main --commit-dirty=true --commit-message=deploy"
+    "deploy": "npm run build && wrangler pages deploy --project-name=y-m-apps-site --branch=main --commit-dirty=true --commit-message=deploy"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
