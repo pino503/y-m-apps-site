@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FAF5EB; }
+  .doc { box-sizing: border-box; max-width: 8.6in; margin: 0 auto; background: inherit;
+         padding: 44px clamp(20px, 5vw, 0.72in) 90px;
+         font-family: 'Zen Kaku Gothic New', sans-serif; color: #56575A;
+         -webkit-font-smoothing: antialiased; }
+  .doc-frame { width: 100%; border-collapse: collapse; }
+  .doc-frame td { padding: 0; }
+  .running-hdr, .running-ftr, .hdr-space, .ftr-space { display: none; }
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  .doc a.toc-link { transition: border-color .15s, background .15s, transform .15s; }
+  .hide-demo .demo-block { display: none !important; }
+  .hide-toc .toc-block { display: none !important; }
+  ::selection { background: #FFE89A; }
+  @page { size: letter; margin: 0; }
+  @media print {
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; scroll-behavior: auto; }
+    html, body { margin: 0; padding: 0; }
+    .doc { max-width: none !important; margin: 0 !important; padding: 0 0.7in !important;
+           box-shadow: none !important; border: none !important; }
+    #dc-root, .sc-host { height: auto !important; }
+    .hdr-space, .ftr-space { display: table-cell; height: 0.6in !important; }
+    h1, h2, h3, h4 { break-after: avoid; }
+    figure, blockquote, img, tr, table { break-inside: avoid; }
+    p, li { orphans: 3; widows: 3; }
+    .screen-only { display: none !important; }
+  }
+</style>
+
+<title>InkPress 사용 설명서</title>
+<style>.doc a.toc-link:hover{border-color:#FFD84D;background:#FFFBEF;transform:translateY(-1px)}</style>
+<style id="manual-wrap">.doc-frame{table-layout:fixed}.doc td,.doc th,.doc a,.doc span,.doc p,.doc li,.doc h1,.doc h2,.doc h3,.doc div{overflow-wrap:anywhere;hyphens:auto}</style>
+</head>
+<body>
+
+
+<main class="doc">
+<table class="doc-frame" role="presentation">
+<thead><tr><td class="hdr-space"></td></tr></thead>
+<tbody><tr><td>
+
+<nav class="manual-langs" aria-label="Language" style="text-align:right;margin:0 0 10px;"><a href="/works/inkpress/manual" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">日本語</a><a href="/works/inkpress/manual/en" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">English</a><a href="/works/inkpress/manual/de" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Deutsch</a><a href="/works/inkpress/manual/fr" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Français</a><a href="/works/inkpress/manual/es" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Español</a><a href="/works/inkpress/manual/pt" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Português</a><a href="/works/inkpress/manual/it" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Italiano</a><span aria-current="true" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#FFFFFF;background:#A0905F;">한국어</span><a href="/works/inkpress/manual/zh-tw" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">繁體中文</a><a href="/works/inkpress/manual/zh-cn" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">简体中文</a><a href="/works/inkpress/manual/ru" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Русский</a></nav>
+<header style="text-align:center;padding:22px 14px 34px;border-bottom:1px solid #ECE3D0;margin-bottom:30px;">
+  <img src="/assets/apps/inkpress-icon.png" alt="InkPress" style="width:90px;height:90px;border-radius:21px;display:block;margin:0 auto 16px;box-shadow:0 5px 16px rgba(140,115,60,.18);">
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:500;font-size:14px;color:#A0905F;letter-spacing:.14em;margin-bottom:14px;">E-INK PDF / COMIC VIEWER</div>
+  <h1 style="margin:0 0 8px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:clamp(34px,6vw,54px);color:#3F4042;letter-spacing:.02em;line-height:1.16;">InkPress 사용 설명서</h1>
+  <p style="max-width:580px;margin:18px auto 22px;font-size:16px;line-height:2;color:#56575A;">BOOX 같은 E-ink(전자 종이) 기기에 맞춰 최적화한 PDF·만화·스캔 도서용 <strong style="color:#46474A;font-weight:700;">조용한 뷰어</strong> 입니다. 잔상과 깜빡임을 줄여 종이처럼 차분하게 읽을 수 있습니다.</p>
+  <div style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">버전 1.2.9</span>
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">Android 8.0 이상 필요</span>
+  </div>
+</header>
+
+<div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 22px;margin:0 0 32px;border-left:5px solid #FFD84D;">
+  <p style="margin:0;font-size:15.5px;line-height:1.85;color:#5C5746;">이 설명서는 모든 기능을 다룹니다. <strong style="color:#46474A;font-weight:700;">목차</strong> 에서 필요한 항목으로 바로 이동하세요.</p>
+</div>
+
+<section class="toc-block" style="margin:0 0 36px;">
+  <h2 style="margin:0 0 16px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>목차</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;">
+    <a class="toc-link" href="#s1" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">01</span><span style="font-size:14.5px;color:#4A4B4D;">지원 파일과 기기</span></a>
+    <a class="toc-link" href="#s2" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">02</span><span style="font-size:14.5px;color:#4A4B4D;">시작하기 (서재 설정)</span></a>
+    <a class="toc-link" href="#s3" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">03</span><span style="font-size:14.5px;color:#4A4B4D;">서재 사용하기</span></a>
+    <a class="toc-link" href="#s4" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">04</span><span style="font-size:14.5px;color:#4A4B4D;">읽기 (읽기 화면 조작)</span></a>
+    <a class="toc-link" href="#s5" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">05</span><span style="font-size:14.5px;color:#4A4B4D;">레이아웃 설정</span></a>
+    <a class="toc-link" href="#s6" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">06</span><span style="font-size:14.5px;color:#4A4B4D;">E-ink 최적화</span></a>
+    <a class="toc-link" href="#s7" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">07</span><span style="font-size:14.5px;color:#4A4B4D;">주석·책갈피·메모</span></a>
+    <a class="toc-link" href="#s8" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">08</span><span style="font-size:14.5px;color:#4A4B4D;">폴더 잠금 (PIN·지문)</span></a>
+    <a class="toc-link" href="#s9" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">09</span><span style="font-size:14.5px;color:#4A4B4D;">클라우드 동기화 (Dropbox·홈 서버)</span></a>
+    <a class="toc-link" href="#s10" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">10</span><span style="font-size:14.5px;color:#4A4B4D;">홈 화면 위젯</span></a>
+    <a class="toc-link" href="#s11" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">11</span><span style="font-size:14.5px;color:#4A4B4D;">설정</span></a>
+    <a class="toc-link" href="#s12" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">12</span><span style="font-size:14.5px;color:#4A4B4D;">문제 해결 (FAQ)</span></a>
+  </div>
+</section>
+
+<section class="demo-block" style="margin:0 0 38px;">
+  <h2 style="margin:0 0 6px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>주요 기능</h2>
+  <p style="margin:0 0 18px;font-size:15px;line-height:1.85;color:#6A6B6E;">자주 쓰는 동작을 모았습니다. 자세한 방법은 각 장을 참고하세요.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/swap.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">페이지 넘기기</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">화면 왼쪽이나 오른쪽을 눌러 페이지를 이동합니다. 만화를 위한 오른쪽에서 왼쪽 넘김도 지원합니다.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">두 쪽 보기</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">가로 화면에서 두 페이지를 나란히 표시합니다. 페이지 맞춤도 한 번 눌러 바로잡을 수 있습니다.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">여백 자동 자르기</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">페이지 여백을 자동으로 잘라 글자와 그림을 크게 보여 줍니다.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">손글씨 메모</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">펜 아이콘을 누르면 손글씨 모드로 바뀌어 페이지에 직접 쓸 수 있습니다.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/new_folder.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">폴더 만들기</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">책을 다른 책 위로 끌어다 놓으면 하나의 폴더로 묶입니다.</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">클라우드 동기화</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">Dropbox나 WebDAV(예: 가정용 NAS)를 연결하면 여러 기기에서 읽던 곳부터 이어 읽을 수 있습니다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s1" data-screen-label="01 Supported files &amp; devices" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">1</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">지원 파일과 기기</h2><img src="/assets/inkpress-manual/icons/book.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <ul style="margin:0 0 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">지원 형식</strong>: PDF / ZIP / CBZ / RAR / CBR / 이미지(JPG, PNG, WEBP, BMP, GIF)</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">지원 기기</strong>: Android 8.0 이상. BOOX/Onyx 같은 E-ink 기기에 최적화(일반 Android 기기에서도 동작).</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>암호화된 PDF는 <strong style="color:#46474A;font-weight:700;">비밀번호</strong>를 입력하면 열 수 있습니다.</li>
+  </ul>
+</section>
+
+<section id="s2" data-screen-label="02 Getting started" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">2</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">시작하기 (서재 설정)</h2><img src="/assets/inkpress-manual/icons/new_folder.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 8px;font-size:16px;line-height:1.95;color:#56575A;">처음 실행하면 <strong style="color:#46474A;font-weight:700;">시작 안내(4페이지)</strong> 가 나타납니다: (1) 서재 설정, (2) 읽기와 설정, (3) 책갈피와 메모, (4) 위젯. 나중에 「설정 → 도움말과 지원 → 시작 안내 다시 보기」에서 다시 볼 수 있습니다.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:4px 0 22px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_library.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 1</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">서재 설정</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_reading.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 2</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">읽기와 설정</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_notes.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 3</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">책갈피와 메모</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_widget.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 4</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">위젯</div></div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>서재 폴더 등록하기</h3>
+  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">1</span>빈 화면에서 「폴더 선택」을 누르거나 「설정 → 책장과 파일 → 책장 변경 / 책장 추가」로 이동합니다.</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">2</span>기기에서 책이 들어 있는 폴더를 선택합니다(여러 폴더를 등록할 수 있습니다).</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">3</span>등록하면 폴더 안의 책을 자동으로 읽어 들이고 표지 썸네일을 만듭니다.</li>
+  </ol>
+</section>
+
+<section id="s3" data-screen-label="03 Library" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">3</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">서재 사용하기</h2><img src="/assets/inkpress-manual/icons/sort.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <h3 style="margin:4px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>책 열기와 찾기</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>책을 누르면 열립니다. 폴더를 누르면 안으로 들어가며, 위쪽의 <strong style="color:#46474A;font-weight:700;">홈 / 뒤로</strong> 버튼이나 기기의 뒤로 키로 이동합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>화면 위쪽의 <strong style="color:#46474A;font-weight:700;">「최근 읽은 책」 카드</strong> 에서 가장 최근 책을 바로 이어 읽을 수 있습니다(× 를 누르면 숨김).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">아래로 당겨 새로 고침</strong> 하면 서재를 다시 읽어 들입니다(폴더에 변화가 없으면 빠르게 끝납니다).</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>정렬과 정리</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>위쪽의 <strong style="color:#46474A;font-weight:700;">정렬 아이콘</strong> 으로 이름(가-하 / 하-가), 날짜(최신순 / 오래된순), <strong style="color:#46474A;font-weight:700;">사용자 정렬(수동)</strong>중에서 고릅니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">드래그 앤 드롭</strong>: 책을 길게 눌러 끌면 순서를 바꿀 수 있습니다. 책을 다른 책 위에 놓으면 <strong style="color:#46474A;font-weight:700;">폴더가 만들어집니다</strong> (자동으로 사용자 정렬로 바뀝니다).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">여러 개 선택</strong>: 책을 길게 누르기 → 「여러 개 선택」으로 여러 권을 한꺼번에 처리합니다.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>책별 메뉴 (길게 누르기)</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">책을 길게 누르면 다음 동작을 고를 수 있습니다.</p>
+  <div style="display:flex;flex-wrap:wrap;gap:9px;">
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">읽기 설정 (레이아웃)</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">표지: 페이지 선택 / 자르기</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">이름 바꾸기</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">정보 (파일 상세)</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">기록에서 삭제</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">삭제</span>
+  </div>
+  <h3 id="s3-del" style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>삭제에 대해</h3>
+  <div style="background:#FFEFF3;border:1px solid #F8C9D6;border-radius:16px;padding:18px 20px;margin:0 0 14px;break-inside:avoid;border-left:5px solid #F08BA6;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#B23A5B;font-size:14px;margin-bottom:6px;">⚠ 주의</div>
+    <p style="margin:0 0 8px;font-size:14.5px;line-height:1.8;color:#7A4453;">기본 「삭제」는 <strong style="color:#993A53;font-weight:700;">서재에서 책을 숨길 뿐</strong>이며 파일 자체는 남아 있습니다. 숨긴 책은 「설정 → 책장과 파일 → 숨긴 책 복원」에서 되돌릴 수 있습니다.</p>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#7A4453;">파일 자체를 지우려면 <strong style="color:#993A53;font-weight:700;">「파일 자체도 삭제할 수 있게 하기」</strong> 를 「설정 → 책장과 파일」에서 켜세요(빨간 경고문이 표시되며, 서재의 루트 폴더는 삭제할 수 없습니다).</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>표지와 파일 이름 표시</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>표지 크기는 <strong style="color:#46474A;font-weight:700;">작게 / 보통 / 크게</strong> 중에서 고릅니다(설정 → 책장과 파일. 설정 홈 맨 위의 「즐겨찾기」에 넣으면 거기서도 바꿀 수 있습니다).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>썸네일 아래의 <strong style="color:#46474A;font-weight:700;">파일 이름과 확장자</strong> 표시는 각각 켜고 끌 수 있습니다.</li>
+  </ul>
+</section>
+
+<section id="s4" data-screen-label="04 Reading" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">4</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">읽기 (읽기 화면 조작)</h2><img src="/assets/inkpress-manual/icons/zoom.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 4px;font-size:16px;line-height:1.95;color:#56575A;">책을 처음 열면 읽기 방향에 맞는 <strong style="color:#46474A;font-weight:700;">조작 안내(터치 영역 그림)</strong> 가 한 번 표시됩니다.</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:16px 0 4px;break-inside:avoid;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;letter-spacing:.04em;margin-bottom:12px;">읽기 메뉴 바 (가운데를 누르면 표시)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/sleep.png" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">절전</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/list.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">목차</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/photo.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">표지로 설정</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">자동 자르기</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/tune.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">빠른 조정</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/settings.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">책 설정</span></div>
+    </div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>페이지 넘기기</h3>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;margin:0 0 14px;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14.5px;color:#46474A;margin-bottom:8px;">탭</div>
+    <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>가로(페이지 넘김) 모드 … 화면의 <strong style="color:#46474A;font-weight:700;">왼쪽 30%와 오른쪽 30%</strong> 는 페이지 넘김, <strong style="color:#46474A;font-weight:700;">가운데 40% = 메뉴</strong>입니다. <strong style="color:#46474A;font-weight:700;">만화 모드(오른쪽에서 왼쪽, 기본값)에서는 왼쪽 = 다음, 오른쪽 = 이전</strong>이고, 왼쪽에서 오른쪽 모드에서는 왼쪽 = 이전, 오른쪽 = 다음입니다.</li>
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>세로 스크롤 모드 … <strong style="color:#46474A;font-weight:700;">위쪽 25% = 이전</strong>, <strong style="color:#46474A;font-weight:700;">아래쪽 25% = 다음</strong>, <strong style="color:#46474A;font-weight:700;">가운데 50% = 메뉴</strong>.</li>
+    </ul>
+  </div>
+  <figure style="margin:0 0 14px;break-inside:avoid;">
+    <div style="display:flex;border:2px solid #E7DEC9;border-radius:14px;overflow:hidden;height:158px;">
+      <div style="flex:0 0 30%;background:#FFF3C9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">다음 페이지</span><span style="font-size:11px;color:#A0905F;">왼쪽 30%</span></div>
+      <div style="flex:0 0 40%;background:#F4F1E9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#5C5746;">메뉴</span><span style="font-size:11px;color:#A0905F;">가운데 40%</span></div>
+      <div style="flex:0 0 30%;background:#FFF8DD;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">이전 페이지</span><span style="font-size:11px;color:#A0905F;">오른쪽 30%</span></div>
+    </div>
+    <figcaption style="margin-top:9px;font-size:12.5px;color:#6A6B6E;line-height:1.65;">그림은 기본값인 <strong style="color:#46474A;font-weight:700;">만화(오른쪽에서 왼쪽) 모드</strong> 의 배치입니다. <strong style="color:#46474A;font-weight:700;">좌우 각 30%</strong> 는 페이지 넘김, <strong style="color:#46474A;font-weight:700;">가운데 40%는 메뉴</strong>입니다. <strong style="color:#46474A;font-weight:700;">왼쪽에서 오른쪽 모드에서는 반대로 왼쪽 = 이전, 오른쪽 = 다음</strong>이며, 세로 스크롤에서는 위쪽 25% = 이전, 아래쪽 25% = 다음, 가운데 50% = 메뉴입니다.</figcaption>
+  </figure>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">스와이프</strong>: 좌우로 밀어 페이지를 넘깁니다(세로 모드는 위아래). 설정 → 읽기 → 스와이프로 페이지 넘기기에서 끌 수 있고, 확대 중에는 화면 이동이 됩니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">페이지 넘김 애니메이션</strong> (설정 → 읽기)을 켜면 페이지가 손가락을 따라 움직입니다. E-ink 기기에서는 꺼 두세요(E-ink에서는 기본값이 끔).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">음량 버튼</strong>: 음량 아래 = 다음, 음량 위 = 이전. 설정에서 반대로 바꿀 수 있습니다.</li>
+  </ul>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:16px;padding:16px 20px;margin:16px 0;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7A6310;font-size:14px;margin-bottom:4px;">💡 팁</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5320;">전원 버튼과 음량 버튼만으로도 읽을 수 있어 E-ink 기기에서 매우 편리합니다.</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>확대와 표시</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">두 손가락으로 벌려</strong> 확대·축소(최대 4배)하고, <strong style="color:#46474A;font-weight:700;">두 번 누르면</strong> 전체 페이지 보기로 돌아갑니다(확대 초기화).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">자동 자르기</strong>: 여백을 찾아 자동으로 확대해 글자를 크게 보여 줍니다(읽기 화면의 메뉴 버튼에서).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">확대/위치 고정</strong>: 확대 배율과 위치를 고정해 모든 페이지를 같은 범위로 읽습니다(스캔 도서의 여백 자르기에 편리).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">빠른 조정</strong>: 결과를 미리 보면서 대비·채도·흑백을 바로 조정합니다.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>이동과 탐색</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">가운데를 누르면</strong> 위아래 메뉴 바가 나타납니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">목차(TOC)</strong>: PDF의 목차 탭과 <strong style="color:#46474A;font-weight:700;">썸네일 목록 탭</strong>에서 이동합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">페이지 번호로 이동</strong>: 번호를 입력하면 그 페이지로 갑니다.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>진행 상황 저장</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">앱을 전환하거나 화면이 꺼지면 읽은 위치가 자동 저장되어 다음에 이어 읽을 수 있습니다(「설정 → 읽기 → 시작할 때 마지막 책 열기」로 시작 시 자동으로 열 수도 있습니다).</p>
+</section>
+
+<section id="s5" data-screen-label="05 Layout settings" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">5</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">레이아웃 설정 (책별·폴더별)</h2><img src="/assets/inkpress-manual/icons/tune.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 12px;font-size:16px;line-height:1.95;color:#56575A;">읽기 화면 안의 <strong style="color:#46474A;font-weight:700;">「책 설정」</strong> 버튼이나, 서재에서 책/폴더를 길게 누르기 → 「읽기 설정 / 폴더 설정」으로 엽니다.</p>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">설정은 <strong style="color:#46474A;font-weight:700;">폴더 → 하위 폴더 → 책</strong> 순서로 이어집니다(우선순위: 책 &gt; 하위 폴더 &gt; 상위 폴더). 「폴더 기본값으로 / 폴더 전체에 적용」 버튼으로 한꺼번에 설정할 수 있습니다.</p>
+  <div style="margin:0 0 18px;padding:16px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">상위 폴더</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">›</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">하위 폴더</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">›</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">책</span></div>
+</div>
+    <div style="margin-top:14px;display:inline-block;background:#FFF3C9;border:1px solid #F0DC93;border-radius:10px;padding:9px 14px;font-size:12.5px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;line-height:1.5;">우선순위 책 &gt; 하위 폴더 &gt; 상위</div>
+  </div>
+  <div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-left-radius:10px;white-space:nowrap;">설정</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-right-radius:10px;">내용과 선택지</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">읽기 방향</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">오른쪽에서 왼쪽(만화, 기본값) / 왼쪽에서 오른쪽 / 세로 스크롤(웹툰)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">두 쪽 보기</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">켜기 / 끄기</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">두 쪽 맞춤 보정</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">홀수/짝수 페이지 짝을 한 번에 바꿉니다(예: 표지를 단독으로 표시할지)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">가로 화면에서 두 쪽 보기</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">기기를 가로로 돌리면 자동으로 두 쪽 보기로 바뀝니다(기본값 켜짐)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">한 페이지 밀기</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">두 쪽 보기를 한 페이지 앞이나 뒤로 옮깁니다</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">대비</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">슬라이더로 조정(흐린 글자를 또렷하게)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">채도</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">슬라이더(컬러 E-ink용)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">흑백 / 디더링</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">켜면 흑백으로 변환합니다(일반 E-ink에서 글자가 더 또렷해짐)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">배경색</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">기본값 / 흰색 / 검은색</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">페이지 그리기 방식</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">고화질 / 성능 우선</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">확대/위치 고정</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">켜기 / 끄기</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">초기화</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">책: 책 자체 설정을 지우고 상위 설정으로 / 폴더: 앱 기본값으로 되돌림</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="s6" data-screen-label="06 E-ink optimization" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">6</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">E-ink 최적화</h2><img src="/assets/inkpress-manual/icons/sleep.png" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.9;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">E-ink(전자 종이) 기기에서 편하게 읽기 위한 기능입니다.</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">전체 새로 고침(잔상 지우기)</strong>: BOOX/Onyx 기기에서는 GC16 하드 플래시로 잔상을 완전히 지웁니다(다른 기기에서는 소프트 플래시). 「설정 → 화면과 모양 → E-ink 새로 고침」에서 켜고 끄고, 다시 그리는 빈도를 고를 수 있습니다: <strong style="color:#46474A;font-weight:700;">자동 / 매 페이지 / 3페이지마다 / 5페이지마다</strong>.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">대비 조정과 디더링</strong>: 흐린 글자를 또렷하게 하고 이미지를 E-ink에 맞는 흑백으로 변환합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">페이지 그리기 방식</strong>: 고화질과 속도 중에서 고릅니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">절전(화면 끄기)</strong>: 읽기 화면 왼쪽 위의 <strong style="color:#46474A;font-weight:700;">달 아이콘</strong> 을 누르면 화면을 끕니다(기기 잠금). 전원 버튼을 누르기 어려운 E-ink 기기에서 편리합니다. 아이콘이 필요 없으면 설정 → 읽기 → 「절전(화면 끄기) 버튼 표시」에서 숨길 수 있습니다.</li>
+  </ul>
+  <div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 20px;margin:18px 0 0;break-inside:avoid;border-left:5px solid #C9B98D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7B6A45;font-size:14px;margin-bottom:5px;">🔒 개인정보에 대해</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5746;">절전 기능은 기기의 <strong style="color:#46474A;font-weight:700;">접근성 서비스</strong> 를 사용하며, <strong style="color:#46474A;font-weight:700;">직접 켰을 때만</strong>동작합니다. 화면 내용을 읽지 않으며 어떤 데이터도 수집하거나 전송하지 않습니다.</p>
+  </div>
+</section>
+
+<section id="s7" data-screen-label="07 Annotations, bookmarks &amp; notes" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">7</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">주석·책갈피·메모</h2><img src="/assets/inkpress-manual/icons/pen.svg" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">주석 도구는 4가지입니다: <strong style="color:#46474A;font-weight:700;">이동 / 펜(손글씨) / 지우개 / 올가미(범위 선택)</strong>.</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:0 0 16px;break-inside:avoid;">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/move.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">이동</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">펜</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/eraser.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">지우개</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/lasso.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">올가미</span></div>
+    </div>
+    <div style="border-top:1px solid #ECE3D0;margin-top:14px;padding-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:12.5px;color:#7A6310;">색깔 책갈피</span>
+      <div style="display:flex;gap:9px;"><span title="빨강" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#E53935;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="파랑" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#1E88E5;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="초록" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#43A047;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="노랑" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#FDD835;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="보라" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#8E24AA;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span></div>
+    </div>
+  </div>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">색깔 책갈피</strong>: 책갈피 영역을 누르기 → 빨강·파랑·초록·노랑·보라 5가지 색 중에서 고릅니다(두 쪽 보기에서는 왼쪽/오른쪽 페이지를 구분).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">텍스트 메모</strong>: 페이지의 원하는 위치에 메모를 남기고, 나중에 편집하거나 삭제합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">손글씨 주석(펜)</strong>: 자유롭게 그립니다. 펜 색(5가지)과 굵기는 옆쪽 도구 모음에서 조정합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">지우개와 올가미</strong>: 그린 것을 지우거나, 범위를 선택해 옮기거나 삭제합니다(크기 조정 가능).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">주석 목록(책 안)</strong>: 그 책의 책갈피·메모·손글씨를 모두 보여 주고 바로 이동합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">전체 주석 보기(책 전체)</strong>: 서재 위쪽의 주석 아이콘에서 <strong style="color:#46474A;font-weight:700;">모든 책</strong> 의 주석을 탭(전체 / 책갈피 / 메모 / 손글씨 / 기록)별로 개수와 함께 볼 수 있습니다. 폴더 이동 등으로 끊긴 연결은 「다시 연결」로 복구합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">내보내기 / 가져오기</strong>: 모든 주석·기록·표지를 JSON으로 내보내고 가져옵니다(기기 변경용. 「설정 → 데이터 백업」).</li>
+  </ul>
+</section>
+
+<section id="s8" data-screen-label="08 Folder lock" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">8</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">폴더 잠금 (PIN·지문)</h2><img src="/assets/inkpress-manual/icons/folder.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">다른 사람에게 보이고 싶지 않은 책을 <strong style="color:#46474A;font-weight:700;">폴더 단위로 숨길 수 있습니다</strong> (1.2.7에서 추가).</p>
+  <h3 style="margin:4px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>할 수 있는 일</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>서재의 폴더를 <strong style="color:#46474A;font-weight:700;">4~6자리 PIN</strong>으로 잠급니다. PIN 하나로 앱 전체를 관리합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>또한 <strong style="color:#46474A;font-weight:700;">지문이나 얼굴</strong> 로도 해제할 수 있습니다(PIN이 기본이므로 항상 먼저 설정합니다).</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>잠긴 폴더 안의 책은 <strong style="color:#46474A;font-weight:700;">위젯, 내 메모(전체 주석 보기), 읽기 기록에 절대 나타나지 않습니다</strong>.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>잠긴 폴더의 책을 읽는 동안에는 최근 앱 화면의 미리보기가 비어 있습니다.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>폴더 잠그기</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">서재에서 폴더를 길게 누르고 <strong style="color:#46474A;font-weight:700;">「폴더 잠금」</strong> 을 고릅니다. 처음에는 여기서 PIN을 설정합니다. 잠금을 풀려면 다시 길게 눌러 「잠금 해제」를 고릅니다.</p>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>잠긴 폴더의 모양</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">폴더마다 고를 수 있습니다.</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">자물쇠 아이콘 표시</strong> — 잠긴 폴더임을 한눈에 알 수 있습니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">일반 폴더처럼 보이기</strong> — 표지 없는 폴더로 책장에 놓여 있어 잠금을 아무도 눈치채지 못합니다.</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>다시 잠기는 시점</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">「설정 → 폴더 잠금」에서 설정합니다.</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">앱을 나간 뒤</strong> — 바로 / 1분 후 / 5분 후 / 15분 후</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">화면이 꺼지면 바로 다시 잠그기</strong> — 켜 두면 기다리지 않고 다시 잠깁니다.</li>
+  </ul>
+  <p style="margin:12px 0 0;font-size:15.5px;line-height:1.9;color:#56575A;">해제 중(열린 자물쇠)에는 다른 잠긴 폴더도 PIN 없이 열립니다.</p>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>PIN을 잊었을 때</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">「설정 → 폴더 잠금 → PIN을 잊었어요(초기화)」로 모든 폴더의 잠금을 해제합니다. <strong style="color:#46474A;font-weight:700;">책과 메모는 하나도 삭제되지 않습니다.</strong> 숨겨졌던 책이 다시 보일 뿐입니다.</p>
+  <div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 20px;margin:18px 0 0;break-inside:avoid;border-left:5px solid #C9B98D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7B6A45;font-size:14px;margin-bottom:5px;">🔒 금고가 아니라 커튼</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5746;">파일 자체는 암호화되지 않습니다. 기기를 컴퓨터에 연결하거나 다른 파일 앱으로 열면 내용을 볼 수 있습니다. <strong style="color:#46474A;font-weight:700;">금고라기보다는 커튼</strong> 이라고 생각해 주세요 — 옆에서 슬쩍 보는 것을 막기 위한 기능입니다.</p>
+  </div>
+</section>
+
+<section id="s9" data-screen-label="09 Cloud sync" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">9</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">클라우드 동기화 (Dropbox·홈 서버)</h2><img src="/assets/inkpress-manual/icons/cloud.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">여러 기기(예: 휴대폰과 E-ink 기기)에서 읽기 상태를 이어 갑니다.</p>
+  <div style="margin:0 0 18px;padding:18px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">휴대폰</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:14px 22px;min-width:110px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:28px;height:28px;"><span style="font-size:13px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Dropbox / NAS</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">E-ink 기기</span></div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px;"><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">읽은 위치 = 더 멀리 읽은 쪽 우선</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">주석과 기록 = 병합</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">레이아웃 = 최신 쪽 우선</span></div>
+  </div>
+  <h3 style="margin:18px 0 10px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>연결 방법</h3>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">「설정 → 클라우드와 동기화 → <strong style="color:#46474A;font-weight:700;">Dropbox 연결</strong>」로 이동합니다. 집의 NAS나 Nextcloud는 「<strong style="color:#46474A;font-weight:700;">홈 서버 / NAS 연결</strong>」(WebDAV)에서 서버 URL, 사용자 이름, 비밀번호를 입력합니다(서버에서 발급한 「앱 비밀번호」를 권장하며, 가정용 NAS를 위한 자체 서명 인증서 허용 옵션도 있습니다). 연결하면 아래의 <strong style="color:#46474A;font-weight:700;">읽은 위치와 주석</strong> 스위치를 쓸 수 있게 됩니다(연결 전에는 회색으로 비활성).</p>
+  <h3 style="margin:0 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>동기화되는 항목</h3>
+  <div style="overflow-x:auto;margin:0 0 16px;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;white-space:nowrap;">항목</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;">방식</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">읽은 위치</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">가장 멀리 읽은 위치가 우선합니다(앞으로 돌아가도 뒤로 되돌아가지 않습니다). 다른 기기에서 책을 열면 「다른 곳에서 더 읽었습니다」라는 확인 창이 떠서 그 위치로 이동할 수 있습니다(Kindle 방식).</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">레이아웃 설정</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">더 최근 설정이 조용히 적용됩니다(두 쪽 보기, 읽기 방향, 확대 고정 등).</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">주석</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">책갈피·메모·손글씨를 각각 대조해 병합합니다. 삭제도 다른 기기에 반영됩니다.</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">읽기 기록</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">병합됩니다(다른 기기에서 읽은 책도 「최근 읽은 책」에 표시).</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <ul style="margin:0 0 16px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>책은 <strong style="color:#46474A;font-weight:700;">파일 내용</strong>으로 식별하므로, 기기마다 저장 위치가 달라도 같은 책으로 취급합니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">클라우드에서 가져오기</strong>: Dropbox나 WebDAV의 파일을 골라 저장할 서재 폴더를 지정해 다운로드합니다. 클라우드 폴더 자체를 책장으로 등록할 수도 있습니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">스트리밍</strong>: 만화(CBZ)는 파일 전체를 받지 않고 연 페이지부터 바로 시작합니다(아래 「클라우드 책을 여는 방식」 참고). PDF·RAR 등 나머지는 먼저 기기에 다운로드합니다. 중단된 다운로드는 이어서 받습니다.</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>계정은 목록에서 확인하고 연결을 해제할 수도 있습니다(인증 정보는 암호화해 저장).</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>클라우드 책을 여는 방식</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.9;color:#56575A;">「설정 → 클라우드와 동기화 → 클라우드에서 여는 방식」에서 고릅니다(만화, 즉 CBZ 파일에 적용).</p>
+  <div style="overflow-x:auto;margin:0 0 14px;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;white-space:nowrap;">선택지</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;">동작</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">자동</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">연결 상태와 파일 크기를 보고 앱이 결정합니다(기본값).</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">스트리밍</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">파일 전체 대신 필요한 페이지만 불러와 바로 읽기 시작할 수 있습니다.</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">다운로드</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">먼저 파일 전체를 저장한 뒤 엽니다. 오프라인에서도 읽을 수 있습니다.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin:0 0 16px;font-size:15.5px;line-height:1.9;color:#56575A;">1.2.7부터는 <strong style="color:#46474A;font-weight:700;">홈 서버 / NAS의 만화도 스트리밍할 수 있습니다</strong>. 읽는 도중 연결이 끊기면 다운로드로 바꿀지 물어봅니다.</p>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:14px;padding:14px 18px;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <p style="margin:0 0 8px;font-size:14.5px;line-height:1.75;color:#5C5320;"><strong style="color:#46474A;font-weight:700;">읽은 위치와 주석은 Dropbox로만 동기화됩니다.</strong> 홈 서버 / NAS는 책장으로 쓸 수 있지만 동기화 대상은 아닙니다.</p>
+    <p style="margin:0;font-size:14.5px;line-height:1.75;color:#5C5320;">모바일 데이터에서는 데이터 절약을 위해 표지를 자동으로 만들지 않습니다.</p>
+  </div>
+</section>
+
+<section id="s10" data-screen-label="10 Widget" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">10</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">홈 화면 위젯</h2><img src="/assets/inkpress-manual/icons/home.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 16px;font-size:16px;line-height:1.95;color:#56575A;">홈 화면에 두면 앱을 열지 않고도 책에 바로 갈 수 있습니다(4종류).</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0 0 18px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">이어 읽기</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">한 번 눌러 가장 최근 책으로 돌아갑니다.</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/history.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">읽기 기록</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">최근 읽은 책 목록입니다.</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/bookmark.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">책갈피</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">책갈피 목록에서 해당 페이지로 이동합니다.</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/home.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">통합 위젯</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">위의 내용을 한데 모아 표시합니다.</p></div>
+  </div>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">「설정 → 위젯」이나 배치할 때의 설정 화면에서 <strong style="color:#46474A;font-weight:700;">위젯의 모양</strong> 을 조정할 수 있습니다: <strong style="color:#46474A;font-weight:700;">배경 투명 켜기/끄기, 불투명도(0~100%), 글자 크기(70~180%)</strong>. E-ink에서도 보기 쉬운 디자인입니다.</p>
+</section>
+
+<section id="s11" data-screen-label="11 Settings" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">11</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">설정</h2><img src="/assets/inkpress-manual/icons/settings.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 12px;font-size:16px;line-height:1.95;color:#56575A;">서재 오른쪽 위의 톱니바퀴 아이콘에서 엽니다. <strong style="color:#46474A;font-weight:700;">설정 홈</strong> 에는 8개 항목이 있고, 각 줄에 <strong style="color:#46474A;font-weight:700;">현재 값</strong> (책장 위치, 화면 새로 고침 빈도 등)이 표시되어 들어가지 않고도 확인할 수 있습니다.</p>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">맨 위의 <strong style="color:#46474A;font-weight:700;">「즐겨찾기」</strong> 에는 <strong style="color:#46474A;font-weight:700;">최대 3개</strong> 의 원하는 설정을 둘 수 있습니다. 누르면 해당 화면으로 들어가지 않고 그 자리에서 값을 고를 수 있습니다. 처음에는 <strong style="color:#46474A;font-weight:700;">표지 크기, 새로 고침 간격, 앱 테마</strong>가 들어 있습니다. <strong style="color:#46474A;font-weight:700;">오른쪽 끝의 「편집」</strong> 으로 후보(표지 크기, 새로 고침 간격, 앱 테마, 읽기 배경, 페이지 그리기 방식, 책장 표시 방식, E-ink 새로 고침, 스와이프 넘기기, 애니메이션, 마지막 책 이어 읽기, 파일 이름 표시, 절전 버튼) 중에서 바꿀 수 있습니다. 네 번째를 고르면 「즐겨찾기는 최대 3개」라고 안내합니다. 즐겨찾기를 길게 누르면 원래 화면이 열립니다.</p>
+  <div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-left-radius:10px;white-space:nowrap;">항목</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-right-radius:10px;">내용</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">책장과 파일</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">서재 폴더 변경·추가, 책장 표시 방식(그리드 / 목록), 표지 크기(작게 / 보통 / 크게), 파일 이름과 확장자 표시, 「파일 자체도 삭제할 수 있게 하기」, 숨긴 책 복원</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">폴더 잠금</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">PIN 설정·변경, 지문 / 얼굴로 해제, 다시 잠기는 시점, PIN 초기화(→ 8장)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">읽기</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">시작할 때 마지막 책 열기, 스와이프로 페이지 넘기기, 페이지 넘김 애니메이션, 음량 버튼 방향 반전, 기본으로 두 쪽 보기, 가로 화면에서 두 쪽 보기, 절전(화면 끄기) 버튼 표시</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">화면과 모양</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">앱 테마(라이트 / 다크 / 시스템), 읽기 배경색(흰색 / 검은색), 페이지 그리기 방식(고화질 / 성능 우선), E-ink 새로 고침과 다시 그리는 빈도(→ 6장)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">클라우드와 동기화</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">Dropbox나 홈 서버 / NAS 연결, 읽은 위치 동기화, 책갈피·메모·손글씨 동기화, 클라우드에서 여는 방식(→ 9장)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">위젯</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">배경 투명, 불투명도, 글자 크기를 실시간 미리보기로 조정(→ 10장)</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">데이터 백업</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">누르면 「파일로 내보내기」와 「파일에서 가져오기」 두 가지를 고를 수 있습니다. 메모·책갈피·표지 설정이 대상이며 책 자체는 포함되지 않습니다</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">도움말과 지원</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">설명서 열기, 시작 안내 다시 보기, Ko-fi에서 개발 응원하기, 버전 표시</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin:16px 0 0;font-size:15.5px;line-height:1.9;color:#56575A;">설명이 더 필요한 항목에는 제목 옆에 <strong style="color:#46474A;font-weight:700;">「?」</strong> (「이게 뭔가요?」)가 붙어 있습니다. 누를 때만 설명이 나타나므로 평소에는 목록을 깔끔하게 볼 수 있습니다.</p>
+</section>
+
+<section id="s12" data-screen-label="12 FAQ" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">12</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">문제 해결 (FAQ)</h2><img src="/assets/inkpress-manual/icons/info.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">책이 표시되지 않아요</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">「설정 → 책장과 파일」에 서재 폴더가 등록되어 있는지 확인하고, 서재를 아래로 당겨 새로 고치세요. 지원하지 않는 형식은 표시되지 않습니다(→ 1장).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">삭제해도 파일이 남아요 / 지우고 싶지 않아요</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">기본 삭제는 서재에서 숨기기만 합니다. 완전히 지우려면 「파일 자체도 삭제할 수 있게 하기」를 켜세요(→ 3장). 숨긴 책은 「설정 → 책장과 파일 → 숨긴 책 복원」에서 되돌릴 수 있습니다.</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">다른 기기에서 이어 읽을 수 없어요</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">두 기기를 같은 Dropbox 계정에 연결하고 「읽은 위치 동기화」를 켜세요(→ 9장).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">화면에 잔상이 남아요</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">「E-ink 새로 고침」을 자동이나 짧은 간격으로 설정하세요(→ 6장).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">화면을 끌 수 없어요 (E-ink 기기)</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">읽기 화면 왼쪽 위의 달 아이콘으로 절전하세요. 처음에는 접근성을 켜야 합니다. 아이콘이 없으면 설정 → 읽기 → 「절전(화면 끄기) 버튼 표시」가 꺼져 있지 않은지 확인하세요(→ 6장).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">폴더 PIN을 잊었어요</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">「설정 → 폴더 잠금 → PIN을 잊었어요(초기화)」로 모든 폴더의 잠금을 해제합니다. 책과 메모는 삭제되지 않습니다(→ 8장).</p></div>
+    </div>
+<div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">책이 계속 불러오는 중이에요</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">한동안 불러오기가 끝나지 않으면 InkPress가 계속 기다릴지 서재로 돌아갈지 묻습니다. 「서재로 돌아가기」를 골라 다시 열고, 클라우드 책이라면 연결 상태도 확인하세요(→ 9장).</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">글자가 흐려서 읽기 어려워요</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">책 설정에서 대비를 높이고, 흑백(디더링)을 켜고, 자동 자르기로 크게 보세요(→ 4장·5장).</p></div>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:34px 20px 6px;margin-top:4px;border-top:1px solid #ECE3D0;">
+  <img src="/assets/inkpress-manual/icons/coffee.svg" alt="" style="width:30px;height:30px;display:block;margin:0 auto 12px;opacity:.7;">
+  <p style="margin:0 auto;max-width:520px;font-size:15px;line-height:1.9;color:#56575A;">개발을 응원해 주신다면 앱의 <strong style="color:#46474A;font-weight:700;">「설정 → 도움말과 지원 → Ko-fi에서 개발 응원하기」</strong> 에서 부탁드립니다. 늘 감사합니다.</p>
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:12.5px;color:#A89B7E;margin-top:16px;letter-spacing:.04em;">InkPress v1.2.9 ・ E-ink PDF / Comic Viewer</div>
+</footer>
+
+</td></tr></tbody>
+<tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+</table>
+</main>
+</body>
+</html>

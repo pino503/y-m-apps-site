@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FAF5EB; }
+  .doc { box-sizing: border-box; max-width: 8.6in; margin: 0 auto; background: inherit;
+         padding: 44px clamp(20px, 5vw, 0.72in) 90px;
+         font-family: 'Zen Kaku Gothic New', sans-serif; color: #56575A;
+         -webkit-font-smoothing: antialiased; }
+  .doc-frame { width: 100%; border-collapse: collapse; }
+  .doc-frame td { padding: 0; }
+  .running-hdr, .running-ftr, .hdr-space, .ftr-space { display: none; }
+  h1, h2, h3 { text-wrap: balance; }
+  p, li { text-wrap: pretty; }
+  .doc a.toc-link { transition: border-color .15s, background .15s, transform .15s; }
+  .hide-demo .demo-block { display: none !important; }
+  .hide-toc .toc-block { display: none !important; }
+  ::selection { background: #FFE89A; }
+  @page { size: letter; margin: 0; }
+  @media print {
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; scroll-behavior: auto; }
+    html, body { margin: 0; padding: 0; }
+    .doc { max-width: none !important; margin: 0 !important; padding: 0 0.7in !important;
+           box-shadow: none !important; border: none !important; }
+    #dc-root, .sc-host { height: auto !important; }
+    .hdr-space, .ftr-space { display: table-cell; height: 0.6in !important; }
+    h1, h2, h3, h4 { break-after: avoid; }
+    figure, blockquote, img, tr, table { break-inside: avoid; }
+    p, li { orphans: 3; widows: 3; }
+    .screen-only { display: none !important; }
+  }
+</style>
+
+<title>InkPress 使用說明書</title>
+<style>.doc a.toc-link:hover{border-color:#FFD84D;background:#FFFBEF;transform:translateY(-1px)}</style>
+<style id="manual-wrap">.doc-frame{table-layout:fixed}.doc td,.doc th,.doc a,.doc span,.doc p,.doc li,.doc h1,.doc h2,.doc h3,.doc div{overflow-wrap:anywhere;hyphens:auto}</style>
+</head>
+<body>
+
+
+<main class="doc">
+<table class="doc-frame" role="presentation">
+<thead><tr><td class="hdr-space"></td></tr></thead>
+<tbody><tr><td>
+
+<nav class="manual-langs" aria-label="Language" style="text-align:right;margin:0 0 10px;"><a href="/works/inkpress/manual" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">日本語</a><a href="/works/inkpress/manual/en" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">English</a><a href="/works/inkpress/manual/de" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Deutsch</a><a href="/works/inkpress/manual/fr" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Français</a><a href="/works/inkpress/manual/es" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Español</a><a href="/works/inkpress/manual/pt" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Português</a><a href="/works/inkpress/manual/it" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Italiano</a><a href="/works/inkpress/manual/ko" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">한국어</a><span aria-current="true" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#FFFFFF;background:#A0905F;">繁體中文</span><a href="/works/inkpress/manual/zh-cn" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">简体中文</a><a href="/works/inkpress/manual/ru" style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;text-decoration:none;border:1px solid #EFE6D3;border-radius:999px;padding:5px 12px;display:inline-block;margin:0 0 6px 6px;color:#A0905F;background:#FFFFFF;">Русский</a></nav>
+<header style="text-align:center;padding:22px 14px 34px;border-bottom:1px solid #ECE3D0;margin-bottom:30px;">
+  <img src="/assets/apps/inkpress-icon.png" alt="InkPress" style="width:90px;height:90px;border-radius:21px;display:block;margin:0 auto 16px;box-shadow:0 5px 16px rgba(140,115,60,.18);">
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:500;font-size:14px;color:#A0905F;letter-spacing:.14em;margin-bottom:14px;">E-INK PDF / COMIC VIEWER</div>
+  <h1 style="margin:0 0 8px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:clamp(34px,6vw,54px);color:#3F4042;letter-spacing:.02em;line-height:1.16;">InkPress 使用說明書</h1>
+  <p style="max-width:580px;margin:18px auto 22px;font-size:16px;line-height:2;color:#56575A;">為 BOOX 等 E-ink（電子紙）裝置最佳化的 PDF、漫畫與掃描書 <strong style="color:#46474A;font-weight:700;">安靜閱讀器</strong> 。它能抑制殘影與閃爍，讓你像讀紙本一樣平靜地閱讀。</p>
+  <div style="display:inline-flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">版本 1.2.9</span>
+    <span style="background:#FFF3C9;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;padding:6px 15px;border-radius:999px;border:1px solid #F0DC93;">需要 Android 8.0 以上</span>
+  </div>
+</header>
+
+<div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 22px;margin:0 0 32px;border-left:5px solid #FFD84D;">
+  <p style="margin:0;font-size:15.5px;line-height:1.85;color:#5C5746;">本說明書涵蓋所有功能。請從 <strong style="color:#46474A;font-weight:700;">目錄</strong> 直接跳到需要的主題。</p>
+</div>
+
+<section class="toc-block" style="margin:0 0 36px;">
+  <h2 style="margin:0 0 16px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>目錄</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;">
+    <a class="toc-link" href="#s1" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">01</span><span style="font-size:14.5px;color:#4A4B4D;">支援的檔案與裝置</span></a>
+    <a class="toc-link" href="#s2" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">02</span><span style="font-size:14.5px;color:#4A4B4D;">開始使用（設定書庫）</span></a>
+    <a class="toc-link" href="#s3" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">03</span><span style="font-size:14.5px;color:#4A4B4D;">使用書庫</span></a>
+    <a class="toc-link" href="#s4" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">04</span><span style="font-size:14.5px;color:#4A4B4D;">閱讀（閱讀畫面操作）</span></a>
+    <a class="toc-link" href="#s5" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">05</span><span style="font-size:14.5px;color:#4A4B4D;">版面設定</span></a>
+    <a class="toc-link" href="#s6" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">06</span><span style="font-size:14.5px;color:#4A4B4D;">E-ink 最佳化</span></a>
+    <a class="toc-link" href="#s7" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">07</span><span style="font-size:14.5px;color:#4A4B4D;">註記、書籤與筆記</span></a>
+    <a class="toc-link" href="#s8" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">08</span><span style="font-size:14.5px;color:#4A4B4D;">資料夾鎖定（PIN 與指紋）</span></a>
+    <a class="toc-link" href="#s9" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">09</span><span style="font-size:14.5px;color:#4A4B4D;">雲端同步（Dropbox 與家用伺服器）</span></a>
+    <a class="toc-link" href="#s10" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">10</span><span style="font-size:14.5px;color:#4A4B4D;">主畫面小工具</span></a>
+    <a class="toc-link" href="#s11" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">11</span><span style="font-size:14.5px;color:#4A4B4D;">設定</span></a>
+    <a class="toc-link" href="#s12" style="display:flex;align-items:center;gap:12px;text-decoration:none;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:11px 15px;"><span style="flex:none;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#D9B41E;font-size:15px;min-width:22px;">12</span><span style="font-size:14.5px;color:#4A4B4D;">疑難排解（FAQ）</span></a>
+  </div>
+</section>
+
+<section class="demo-block" style="margin:0 0 38px;">
+  <h2 style="margin:0 0 6px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:22px;color:#46474A;display:flex;align-items:center;gap:10px;"><span style="width:9px;height:24px;border-radius:4px;background:#FFD84D;display:inline-block;"></span>主要功能</h2>
+  <p style="margin:0 0 18px;font-size:15px;line-height:1.85;color:#6A6B6E;">這裡整理了最常用的操作。詳細步驟請見各章。</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/swap.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">翻頁</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">點畫面左右兩側即可翻頁。也支援漫畫用的由右至左翻頁。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">雙頁顯示</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">橫向時並排顯示兩頁。頁面對齊也能一點就修正。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">自動裁切邊界</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">自動裁掉頁面邊界，讓文字與插圖顯示得更大。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">手寫筆記</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">點筆圖示進入手寫模式，即可直接在頁面上書寫。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/new_folder.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">建立資料夾</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">把一本書拖到另一本書上，就能整理成一個資料夾。</p>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:16px;padding:18px 20px;border-top:4px solid #FFD84D;box-shadow:0 2px 12px rgba(140,115,60,.05);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:22px;height:22px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:16px;color:#46474A;">雲端同步</span></div>
+      <p style="margin:0;font-size:13.5px;line-height:1.75;color:#6A6B6E;">連線 Dropbox 或 WebDAV（例如家用 NAS），就能在多台裝置上接續閱讀。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s1" data-screen-label="01 Supported files &amp; devices" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">1</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">支援的檔案與裝置</h2><img src="/assets/inkpress-manual/icons/book.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <ul style="margin:0 0 4px;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">支援格式</strong>：PDF / ZIP / CBZ / RAR / CBR / 圖片（JPG、PNG、WEBP、BMP、GIF）</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">支援裝置</strong>：Android 8.0 以上。針對 BOOX/Onyx 等 E-ink 裝置最佳化（一般 Android 裝置也能使用）。</li>
+    <li style="position:relative;padding-left:24px;font-size:16px;line-height:1.85;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>加密的 PDF 只要輸入 <strong style="color:#46474A;font-weight:700;">密碼</strong>即可開啟。</li>
+  </ul>
+</section>
+
+<section id="s2" data-screen-label="02 Getting started" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">2</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">開始使用（設定書庫）</h2><img src="/assets/inkpress-manual/icons/new_folder.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 8px;font-size:16px;line-height:1.95;color:#56575A;">第一次啟動時會出現 <strong style="color:#46474A;font-weight:700;">入門導覽（4 頁）</strong> ：(1) 設定書庫、(2) 閱讀與設定、(3) 書籤與筆記、(4) 小工具。之後可從「設定 → 說明與支援 → 再看一次入門導覽」重新觀看。</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:4px 0 22px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_library.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 1</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">設定書庫</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_reading.svg" alt="" style="height:52px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 2</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">閱讀與設定</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_notes.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 3</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">書籤與筆記</div></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:14px;text-align:center;break-inside:avoid;"><div style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:10px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><img src="/assets/inkpress-manual/icons/onboard_widget.svg" alt="" style="height:56px;width:auto;"></div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:11px;color:#D9B41E;letter-spacing:.06em;margin-bottom:2px;">STEP 4</div><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;color:#46474A;">小工具</div></div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>登錄書庫資料夾</h3>
+  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">1</span>在空白畫面點「選擇資料夾」，或前往「設定 → 書架與檔案 → 變更書架 / 新增書架」。</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">2</span>選擇裝置中放著書的資料夾（可登錄多個資料夾）。</li>
+    <li style="position:relative;padding-left:40px;font-size:16px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:0;width:27px;height:27px;border-radius:50%;background:#FFF3C9;border:1px solid #F0DC93;color:#7A6310;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;">3</span>登錄後會自動讀取資料夾中的書，並產生封面縮圖。</li>
+  </ol>
+</section>
+
+<section id="s3" data-screen-label="03 Library" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">3</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">使用書庫</h2><img src="/assets/inkpress-manual/icons/sort.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <h3 style="margin:4px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>開啟與尋找書籍</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>點書即可開啟。點資料夾會進入其中，並可用上方的 <strong style="color:#46474A;font-weight:700;">首頁 / 返回</strong> 按鈕或裝置的返回鍵移動。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>從畫面上方的 <strong style="color:#46474A;font-weight:700;">「最近讀過」卡片</strong> 可立即接續最近的書（點 × 可隱藏）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">下拉重新整理</strong> 即可重新讀取書庫（資料夾沒有變更時會很快完成）。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>排序與整理</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>用上方的 <strong style="color:#46474A;font-weight:700;">排序圖示</strong> 選擇名稱（A-Z / Z-A）、日期（由新到舊 / 由舊到新）或 <strong style="color:#46474A;font-weight:700;">自訂（手動）</strong>排序。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">拖放</strong>：長按書並拖曳即可調整順序。把書放到另一本書上就會 <strong style="color:#46474A;font-weight:700;">建立資料夾</strong> （會自動切換為自訂排序）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">多選</strong>：長按書 → 「多選」即可一次處理多本。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>書的選單（長按）</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">長按書可使用以下操作。</p>
+  <div style="display:flex;flex-wrap:wrap;gap:9px;">
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">閱讀設定（版面）</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">封面：選擇頁面 / 裁切</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">重新命名</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">資訊（檔案詳細資料）</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">從紀錄移除</span>
+    <span style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:10px;padding:8px 14px;font-size:14px;color:#5C5746;">刪除</span>
+  </div>
+  <h3 id="s3-del" style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>關於刪除</h3>
+  <div style="background:#FFEFF3;border:1px solid #F8C9D6;border-radius:16px;padding:18px 20px;margin:0 0 14px;break-inside:avoid;border-left:5px solid #F08BA6;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#B23A5B;font-size:14px;margin-bottom:6px;">⚠ 注意</div>
+    <p style="margin:0 0 8px;font-size:14.5px;line-height:1.8;color:#7A4453;">預設的「刪除」只會 <strong style="color:#993A53;font-weight:700;">從書庫隱藏這本書</strong>，檔案本身仍會保留。隱藏的書可從「設定 → 書架與檔案 → 還原隱藏的書」還原。</p>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#7A4453;">若要刪除檔案本身，請在「設定 → 書架與檔案」開啟 <strong style="color:#993A53;font-weight:700;">「允許刪除檔案本身」</strong> （會以紅字顯示警告；書庫的根資料夾無法刪除）。</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>封面與檔名顯示</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>封面大小可選 <strong style="color:#46474A;font-weight:700;">小 / 中 / 大</strong> （設定 → 書架與檔案；放進設定首頁最上方的「常用」後，也能在那裡變更）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>縮圖下方的 <strong style="color:#46474A;font-weight:700;">檔名與副檔名</strong> 顯示可分別開關。</li>
+  </ul>
+</section>
+
+<section id="s4" data-screen-label="04 Reading" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">4</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">閱讀（閱讀畫面操作）</h2><img src="/assets/inkpress-manual/icons/zoom.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 4px;font-size:16px;line-height:1.95;color:#56575A;">第一次開啟書時，會依閱讀方向顯示一次 <strong style="color:#46474A;font-weight:700;">操作說明（點按區域示意圖）</strong> 。</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:16px 0 4px;break-inside:avoid;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;letter-spacing:.04em;margin-bottom:12px;">閱讀選單列（點中央顯示）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/sleep.png" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">休眠</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/list.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">目錄</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/photo.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">設為封面</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/crop.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">自動裁切</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/tune.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">快速調整</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/settings.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;line-height:1.3;">書的設定</span></div>
+    </div>
+  </div>
+  <h3 style="margin:22px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>翻頁</h3>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;margin:0 0 14px;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:14.5px;color:#46474A;margin-bottom:8px;">點按</div>
+    <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>橫向（翻頁）模式 … 畫面的 <strong style="color:#46474A;font-weight:700;">左側 30% 與右側 30%</strong> 用來翻頁， <strong style="color:#46474A;font-weight:700;">中央 40% = 選單</strong>。在 <strong style="color:#46474A;font-weight:700;">漫畫模式（由右至左，預設）下，左 = 下一頁、右 = 上一頁</strong>；由左至右模式則是左 = 上一頁、右 = 下一頁。</li>
+      <li style="position:relative;padding-left:22px;font-size:14.5px;line-height:1.75;color:#56575A;"><span style="position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:#FFD84D;"></span>直向捲動模式 … <strong style="color:#46474A;font-weight:700;">上方 25% = 上一頁</strong>、 <strong style="color:#46474A;font-weight:700;">下方 25% = 下一頁</strong>、 <strong style="color:#46474A;font-weight:700;">中央 50% = 選單</strong>。</li>
+    </ul>
+  </div>
+  <figure style="margin:0 0 14px;break-inside:avoid;">
+    <div style="display:flex;border:2px solid #E7DEC9;border-radius:14px;overflow:hidden;height:158px;">
+      <div style="flex:0 0 30%;background:#FFF3C9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">下一頁</span><span style="font-size:11px;color:#A0905F;">左側 30%</span></div>
+      <div style="flex:0 0 40%;background:#F4F1E9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-right:2px dashed #E0D3B0;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#5C5746;">選單</span><span style="font-size:11px;color:#A0905F;">中央 40%</span></div>
+      <div style="flex:0 0 30%;background:#FFF8DD;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;color:#7A6310;">上一頁</span><span style="font-size:11px;color:#A0905F;">右側 30%</span></div>
+    </div>
+    <figcaption style="margin-top:9px;font-size:12.5px;color:#6A6B6E;line-height:1.65;">示意圖為預設的 <strong style="color:#46474A;font-weight:700;">漫畫（由右至左）模式</strong> 配置。 <strong style="color:#46474A;font-weight:700;">左右各 30%</strong> 用來翻頁， <strong style="color:#46474A;font-weight:700;">中央 40% 是選單</strong>。 <strong style="color:#46474A;font-weight:700;">由左至右模式則相反：左 = 上一頁、右 = 下一頁</strong>；直向捲動時，上方 25% = 上一頁、下方 25% = 下一頁、中央 50% = 選單。</figcaption>
+  </figure>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">滑動</strong>：左右滑動即可翻頁（直向模式為上下）。可在設定 → 閱讀 → 滑動翻頁關閉；放大時滑動會改為移動畫面。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">翻頁動畫</strong> （設定 → 閱讀）會讓頁面跟著手指移動。E-ink 裝置上請保持關閉（E-ink 上預設為關閉）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">音量鍵</strong>：音量下 = 下一頁，音量上 = 上一頁。可在設定中反轉。</li>
+  </ul>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:16px;padding:16px 20px;margin:16px 0;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7A6310;font-size:14px;margin-bottom:4px;">💡 提示</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5320;">只用電源鍵和音量鍵也能閱讀，在 E-ink 裝置上非常方便。</p>
+  </div>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>縮放與顯示</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">用兩指縮放</strong> 可放大縮小（最多 4 倍）， <strong style="color:#46474A;font-weight:700;">點兩下</strong> 即可回到整頁顯示（重設縮放）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">自動裁切</strong>：偵測邊界並自動放大，讓文字顯示得更大（從閱讀畫面的選單按鈕）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">鎖定縮放/位置</strong>：固定縮放倍率與位置，讓每一頁都以相同範圍閱讀（適合裁切掃描書的邊界）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">快速調整</strong>：一邊預覽效果，一邊當場調整對比、飽和度與黑白。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>移動與導覽</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">點中央</strong> 會顯示上下方的選單列。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">目錄（TOC）</strong>：可從 PDF 的目錄分頁與 <strong style="color:#46474A;font-weight:700;">縮圖清單分頁</strong>跳轉。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">跳至頁碼</strong>：輸入數字即可前往該頁。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>儲存進度</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">切換應用程式或螢幕關閉時，閱讀位置會自動儲存，下次可從原處接續（也可透過「設定 → 閱讀 → 啟動時開啟上次的書」在啟動時自動開啟）。</p>
+</section>
+
+<section id="s5" data-screen-label="05 Layout settings" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">5</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">版面設定（每本書、每個資料夾）</h2><img src="/assets/inkpress-manual/icons/tune.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 12px;font-size:16px;line-height:1.95;color:#56575A;">可從閱讀畫面中的 <strong style="color:#46474A;font-weight:700;">「書的設定」</strong> 按鈕，或在書庫長按書/資料夾 → 「閱讀設定 / 資料夾設定」開啟。</p>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">設定會依 <strong style="color:#46474A;font-weight:700;">資料夾 → 子資料夾 → 書</strong> 的順序繼承（優先順序：書 &gt; 子資料夾 &gt; 上層資料夾）。可用「設為資料夾預設 / 套用到整個資料夾」按鈕一次設定。</p>
+  <div style="margin:0 0 18px;padding:16px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">上層資料夾</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">›</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/folder.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">子資料夾</span></div>
+    <div style="font-size:24px;color:#D9B41E;line-height:1;">›</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:12px 14px;min-width:88px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">書</span></div>
+</div>
+    <div style="margin-top:14px;display:inline-block;background:#FFF3C9;border:1px solid #F0DC93;border-radius:10px;padding:9px 14px;font-size:12.5px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;line-height:1.5;">優先順序 書 &gt; 子資料夾 &gt; 上層</div>
+  </div>
+  <div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-left-radius:10px;white-space:nowrap;">設定項目</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-right-radius:10px;">內容與選項</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">閱讀方向</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">由右至左（漫畫，預設）/ 由左至右 / 直向捲動（條漫）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">雙頁顯示</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">開 / 關</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">雙頁對齊修正</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">一點即可切換奇偶頁的配對（例如封面是否單獨顯示）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">橫向時自動雙頁</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">把裝置轉成橫向時自動切換為雙頁（預設開啟）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">錯開一頁</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">將雙頁往前或往後移動一頁</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">對比</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">用滑桿調整（讓淡色文字更清楚）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">飽和度</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">滑桿（彩色 E-ink 用）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">黑白 / 抖色</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">開啟後轉換為黑白（在一般 E-ink 上文字更清晰）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">背景色</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">預設 / 白色 / 黑色</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">頁面繪製方式</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">高畫質 / 效能優先</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">鎖定縮放/位置</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">開 / 關</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">重設</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">書：清除書的專屬設定，回到上層設定 / 資料夾：回到應用程式預設值</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="s6" data-screen-label="06 E-ink optimization" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">6</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">E-ink 最佳化</h2><img src="/assets/inkpress-manual/icons/sleep.png" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.9;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">讓 E-ink（電子紙）裝置閱讀更舒適的功能。</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">全螢幕重新整理（清除殘影）</strong>：在 BOOX/Onyx 裝置上以 GC16 硬閃完全清除殘影（其他裝置為軟閃）。在「設定 → 顯示與外觀 → E-ink 重新整理」可開啟或關閉，並選擇重繪頻率： <strong style="color:#46474A;font-weight:700;">自動 / 每頁 / 每 3 頁 / 每 5 頁</strong>。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">對比調整與抖色</strong>：讓淡色文字更清楚，並把圖片轉換為適合 E-ink 的黑白。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">頁面繪製方式</strong>：選擇高畫質或速度。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">休眠（關閉螢幕）</strong>：點閱讀畫面左上角的 <strong style="color:#46474A;font-weight:700;">月亮圖示</strong> 即可關閉螢幕（鎖定裝置）。對電源鍵不好按的 E-ink 裝置很方便。若不需要這個圖示，可在設定 → 閱讀 → 「顯示休眠（關閉螢幕）按鈕」隱藏。</li>
+  </ul>
+  <div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 20px;margin:18px 0 0;break-inside:avoid;border-left:5px solid #C9B98D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7B6A45;font-size:14px;margin-bottom:5px;">🔒 關於隱私</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5746;">休眠功能使用裝置的 <strong style="color:#46474A;font-weight:700;">無障礙服務</strong> ，只有在 <strong style="color:#46474A;font-weight:700;">你開啟它時</strong>才會運作。它不會讀取螢幕內容，也不會收集或傳送任何資料。</p>
+  </div>
+</section>
+
+<section id="s7" data-screen-label="07 Annotations, bookmarks &amp; notes" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">7</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">註記、書籤與筆記</h2><img src="/assets/inkpress-manual/icons/pen.svg" alt="" style="margin-left:auto;width:42px;height:42px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">註記工具共有 4 種： <strong style="color:#46474A;font-weight:700;">移動 / 筆（手寫）/ 橡皮擦 / 套索（範圍選取）</strong>。</p>
+  <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px;margin:0 0 16px;break-inside:avoid;">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/move.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">移動</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/pen.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">筆</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/eraser.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">橡皮擦</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:80px;"><div style="width:46px;height:46px;border-radius:12px;background:#FFFFFF;border:1px solid #EFE6D3;display:flex;align-items:center;justify-content:center;"><img src="/assets/inkpress-manual/icons/lasso.svg" style="width:24px;height:24px;"></div><span style="font-size:11.5px;color:#56575A;text-align:center;">套索</span></div>
+    </div>
+    <div style="border-top:1px solid #ECE3D0;margin-top:14px;padding-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:12.5px;color:#7A6310;">彩色書籤</span>
+      <div style="display:flex;gap:9px;"><span title="紅" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#E53935;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="藍" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#1E88E5;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="綠" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#43A047;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="黃" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#FDD835;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span><span title="紫" style="width:20px;height:28px;border-radius:4px 4px 3px 3px;background:#8E24AA;display:inline-block;box-shadow:inset 0 -6px 0 rgba(0,0,0,.10);"></span></div>
+    </div>
+  </div>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">彩色書籤</strong>：點書籤區域 → 從紅、藍、綠、黃、紫 5 種顏色中選擇（雙頁時會辨識左/右頁）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">文字筆記</strong>：在頁面上的位置留下筆記，之後可編輯或刪除。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">手寫註記（筆）</strong>：自由手繪。筆色（5 色）與粗細可在側邊工具列調整。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">橡皮擦與套索</strong>：擦除筆跡，或選取範圍來移動或刪除（大小可調）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">註記清單（書內）</strong>：列出這本書的所有書籤、筆記與手寫，並可直接跳轉。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">所有註記（跨書）</strong>：從書庫上方的註記圖示，依分頁（全部 / 書籤 / 筆記 / 手寫 / 紀錄）查看 <strong style="color:#46474A;font-weight:700;">所有書</strong> 的註記，並顯示數量。因移動資料夾等原因斷開的連結，可用「重新連結」復原。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FF6B8E;"></span><strong style="color:#46474A;font-weight:700;">匯出 / 匯入</strong>：以 JSON 匯出與匯入所有註記、紀錄與封面（換機時使用；在「設定 → 資料備份」）。</li>
+  </ul>
+</section>
+
+<section id="s8" data-screen-label="08 Folder lock" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">8</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">資料夾鎖定（PIN 與指紋）</h2><img src="/assets/inkpress-manual/icons/folder.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">不想讓別人看到的書，可以 <strong style="color:#46474A;font-weight:700;">以整個資料夾為單位隱藏</strong> （1.2.7 新增）。</p>
+  <h3 style="margin:4px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>功能說明</h3>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>用 <strong style="color:#46474A;font-weight:700;">4～6 位數的 PIN</strong>鎖定書庫中的資料夾。整個應用程式共用一組 PIN。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>也可以用 <strong style="color:#46474A;font-weight:700;">指紋或臉部</strong> 解鎖（PIN 是主要鑰匙，所以一定要先設定）。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>鎖定資料夾中的書 <strong style="color:#46474A;font-weight:700;">絕不會出現在小工具、我的筆記（所有註記）或閱讀紀錄中</strong>。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>閱讀鎖定資料夾中的書時，最近使用的應用程式畫面中的縮圖會保持空白。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>鎖定資料夾</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">在書庫中長按資料夾並選擇 <strong style="color:#46474A;font-weight:700;">「鎖定資料夾」</strong> 。第一次會在這裡設定 PIN。要解除鎖定，再次長按並選擇「解除鎖定」。</p>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>鎖定資料夾的外觀</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">可為每個資料夾分別選擇。</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">顯示鎖頭圖示</strong> — 一眼就能看出資料夾已鎖定。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">偽裝成一般資料夾</strong> — 以沒有封面的資料夾放在書架上，沒人會發現它被鎖定。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>重新鎖定的時機</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.8;color:#56575A;">在「設定 → 資料夾鎖定」設定。</p>
+  <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">離開應用程式後</strong> — 立即 / 1 分鐘後 / 5 分鐘後 / 15 分鐘後</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">螢幕關閉時立即重新鎖定</strong> — 開啟後會不等待直接重新鎖定。</li>
+  </ul>
+  <p style="margin:12px 0 0;font-size:15.5px;line-height:1.9;color:#56575A;">解鎖期間（鎖頭打開），其他鎖定的資料夾也不需 PIN 即可開啟。</p>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>忘記 PIN 時</h3>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">「設定 → 資料夾鎖定 → 忘記 PIN（重設）」會解除所有資料夾的鎖定。 <strong style="color:#46474A;font-weight:700;">不會刪除任何書或筆記。</strong> 隱藏的書只是重新顯示而已。</p>
+  <div style="background:#F6F1E6;border:1px solid #E7DCC4;border-radius:16px;padding:16px 20px;margin:18px 0 0;break-inside:avoid;border-left:5px solid #C9B98D;">
+    <div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;color:#7B6A45;font-size:14px;margin-bottom:5px;">🔒 是窗簾，不是保險箱</div>
+    <p style="margin:0;font-size:14.5px;line-height:1.8;color:#5C5746;">檔案本身不會加密。把裝置接上電腦或用其他檔案應用程式開啟，仍然看得到內容。請把它想成 <strong style="color:#46474A;font-weight:700;">窗簾而不是保險箱</strong> — 用來防止別人從旁偷看。</p>
+  </div>
+</section>
+
+<section id="s9" data-screen-label="09 Cloud sync" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">9</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">雲端同步（Dropbox 與家用伺服器）</h2><img src="/assets/inkpress-manual/icons/cloud.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 14px;font-size:16px;line-height:1.95;color:#56575A;">在多台裝置（例如手機與 E-ink 裝置）間延續閱讀狀態。</p>
+  <div style="margin:0 0 18px;padding:18px;background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;break-inside:avoid;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">手機</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFF8DD;border:1px solid #F0DC93;border-radius:12px;padding:14px 22px;min-width:110px;"><img src="/assets/inkpress-manual/icons/cloud.svg" style="width:28px;height:28px;"><span style="font-size:13px;color:#7A6310;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">Dropbox / NAS</span></div>
+      <div style="font-size:20px;color:#D9B41E;">⇄</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;background:#FFFFFF;border:1px solid #EFE6D3;border-radius:12px;padding:14px 18px;min-width:96px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:26px;height:26px;"><span style="font-size:12.5px;color:#56575A;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;">E-ink 裝置</span></div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:14px;"><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">閱讀位置 = 讀得較遠者優先</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">註記與紀錄 = 合併</span><span style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:999px;padding:5px 13px;font-size:11.5px;color:#5C5746;">版面 = 較新者優先</span></div>
+  </div>
+  <h3 style="margin:18px 0 10px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>連線方式</h3>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">前往「設定 → 雲端與同步 → <strong style="color:#46474A;font-weight:700;">連線 Dropbox</strong>」。家中的 NAS 或 Nextcloud 請用「<strong style="color:#46474A;font-weight:700;">連線家用伺服器 / NAS</strong>」（WebDAV），輸入伺服器 URL、使用者名稱與密碼（建議使用伺服器核發的「應用程式密碼」；也有允許家用 NAS 自簽憑證的選項）。連線後，下方的 <strong style="color:#46474A;font-weight:700;">閱讀位置與註記</strong> 開關就能使用（連線前為灰色停用）。</p>
+  <h3 style="margin:0 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>同步的內容</h3>
+  <div style="overflow-x:auto;margin:0 0 16px;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;white-space:nowrap;">項目</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;">運作方式</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">閱讀位置</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">讀得最遠的位置優先（即使往回翻也不會倒退）。在其他裝置開啟書時，會出現「其他裝置讀得更遠」的確認對話框，可直接跳過去（Kindle 方式）。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">版面設定</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">較新的設定會默默套用（雙頁、閱讀方向、縮放鎖定等）。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">註記</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">書籤、筆記與手寫會分別比對並合併。刪除也會同步到其他裝置。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">閱讀紀錄</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">合併（在其他裝置讀過的書也會出現在「最近讀過」）。</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <ul style="margin:0 0 16px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;">
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>書是依 <strong style="color:#46474A;font-weight:700;">檔案內容</strong>辨識，因此即使各裝置的儲存位置不同，也會視為同一本書。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">從雲端匯入</strong>：選擇 Dropbox 或 WebDAV 上的檔案，指定存放的書庫資料夾後下載。也可以把雲端資料夾本身登錄為書架。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span><strong style="color:#46474A;font-weight:700;">串流</strong>：漫畫（CBZ）不必下載整個檔案，可從開啟的頁面直接開始（見下方「雲端書籍的開啟方式」）。PDF、RAR 等其他格式會先下載到裝置。中斷的下載會從中斷處繼續。</li>
+    <li style="position:relative;padding-left:24px;font-size:15.5px;line-height:1.8;color:#56575A;"><span style="position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:#FFD84D;"></span>帳戶可在清單中查看，也能中斷連線（登入資訊會加密儲存）。</li>
+  </ul>
+  <h3 style="margin:24px 0 12px;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:18px;color:#4A4B4D;display:flex;align-items:center;gap:9px;"><span style="width:7px;height:18px;border-radius:3px;background:#FFD84D;display:inline-block;"></span>雲端書籍的開啟方式</h3>
+  <p style="margin:0 0 12px;font-size:15.5px;line-height:1.9;color:#56575A;">在「設定 → 雲端與同步 → 雲端開啟方式」選擇（適用於漫畫，也就是 CBZ 檔）。</p>
+  <div style="overflow-x:auto;margin:0 0 14px;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;white-space:nowrap;">選項</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;">作用</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">自動</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">依連線狀態與檔案大小由應用程式決定（預設）。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">串流</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">只載入需要的頁面而不是整個檔案，可以馬上開始閱讀。</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">下載</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">先儲存整個檔案再開啟。離線也能閱讀。</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin:0 0 16px;font-size:15.5px;line-height:1.9;color:#56575A;">從 1.2.7 起， <strong style="color:#46474A;font-weight:700;">家用伺服器 / NAS 上的漫畫也能串流</strong>。閱讀中連線中斷時，應用程式會詢問是否改為下載。</p>
+  <div style="background:#FFF8DD;border:1px solid #F4E4A8;border-radius:14px;padding:14px 18px;break-inside:avoid;border-left:5px solid #FFD84D;">
+    <p style="margin:0 0 8px;font-size:14.5px;line-height:1.75;color:#5C5320;"><strong style="color:#46474A;font-weight:700;">閱讀位置與註記只透過 Dropbox 同步。</strong> 家用伺服器 / NAS 可當作書架使用，但不在同步範圍內。</p>
+    <p style="margin:0;font-size:14.5px;line-height:1.75;color:#5C5320;">使用行動數據時，為了節省流量不會自動產生封面。</p>
+  </div>
+</section>
+
+<section id="s10" data-screen-label="10 Widget" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">10</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">主畫面小工具</h2><img src="/assets/inkpress-manual/icons/home.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 16px;font-size:16px;line-height:1.95;color:#56575A;">放在主畫面上，不必開啟應用程式就能直達書籍（4 種）。</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:0 0 18px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/book.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">繼續閱讀</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">點一下回到最近的書。</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/history.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">閱讀紀錄</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">最近讀過的書清單。</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/bookmark.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">書籤</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">從書籤清單跳到對應的頁面。</p></div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:16px 18px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:5px;"><img src="/assets/inkpress-manual/icons/home.svg" style="width:20px;height:20px;flex:none;"><span style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;">整合小工具</span></div><p style="margin:0;font-size:13.5px;line-height:1.7;color:#6A6B6E;">把以上內容整合顯示。</p></div>
+  </div>
+  <p style="margin:0;font-size:15.5px;line-height:1.9;color:#56575A;">可在「設定 → 小工具」或放置時的設定畫面調整 <strong style="color:#46474A;font-weight:700;">小工具的外觀</strong> ： <strong style="color:#46474A;font-weight:700;">背景透明 開/關、不透明度（0–100%）、文字大小（70–180%）</strong>。在 E-ink 上也容易閱讀的設計。</p>
+</section>
+
+<section id="s11" data-screen-label="11 Settings" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">11</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">設定</h2><img src="/assets/inkpress-manual/icons/settings.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <p style="margin:0 0 12px;font-size:16px;line-height:1.95;color:#56575A;">從書庫右上角的齒輪圖示開啟。 <strong style="color:#46474A;font-weight:700;">設定首頁</strong> 列出 8 個項目，每一列都會顯示 <strong style="color:#46474A;font-weight:700;">目前的值</strong> （書架位置、螢幕重新整理頻率等），不用進去就能確認。</p>
+  <p style="margin:0 0 18px;font-size:15.5px;line-height:1.9;color:#56575A;">最上方的 <strong style="color:#46474A;font-weight:700;">「常用」</strong> 可放 <strong style="color:#46474A;font-weight:700;">最多 3 個</strong> 你選的設定。點一下就能在原地選擇數值，不必進入後面的畫面。一開始是 <strong style="color:#46474A;font-weight:700;">封面大小、重新整理間隔與應用程式主題</strong>。 <strong style="color:#46474A;font-weight:700;">右端的「編輯」</strong> 可從候選項目（封面大小、重新整理間隔、應用程式主題、閱讀背景、頁面繪製方式、書架顯示方式、E-ink 重新整理、滑動翻頁、動畫、開啟上次的書、檔名、休眠按鈕）中替換。勾選第 4 個時會提示「最多 3 個常用項目」。長按常用項目會開啟它所在的畫面。</p>
+  <div style="overflow-x:auto;">
+  <table style="width:100%;border-collapse:collapse;font-size:14.5px;">
+    <thead><tr>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-left-radius:10px;white-space:nowrap;">項目</th>
+      <th style="text-align:left;padding:12px 14px;background:#FFF3C9;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;border-bottom:2px solid #F0DC93;border-top-right-radius:10px;">內容</th>
+    </tr></thead>
+    <tbody>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">書架與檔案</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">變更或新增書庫資料夾、書架顯示方式（格狀 / 清單）、封面大小（小 / 中 / 大）、顯示檔名與副檔名、「允許刪除檔案本身」、還原隱藏的書</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">資料夾鎖定</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">設定或變更 PIN、用指紋 / 臉部解鎖、重新鎖定的時機、重設 PIN（→ 第 08 章）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">閱讀</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">啟動時開啟上次的書、滑動翻頁、翻頁動畫、反轉音量鍵、預設雙頁顯示、橫向時自動雙頁、顯示休眠（關閉螢幕）按鈕</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">顯示與外觀</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">應用程式主題（淺色 / 深色 / 跟隨系統）、閱讀背景色（白 / 黑）、頁面繪製方式（高畫質 / 效能優先）、E-ink 重新整理與重繪頻率（→ 第 06 章）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">雲端與同步</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">連線 Dropbox 或家用伺服器 / NAS、同步閱讀位置、同步書籤·筆記·手寫、雲端開啟方式（→ 第 09 章）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">小工具</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">一邊即時預覽一邊調整背景透明、不透明度與文字大小（→ 第 10 章）</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">資料備份</td><td style="padding:12px 14px;border-bottom:1px solid #EEE5D2;color:#56575A;line-height:1.7;">點一下可選「匯出到檔案」與「從檔案匯入」兩種。對象為筆記、書籤與封面設定，不包含書本身</td></tr>
+      <tr style="break-inside:avoid;"><td style="padding:12px 14px;color:#46474A;font-weight:700;vertical-align:top;white-space:nowrap;">說明與支援</td><td style="padding:12px 14px;color:#56575A;line-height:1.7;">開啟使用說明、再看一次入門導覽、在 Ko-fi 支持開發，以及版本資訊</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin:16px 0 0;font-size:15.5px;line-height:1.9;color:#56575A;">需要較長說明的項目，標題旁會有 <strong style="color:#46474A;font-weight:700;">「？」</strong> （「這是什麼？」）。只有點按時才會顯示說明，平常清單也能保持清爽。</p>
+</section>
+
+<section id="s12" data-screen-label="12 FAQ" style="background:#FFFFFF;border:1px solid #EFE6D3;border-radius:22px;padding:34px 36px 32px;margin:0 0 26px;box-shadow:0 3px 16px rgba(140,115,60,.05);">
+  <div style="display:flex;align-items:center;gap:16px;margin:0 0 20px;">
+    <div style="flex:none;width:46px;height:46px;border-radius:14px;background:#FFD84D;display:flex;align-items:center;justify-content:center;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:21px;color:#5A4A12;box-shadow:0 3px 0 #E8BE2E;">12</div>
+    <h2 style="margin:0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:24px;color:#46474A;">疑難排解（FAQ）</h2><img src="/assets/inkpress-manual/icons/info.svg" alt="" style="margin-left:auto;width:44px;height:44px;opacity:.82;">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">書沒有顯示出來</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">請確認「設定 → 書架與檔案」中已登錄書庫資料夾，再下拉重新整理書庫。不支援的格式不會顯示（→ 第 01 章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">刪除後檔案還在 / 不想刪除檔案</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">預設的刪除只會從書庫隱藏。若要完全刪除，請開啟「允許刪除檔案本身」（→ 第 03 章）。隱藏的書可從「設定 → 書架與檔案 → 還原隱藏的書」還原。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">無法在其他裝置接續閱讀</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">請將兩台裝置連線到同一個 Dropbox 帳戶，並開啟「同步閱讀位置」（→ 第 09 章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">畫面留有殘影</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">請將「E-ink 重新整理」設為自動或較短的間隔（→ 第 06 章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">無法關閉螢幕（E-ink 裝置）</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">請用閱讀畫面左上角的月亮圖示休眠。第一次需要開啟無障礙功能。若沒有圖示，請確認設定 → 閱讀 → 「顯示休眠（關閉螢幕）按鈕」沒有關閉（→ 第 06 章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">忘記資料夾的 PIN</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">「設定 → 資料夾鎖定 → 忘記 PIN（重設）」會解除所有資料夾的鎖定。不會刪除書或筆記（→ 第 08 章）。</p></div>
+    </div>
+<div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">書一直載入不完</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">若書在一段時間後仍在載入，InkPress 會詢問要繼續等待還是返回書庫。請選「返回書庫」再重新開啟；雲端書籍也請確認連線狀態（→ 第 09 章）。</p></div>
+    </div>
+    <div style="background:#FBFAF6;border:1px solid #ECE3D0;border-radius:14px;padding:18px 20px;break-inside:avoid;">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FF6B8E;color:#fff;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">Q</span><div style="font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:15.5px;color:#46474A;padding-top:3px;">文字太淡 / 不好閱讀</div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><span style="flex:none;width:24px;height:24px;border-radius:7px;background:#FFD84D;color:#5A4A12;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;">A</span><p style="margin:0;font-size:14.5px;line-height:1.8;color:#56575A;padding-top:3px;">在書的設定中提高對比、開啟黑白（抖色），並用自動裁切放大（→ 第 04、05 章）。</p></div>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;padding:34px 20px 6px;margin-top:4px;border-top:1px solid #ECE3D0;">
+  <img src="/assets/inkpress-manual/icons/coffee.svg" alt="" style="width:30px;height:30px;display:block;margin:0 auto 12px;opacity:.7;">
+  <p style="margin:0 auto;max-width:520px;font-size:15px;line-height:1.9;color:#56575A;">如果願意支持開發，請從應用程式的 <strong style="color:#46474A;font-weight:700;">「設定 → 說明與支援 → 在 Ko-fi 支持開發」</strong> 。一直以來非常感謝。</p>
+  <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:12.5px;color:#A89B7E;margin-top:16px;letter-spacing:.04em;">InkPress v1.2.9 ・ E-ink PDF / Comic Viewer</div>
+</footer>
+
+</td></tr></tbody>
+<tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+</table>
+</main>
+</body>
+</html>
