@@ -35,14 +35,17 @@ DEFAULT_OUT = os.path.join(SITE_ROOT, "dist", "works", "inkpress", "manual", "ap
 
 MANIFEST_SCHEMA = 1
 
-# 出力するページ: (パッケージ内の相対パス, アセットまでの上り段数)
-PAGES = [("index.html", 0), ("en/index.html", 1)]
+# 日本語版（ルート）以外の言語。サイトでは /works/inkpress/manual/<dir>、パッケージでは <dir>/index.html。
+LANG_DIRS = ["en", "de", "fr", "es", "pt", "it", "ko", "zh-tw", "zh-cn", "ru"]
 
-# 版表記の抽出: (パッケージ内の相対パス, 正規表現)
+# 出力するページ: (パッケージ内の相対パス, アセットまでの上り段数)
+PAGES = [("index.html", 0)] + [(d + "/index.html", 1) for d in LANG_DIRS]
+
+# 版表記の抽出: (パッケージ内の相対パス, 正規表現)。
+# 日本語版は本文の「バージョン」、ほかの言語は末尾の「InkPress v…」（翻訳しない行）から取る。
 VERSION_PATTERNS = [
     ("index.html", re.compile(r"バージョン\s*([0-9]+\.[0-9]+\.[0-9]+)")),
-    ("en/index.html", re.compile(r"Version\s*([0-9]+\.[0-9]+\.[0-9]+)")),
-]
+] + [(d + "/index.html", re.compile(r"InkPress v([0-9]+\.[0-9]+\.[0-9]+)")) for d in LANG_DIRS]
 
 # HTML 内の絶対パス → パッケージ内の相対パス（キーは置換元、値は index.html から見た相対パス）
 ASSET_PREFIXES = [
@@ -88,13 +91,14 @@ EINK_STYLE = """
 
 
 def rewrite(html, depth):
-    """depth: index.html から見たアセットディレクトリまでの上り段数（ja=0, en=1）"""
+    """depth: index.html から見たアセットディレクトリまでの上り段数（ja=0, ほかの言語=1）"""
     up = "../" * depth
     for src_prefix, dest_prefix in ASSET_PREFIXES:
         html = html.replace('="' + src_prefix, '="' + up + dest_prefix)
-    # 言語切替リンク（長い方を先に置換しないと前方一致で壊れる）
-    html = html.replace('href="/works/inkpress/manual/en"', 'href="en/index.html"')
-    html = html.replace('href="/works/inkpress/manual"', 'href="../index.html"')
+    # 言語切替リンク。閉じ引用符まで含めて置換するので前方一致では壊れない。
+    for d in LANG_DIRS:
+        html = html.replace('href="/works/inkpress/manual/%s"' % d, 'href="%s%s/index.html"' % (up, d))
+    html = html.replace('href="/works/inkpress/manual"', 'href="%sindex.html"' % up)
     for pat in FONT_LINK_PATTERNS:
         html = re.sub(pat, "", html)
     # E-ink 用の上書きは既存の <style> より後に置く必要があるので </head> 直前へ
@@ -119,7 +123,7 @@ def collect_assets(html):
 
 
 def extract_version(sources):
-    """日本語版と英語版の版表記を取り出す。取れないか食い違えば None。"""
+    """各言語版の版表記を取り出す。取れないか食い違えば None。"""
     versions = {}
     for rel, pattern in VERSION_PATTERNS:
         m = pattern.search(sources[rel])
@@ -129,7 +133,7 @@ def extract_version(sources):
         versions[rel] = m.group(1)
     found = set(versions.values())
     if len(found) != 1:
-        print("日本語版と英語版で版表記が違う: " + ", ".join(
+        print("言語版のあいだで版表記が違う: " + ", ".join(
             "%s=%s" % (rel, ver) for rel, ver in versions.items()))
         return None
     return found.pop()
