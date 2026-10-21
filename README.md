@@ -74,7 +74,9 @@ y-m-apps-site/
 
 - X: https://x.com/Pinopino503 （About 欄・Contact 欄からリンク済み）
 - note: https://note.com/y_m656 （Writings 章の各記事からリンク）
-- 本番: https://y-m-apps-site.pages.dev （`npm run deploy` で直接アップロード。git push だけでは反映されない）
+- 本番: https://y-m-apps-site.pages.dev （**main に push すると Cloudflare Pages が自動で作り直して公開**。ふだんは30秒ほど、混んでいると20分ほどかかる）
+  - 公開する変更は必ずコミットして main に入れる。git に入れずに直接公開すると、次の自動公開で消える（2026-10 に よじねこ！のページが消えた）
+  - `npm run deploy`（直接公開）は自動公開が動かないときの予備。`tools/check_deploy.mjs` が、main 以外のブランチ・未コミットの変更・GitHub の main と違う中身のときは公開を止める
 
 ## TBD
 

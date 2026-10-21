@@ -10,7 +10,7 @@
     "build:manual": "python tools/build_app_manual.py",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "npm run build && wrangler pages deploy --project-name=y-m-apps-site --branch=main --commit-dirty=true --commit-message=deploy"
+    "deploy": "node tools/check_deploy.mjs && npm run build && wrangler pages deploy --project-name=y-m-apps-site --branch=main"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
