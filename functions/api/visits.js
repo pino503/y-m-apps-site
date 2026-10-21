@@ -51,7 +51,7 @@ export async function onRequestGet(context) {
 
   const next = current + 1;
   try {
-    context.waitUntil(kv.put(KEY, String(next)));
+    await kv.put(KEY, String(next));
   } catch (err) {
     // 書き込みに失敗しても、読めた値は返す（表示だけは保つ）。
     return json({ count: current, warning: 'kv_write_failed' }, 200);

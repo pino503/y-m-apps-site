@@ -52,16 +52,17 @@ const otherWorks = [
             <p class="hb-tag">宇宙ゴミを集めて、基地で強化。CRT風の宇宙清掃シューティングゲーム。</p>
             <div class="hb-badges"><span class="badge-new">NEW</span><span class="chip">Webゲーム</span><span class="chip">ブラウザ</span></div>
           </div>
-          <div class="hb-visual"><img src={data.coverImage} alt={`${data.title} のゲーム画面`} /></div>
+          <div class="hb-visual"><img src={data.coverImage} alt={`${data.title} の紹介ビジュアル`} style="object-fit:contain" /></div>
         </div>
 
         <div class="card meta-bar">
           <div class="mb-status"><span class="badge-live">公開中 — ブラウザでプレイ可能</span></div>
           <div class="mb-chips"><span class="chip">Webゲーム</span><span class="chip chip-gold">CRT風シューティング</span></div>
           <div class="mb-actions">
-            <a class="btn btn-primary" href={playUrl} target="_blank" rel="noopener noreferrer">
+            <a class="btn btn-primary" href={data.storeUrl} target="_blank" rel="noopener noreferrer">itch.ioで遊ぶ</a>
+            <a class="btn btn-outline" href={playUrl} target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
-              ブラウザでプレイ
+              このサイトでプレイ
             </a>
           </div>
         </div>

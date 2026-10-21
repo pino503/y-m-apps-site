@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedWorks from '../../components/RelatedWorks.astro';
+import '../../styles/detail.css';
+import '../../styles/game-detail.css';
+const play='https://pinopino503.itch.io/yojineko';
+const modes=[
+  ['冒険','部屋から鐘楼までの短いコース。チェックポイントから再挑戦できます。'],
+  ['チャレンジ','最高到達高度に挑戦。画面内の下の足場に着地すればセーフ。画面下へ落ちるとゲームオーバーです。'],
+  ['鬼畜モード','高度100,000mにある宇宙の入口を目指します。チェックポイントなしの長距離コースで、落ちた場所から登り直します。'],
+];
+---
+<BaseLayout title="よじねこ！ — 部屋から、宇宙まで。 | Y.M Apps" description="小さな猫と不思議な足場を登る3Dクライミングゲーム。ずんだもんの紹介動画、実プレイ画面、3つのモードと操作方法を紹介。" ogImage="/assets/yojineko/hero.png">
+  <section class="stack-section"><article class="container detail-page game-detail">
+    <nav class="crumb" aria-label="パンくず"><a href="/">Y.M Apps</a> / <a href="/#works">作品一覧</a> / よじねこ！</nav>
+    <header class="game-hero">
+      <div>
+        <p class="neko-status">猫と登る3Dクライミングゲーム</p>
+        <h1>よじねこ！</h1><p class="neko-tagline">部屋から、宇宙まで。</p>
+        <p>カーテンや家具を足場に、猫と一緒に上を目指す3Dクライミングゲームです。高く登るほど、空に浮かぶティーカップなど、不思議な足場が現れます。</p>
+
+      </div>
+      <figure><img src="/assets/yojineko/hero.png" alt="猫が空へ続く足場を登る、よじねこ！の紹介イラスト" width="1536" height="864" fetchpriority="high" /><figcaption>紹介用イラスト。実際のゲーム画面は下の動画・スクリーンショットをご覧ください。</figcaption></figure>
+    </header>
+    <div class="card meta-bar"><div class="mb-status"><span class="badge-live">公開中</span></div><div class="mb-chips"><span class="chip">PC・スマートフォン</span><span class="chip">ブラウザーゲーム</span></div><div class="mb-actions"><a class="btn btn-primary" href={play} target="_blank" rel="noopener noreferrer">itch.ioで遊ぶ</a><a class="btn btn-outline" href="#movie">紹介動画を見る</a></div></div>
+    <div class="detail-body">
+    <section class="block" id="movie" aria-labelledby="movie-title">
+      <h2 id="movie-title">紹介動画</h2><p>ジャンプの操作や、登るにつれて変わる景色を32秒の動画で紹介します。</p>
+      <video controls playsinline preload="metadata" poster="/assets/yojineko/gameplay-desktop.png" aria-label="よじねこ！ ずんだもんナレーション入り紹介動画">
+        <source src="/videos/yojineko-zundamon.mp4" type="video/mp4" />
+        <track kind="captions" src="/videos/yojineko-zundamon-ja.vtt" srclang="ja" label="日本語" />
+        <a href="/videos/yojineko-zundamon.mp4">紹介動画を開く</a>
+      </video>
+      <p class="caption">音声：VOICEVOX:ずんだもん。ゲーム本体を使った紹介用リプレイです。高度ごとに場面を切り替えており、連続完走の映像ではありません。</p>
+      <details><summary>ナレーションの台本</summary><p>よじねこ！　ためて、ねらって、ジャンプなのだ！　猫といっしょに、どこまでも。えっ、空にティーカップ？　相棒は、八種類の猫たち。富士山も、エベレストも、越えて。目指すは、十万メートルの宇宙！　きみは、どこまで登れるのだ？</p></details>
+    </section>
+    <section class="block" aria-labelledby="screens-title">
+      <h2 id="screens-title">ゲーム画面</h2>
+      <div class="neko-screens">
+        <figure><a href="/assets/yojineko/gameplay-desktop.png"><img src="/assets/yojineko/gameplay-desktop.png" alt="部屋の本と人の持つトレーを目指してジャンプする猫。PCの操作ガイドと高さ表示つき" width="1280" height="720" loading="lazy" /></a><figcaption>PC表示。左右で移動し、Spaceを離してジャンプ。</figcaption></figure>
+        <figure class="phone"><a href="/assets/yojineko/gameplay-mobile.png"><img src="/assets/yojineko/gameplay-mobile.png" alt="左右・つかむ・ジャンプのタッチボタンを備えた縦長のプレイ画面" width="390" height="844" loading="lazy" /></a><figcaption>スマホ幅でのブラウザー表示。実機での性能検証は継続中です。</figcaption></figure>
+      </div>
+    </section>
+    <section class="block" aria-labelledby="modes-title"><h2 id="modes-title">3つのゲームモード</h2><div class="neko-modes">{modes.map(([title,body])=><div><h3>{title}</h3><p>{body}</p></div>)}</div>
+      <p>通天閣・東京タワー・富士山・エベレストなど、15種類の高さの目印が実際の高度に登場。挑戦や実績を重ねると、特徴の違う8種類の猫を解放できます。</p>
+    </section>
+    <section class="block"><h2>操作方法・記録の保存</h2>
+      <dl><dt>左右移動</dt><dd>← → または A・D。スマホでは左右ボタン。</dd><dt>ジャンプ</dt><dd>Space。チャレンジ・鬼畜は押してためて、離すと跳びます。スマホではジャンプボタン。</dd><dt>つかまる</dt><dd>↑ または W・E。スマホでは「つかむ」。</dd><dt>記録</dt><dd>最高到達高度を端末のブラウザーに保存。結果は画像や文章でSNSに共有できます。オンラインランキング・端末間同期はありません。</dd></dl>
+      <p>チャレンジと鬼畜モードには、手動の一時停止や中断データの保存はありません。別のタブや画面に移った場合は自動で停止し、戻ると再開できます。ページを閉じたり再読み込みしたりすると、最初からの挑戦になります。</p>
+      <p class="caption">WebGL2対応ブラウザーが必要です。重い場合は設定の「軽量」をお試しください。スマートフォン実機での操作や動作速度、長距離コースの長時間プレイについては検証を続けています。制作には生成AIを使用しています。</p>
+    </section>
+    <footer class="block game-footer"><a class="btn btn-primary" href={play} target="_blank" rel="noopener noreferrer">itch.ioで遊ぶ</a><p>気に入ったら、<a href="https://ko-fi.com/pino503" target="_blank" rel="noopener noreferrer">Ko-fiから任意でサポート</a>してもらえるとうれしいです。</p><small>紹介情報の更新：2026年9月16日</small></footer>
+    </div>
+    <RelatedWorks slugs={["okusuri-nonde","cosmo-cleaner","inkpress"]} />
+  </article></section>
+</BaseLayout>

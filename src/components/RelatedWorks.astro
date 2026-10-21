@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+interface Props { slugs: string[] }
+const { slugs } = Astro.props;
+const apps = await getCollection('apps');
+const works = slugs.map(slug => apps.find(app => app.slug === slug)).filter(Boolean);
+---
+<section class="other" aria-label="ほかの作品">
+  <h2>ほかの作品</h2>
+  <div class="other-grid">
+    {works.map(work => work && (
+      <a class="owork" href={`/works/${work.slug}`}>
+        <span class="oi"><img src={work.data.iconImage ?? work.data.coverImage} alt="" width="48" height="48" loading="lazy" /></span>
+        <span><b>{work.data.title}</b><span>{work.data.tagline}</span></span>
+      </a>
+    ))}
+  </div>
+  <a class="back-link" href="/#works">作品一覧に戻る</a>
+</section>

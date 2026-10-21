@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedWorks from '../../components/RelatedWorks.astro';
+import '../../styles/detail.css';
+import '../../styles/game-detail.css';
+import { getEntry } from 'astro:content';
+const app = await getEntry('apps', 'okusuri-nonde');
+const { data } = app!;
+---
+<BaseLayout title={`${data.title} — Y.M Apps`} description="猫にお薬を飲んでもらう、ドット絵のタイミングゲーム。PC・スマホのブラウザーで遊べます。" ogImage={data.coverImage}>
+  <section class="stack-section"><div class="container detail-page game-detail">
+    <nav class="crumb" aria-label="パンくず"><a href="/">Home</a><span>/</span><a href="/#works">Works</a><span>/</span><span>{data.title}</span></nav>
+    <header class="game-hero medicine-hero">
+      <div><p class="neko-status">猫のお薬タイミングゲーム</p><h1>{data.title}</h1><p class="neko-tagline"><span>たった1錠が、</span><span>こんなにむずかしい。</span></p><p>猫が口を開けた瞬間を狙って、お薬をぽとん。最後にタイミングよく口を閉じて、何匹に飲んでもらえるか挑戦するドット絵ゲームです。</p></div>
+      <figure><img src={data.coverImage} alt="おくすり、のんで。公開版の実プレイ画面" width="1280" height="720" fetchpriority="high"/><figcaption>公開版のゲーム画面</figcaption></figure>
+    </header>
+    <div class="card meta-bar"><div class="mb-status"><span class="badge-live">公開中</span></div><div class="mb-chips"><span class="chip">PC・スマートフォン</span><span class="chip">タイミングゲーム</span></div><div class="mb-actions"><a class="btn btn-primary" href={data.storeUrl} target="_blank" rel="noopener noreferrer">itch.ioで遊ぶ</a><a class="btn btn-outline" href="#how-to-play">操作方法を見る</a></div></div>
+    <div class="detail-body">
+      <section class="block"><h2>このゲームの遊びどころ</h2><div class="features">{data.features.map(f=><div class="feature game-feature"><div><h3>{f.title}</h3><p>{f.body}</p></div></div>)}</div><p>3匹成功するごとにレベルアップ。照準とお口の動きが速くなり、最高Lv.5まで進みます。</p></section>
+      <section class="block" id="how-to-play"><h2>操作方法</h2><ol><li>横の照準を止める。</li><li>縦の照準を止める。</li><li>口が開くタイミングに合わせて、お薬を落とす。</li><li>お薬が入ったら、ゲージに合わせて口を閉じる。</li></ol><p>PCはクリック・Space・Enter。スマホやタブレットは、画面の決定ボタンをタップします。</p><p>一時停止はP・Esc、または右上のボタン。音ボタンでBGM「Pill Time」と効果音を切り替えられます。</p></section>
+      <section class="block"><h2>記録の保存・注意事項</h2><p>最高記録はこのブラウザーに保存されます。ブラウザーの設定によっては保存できない場合があります。</p><p class="fiction-note">ゲーム内の手順はフィクションです。実際の猫への投薬方法を説明するものではありません。</p></section>
+      <section class="block"><h2>ゲームを遊ぶ</h2><a class="btn btn-primary" href={data.storeUrl} target="_blank" rel="noopener noreferrer">itch.ioで遊ぶ</a><p>制作を応援したいと思ってくださった方は、<a href="https://ko-fi.com/pino503" target="_blank" rel="noopener noreferrer">Ko-fi</a>から任意でサポートできます。</p></section>
+    </div>
+    <RelatedWorks slugs={["yojineko","cosmo-cleaner","inkpress"]} />
+  </div></section>
+</BaseLayout>

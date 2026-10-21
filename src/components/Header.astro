@@ -15,32 +15,13 @@
 </header>
 
 <script>
-  // ホスト名が「*.pages.dev」または本番カスタムドメインのときだけカウント。
-  // ローカル開発・プレビュー環境では水増し防止のため動かさない。
-  const host = location.hostname;
-  const isProd = host.endsWith(".pages.dev") || host === "y-m-apps.com" || host === "www.y-m-apps.com";
-  const el = document.getElementById("visit-count");
-  if (el) {
-    if (isProd) {
-      // 以前は外部サービス（counterapi.dev v1）を叩いていたが、v1 が廃止されて
-      // HTTP 410 を返すようになり、表示が「······」のまま止まっていた。
-      // いまは同じ Cloudflare 上の /api/visits（Pages Function + KV）で自前に数える。
-      fetch("/api/visits")
-        .then((r) => (r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status))))
-        .then((d) => {
-          if (d && typeof d.count === "number") {
-            el.textContent = String(d.count).padStart(6, "0");
-          } else {
-            return Promise.reject(new Error("unexpected payload"));
-          }
-        })
-        .catch((e) => {
-          // 黙って握りつぶすと、壊れていることに誰も気づけない（前回がそれだった）。
-          console.warn("[visitors] カウントを取得できませんでした:", e);
-          el.textContent = "······";
-        });
-    } else {
-      el.textContent = "DEV";
-    }
-  }
+  import { createVisitorCounter } from '../scripts/visits-client.js';
+
+  const updateVisits = createVisitorCounter({
+    hostname: location.hostname,
+    getElement: () => document.getElementById('visit-count'),
+    request: (url: string) => fetch(url, { signal: AbortSignal.timeout(8000) }),
+  });
+  document.addEventListener('astro:page-load', updateVisits);
+  updateVisits();
 </script>

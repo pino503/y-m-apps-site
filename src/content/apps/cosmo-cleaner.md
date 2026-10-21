@@ -4,13 +4,13 @@ tagline: 宇宙ゴミを集めて強化、CRT風の清掃シューティング�
 world: cosmo-cleaner
 platform: Webゲーム
 badges: ["Web", "HTML5", "Pixel Art", "v2.0.0"]
-storeUrl: https://pino503.github.io/cosmo-cleaner/
-storeLabel: Play Now
+storeUrl: https://pinopino503.itch.io/cosmo-cleaner
+storeLabel: itch.ioで遊ぶ
 order: 5
 category: game
 embedPath: /games/cosmo-cleaner/index.html
 iconImage: /assets/apps/cosmo-cleaner-icon.png
-coverImage: /assets/apps/cosmo-cleaner-cover.png
+coverImage: /assets/cosmo/cover-itch.png
 features:
   - title: COLLECT / RETURN / POWER UP
     body: 宇宙ゴミを吸い込み、基地へ持ち帰って自機を強化。戻るタイミングと強化の判断が攻略のカギ。

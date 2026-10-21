@@ -16,6 +16,8 @@ const apps = defineCollection({
       "gtdmemo",
       "zansetsu",
       "kirokunavi",
+      "yojineko",
+      "okusuri-nonde",
     ]),
     platform: z.string(),
     badges: z.array(z.string()).default([]),
