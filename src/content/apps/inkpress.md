@@ -3,7 +3,7 @@ title: InkPress
 tagline: 軽くて静かな自炊本リーダー。
 world: inkpress
 platform: Android
-badges: ["Android", "v1.3.2", "読書アプリ"]
+badges: ["Android", "v1.3.3", "読書アプリ"]
 storeUrl: https://play.google.com/store/apps/details?id=io.github.pino503.inkpress
 storeLabel: Google Play
 order: 1
@@ -22,11 +22,11 @@ features:
   - title: PDF・CBZ・CBR・画像、まとめて
     body: PDF / ZIP / CBZ / RAR / CBR / 画像フォルダに対応。自炊した本もダウンロードしたコミックも、1 つのアプリでそのまま開けます。
   - title: 見開き・縦めくり・RTL
-    body: 左右・上下のページめくりと見開き表示に対応。縦方向も1ページずつ進みます。フォルダ単位で設定を継承するので、いちいち調整しなおさずに読み進められます。
+    body: 左右・上下のページめくりと見開き表示に対応。縦は1ページずつのほか、ページの切れ目なく流れる連続スクロール（ウェブトゥーン式）も選べます。フォルダ単位で設定を継承するので、いちいち調整しなおさずに読み進められます。
   - title: Dropbox 同期と手書きメモ
     body: 読書位置・書き込み・本ごとの設定を Dropbox で複数端末に同期。スマホで読んだ続きを E-Ink 端末からそのまま。自宅の NAS / Nextcloud（WebDAV）もそのまま本棚にできます。ページには手書きのメモやマーカー、しおりを残せます。
-version: "1.3.2"
-releaseDate: "2026-10-06"
+version: "1.3.3"
+releaseDate: "2026-11-06"
 ---
 
 E-Ink端末で本を読むことが好きで、自分が「これだ」と思えるリーダーが欲しくて作りました。
