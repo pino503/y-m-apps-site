@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://y-m-apps-site.pages.dev',
+  site: 'https://ymapps.app',
   trailingSlash: 'never',
   integrations: [sitemap()],
   build: {

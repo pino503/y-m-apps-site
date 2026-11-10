@@ -29,4 +29,4 @@ LINE で使えるスタンプ・絵文字シリーズ。Y.M Apps のマスコッ
 X: https://x.com/Pinopino503
 note: https://note.com/y_m656
 itch.io: https://pinopino503.itch.io/
-お問い合わせ: https://y-m-apps-site.pages.dev/#contact
+お問い合わせ: https://ymapps.app/#contact

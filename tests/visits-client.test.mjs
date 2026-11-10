@@ -43,6 +43,13 @@ test('errors are distinct from loading and navigation retries read-only', async 
   assert.deepEqual(s.calls,['/api/visits','/api/visits?peek=1']);
 });
 
+test('custom domain ymapps.app counts like production', async () => {
+  for (const host of ['ymapps.app','www.ymapps.app']) {
+    const s = setup(host); await s.update();
+    assert.equal(s.element.textContent,'000613'); assert.deepEqual(s.calls,['/api/visits']);
+  }
+});
+
 test('local and deployment previews never increment production counts', async () => {
   for (const host of ['localhost','127.0.0.1','preview.y-m-apps-site.pages.dev']) {
     const s = setup(host); await s.update();

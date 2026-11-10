@@ -15,6 +15,6 @@ Y.M Apps Press Kit
 
 == 取材・お問い合わせ ==
 サイトの Contact フォームからご連絡ください：
-https://y-m-apps-site.pages.dev/#contact
+https://ymapps.app/#contact
 
 最終更新: 2026年5月

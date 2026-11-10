@@ -1,6 +1,6 @@
 // One controller per document; Astro swaps the header on client navigation.
 export function createVisitorCounter({ hostname, getElement, request }) {
-  const isProd = ['y-m-apps-site.pages.dev', 'y-m-apps.com', 'www.y-m-apps.com'].includes(hostname);
+  const isProd = ['ymapps.app', 'www.ymapps.app', 'y-m-apps-site.pages.dev', 'y-m-apps.com', 'www.y-m-apps.com'].includes(hostname);
   let requested = false;
   let pending = null;
   let previousElement = null;
