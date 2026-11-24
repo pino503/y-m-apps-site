@@ -26,6 +26,7 @@
 .game-detail .block > p, .game-detail .game-hero p { word-break: auto-phrase; }
 .game-detail .block > p { line-height: 1.9; }
 .game-detail video { display: block; width: 100%; aspect-ratio: 16/9; background: #182b36; border-radius: 16px; }
+.game-detail video.vertical-video { aspect-ratio: 9/16; max-width: 360px; margin: 0 auto; }
 .game-detail details { margin-top: 16px; }
 .game-detail summary { cursor: pointer; padding: 12px 0; }
 .game-detail .neko-screens { display: grid; grid-template-columns: 1fr 220px; gap: 28px; align-items: start; }

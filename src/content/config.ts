@@ -18,6 +18,7 @@ const apps = defineCollection({
       "kirokunavi",
       "yojineko",
       "okusuri-nonde",
+      "mound-swindler",
     ]),
     platform: z.string(),
     badges: z.array(z.string()).default([]),

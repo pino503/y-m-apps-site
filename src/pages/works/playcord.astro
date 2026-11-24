@@ -1,120 +1,68 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import "../../styles/detail.css";
-import { getCollection } from "astro:content";
-
-// Bespoke detail page (the generic [slug].astro skips this slug). Layout
-// follows the Claude Design handoff (works/playcord.html) — banner hero +
-// "coming soon" meta-bar + four game screens.
-const apps = await getCollection("apps");
-const app = apps.find((a) => a.slug === "playcord")!;
-const { data } = app;
-
-const features = [
-  { title: "ドラフトから引退まで、選手視点で", body: "月次進行で1シーズンずつ。1軍と2軍を行き来しながら、契約更改、国際大会、移籍、そして引退まで。1人の選手として「自分の野球史」を最後まで追えます。" },
-  { title: "国内から海外へ、海をまたぐキャリア", body: "国内リーグのドラフトから始まって、移籍や海外挑戦でステージを広げていけます。所属するリーグが変わっても、キャリアと記録は続いていきます。" },
-  { title: "タイトル、ライバル、ベストナイン", body: "同期や同世代のライバルとの順位争い、首位打者やホームラン王、毎年のベストナイン。シーズンを重ねるごとに、選手名鑑に記録が積み上がっていきます。" },
-];
-
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedWorks from '../../components/RelatedWorks.astro';
+import '../../styles/detail.css';
+import '../../styles/game-detail.css';
+import { getEntry } from 'astro:content';
+const app = await getEntry('apps', 'playcord');
+const { data } = app!;
+const play = data.storeUrl;
 const shots = [
-  { src: "/assets/playcord/shot1.jpg", alt: "PLAYCORD タイトル画面" },
-  { src: "/assets/playcord/shot2.jpg", alt: "PLAYCORD ドラフト候補" },
-  { src: "/assets/playcord/shot3.jpg", alt: "PLAYCORD 選手データ準備中" },
-  { src: "/assets/playcord/shot4.jpg", alt: "PLAYCORD 入団サイン式" },
-];
-
-const otherWorks = [
-  { slug: "inkpress", name: "InkPress", desc: "軽くて静かな自炊本リーダー。", icon: "/assets/apps/inkpress-icon.png" },
-  { slug: "sidewalk-defender", name: "Sidewalk Defender", desc: "80年代アーケード風アクション。", icon: "/assets/apps/sidewalk-defender-cover.png" },
-  { slug: "cosmo-cleaner", name: "COSMO CLEANER", desc: "CRT風の宇宙清掃シューティング。", icon: "/assets/apps/cosmo-cleaner-icon.png" },
+  { src: '/assets/playcord/demo-10.jpg', alt: '全国の地図から視察する地域を選ぶ発掘画面', cap: '全国を回って、逸材を探す' },
+  { src: '/assets/playcord/demo-28.jpg', alt: '12球団の1位入札を順番に開票するドラフト会議の画面', cap: 'ドラフト会議は1球団ずつ開票' },
+  { src: '/assets/playcord/demo-43.jpg', alt: '担当選手のシーズン成績とオフの反響が並ぶ画面', cap: '毎年のシーズン総括とオフの反響' },
+  { src: '/assets/playcord/demo-58.jpg', alt: '引退した選手の生涯年俸とスカウト眼力判定が載った選手WIKI', cap: '引退後は選手WIKIで答え合わせ' },
 ];
 ---
-
-<BaseLayout title={`${data.title} — Y.M Apps`} description="選手になりきるリアルな野球人生シミュレーション。">
-  <section class="stack-section">
-    <div class="container detail-page">
-
-      <nav class="crumb">
-        <a href="/">Home</a><span class="sep">/</span>
-        <a href="/#works">Works</a><span class="sep">/</span>
-        <span class="cur">{data.title}</span>
-      </nav>
-
-      <section class="detail-hero" data-reveal>
-        <div class="hero-banner">
-          <img src="/assets/hero/playcord-hero.png" alt="PLAYCORD — 選手になりきるリアルな野球人生シミュレーション" />
-        </div>
-        <div class="card meta-bar">
-          <div class="mb-status"><span class="badge-soon">準備中 — まもなく公開</span></div>
-          <div class="mb-chips">
-            <span class="chip">Android</span>
-            <span class="chip chip-gold">野球キャリアシミュレーション</span>
-          </div>
-          <div class="mb-actions">
-            <a class="btn btn-outline" href="/writings">開発の記録を読む</a>
-            <span class="btn btn-primary" aria-disabled="true">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 3l14 9-14 9V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg>
-              Google Play（準備中）
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <div class="detail-body">
-
-        <section class="block" data-reveal>
-          <span class="lede">ABOUT</span>
-          <h2>このアプリについて</h2>
-          <div class="about-text">
-            <p>野球が好きで、選手として自分のキャリアを生き直してみたくて作りました。</p>
-            <p class="pull">ドラフトされた日から引退の日まで、長く付き合える「もうひとつの野球人生」を目指しています。</p>
-          </div>
-        </section>
-
-        <section class="block" data-reveal>
-          <span class="lede">FEATURES</span>
-          <h2>主な特徴</h2>
-          <div class="features">
-            {features.map((f, i) => (
-              <div class="feature">
-                <span class="fnum">{String(i + 1).padStart(2, "0")}</span>
-                <div>
-                  <h3>{f.title}</h3>
-                  <p>{f.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section class="block" data-reveal>
-          <span class="lede">SCREENS</span>
-          <h2>ゲーム画面</h2>
-          <div class="shots four">
-            {shots.map((s) => (
-              <div class="shot"><img src={s.src} alt={s.alt} loading="lazy" decoding="async" /></div>
-            ))}
-          </div>
-        </section>
-
+<BaseLayout title={`${data.title} — Y.M Apps`} description="プロ野球のスカウトになって選手を探し、指名した1人の野球人生を引退まで見届けるゲーム。ブラウザ体験版を無料公開中。" ogImage={data.coverImage}>
+  <section class="stack-section"><div class="container detail-page game-detail">
+    <nav class="crumb" aria-label="パンくず"><a href="/">Home</a><span>/</span><a href="/#works">Works</a><span>/</span><span>{data.title}</span></nav>
+    <header class="game-hero">
+      <div>
+        <p class="neko-status">スカウトの野球ゲーム／ブラウザ体験版</p>
+        <h1>{data.title}</h1>
+        <p class="neko-tagline"><span>この選手を見つけたのは、</span><span>あなたです。</span></p>
+        <p>プロ野球チームのスカウトになって、全国から選手を探します。視察で集めた情報をもとに、ドラフトで誰を指名するかを決める。入団したあとは、その1人がどんな野球人生を歩むのかを引退まで見届けます。</p>
       </div>
-
-      <section class="other" data-reveal>
-        <h2>ほかの作品</h2>
-        <div class="other-grid">
-          {otherWorks.map((w) => (
-            <a class="owork" href={`/works/${w.slug}`}>
-              <span class="oi"><img src={w.icon} alt="" /></span>
-              <span><b>{w.name}</b><span>{w.desc}</span></span>
-            </a>
-          ))}
-        </div>
-        <a class="back-link" href="/#works">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-          Works に戻る
-        </a>
-      </section>
-
+      <figure><img src={data.coverImage} alt="PLAYCORDのタイトルロゴと、スカウトの机から見た球場" width="1376" height="768" fetchpriority="high" /></figure>
+    </header>
+    <div class="card meta-bar">
+      <div class="mb-status"><span class="badge-live">体験版 公開中</span></div>
+      <div class="mb-chips"><span class="chip">PC・スマートフォン</span><span class="chip">ブラウザーゲーム</span><span class="chip">v{data.version}</span></div>
+      <div class="mb-actions"><a class="btn btn-primary" href={play} target="_blank" rel="noopener noreferrer">itch.ioで体験版を遊ぶ</a><a class="btn btn-outline" href="#movie">紹介動画を見る</a></div>
     </div>
-  </section>
+    <div class="detail-body">
+      <section class="block" id="movie" aria-labelledby="movie-title">
+        <h2 id="movie-title">紹介動画</h2>
+        <p>発掘からドラフト、22年の現役生活、引退後の選手WIKIまでを70秒で紹介します。</p>
+        <video class="vertical-video" controls playsinline preload="metadata" poster="/assets/playcord/pv-poster.jpg" aria-label="PLAYCORD 体験版の紹介動画">
+          <source src="/videos/playcord-demo-pv.mp4" type="video/mp4" />
+          <a href="/videos/playcord-demo-pv.mp4">紹介動画を開く</a>
+        </video>
+      </section>
+      <section class="block" aria-labelledby="features-title">
+        <h2 id="features-title">このゲームの遊びどころ</h2>
+        <div class="features">{data.features.map(f => <div class="feature game-feature"><div><h3>{f.title}</h3><p>{f.body}</p></div></div>)}</div>
+      </section>
+      <section class="block" aria-labelledby="screens-title">
+        <h2 id="screens-title">ゲーム画面</h2>
+        <div class="shots four">
+          {shots.map(s => <div class="shot"><img src={s.src} alt={s.alt} width="540" height="960" loading="lazy" decoding="async" /></div>)}
+        </div>
+        <p class="caption">紹介動画から切り出した画面です。</p>
+      </section>
+      <section class="block" aria-labelledby="demo-title">
+        <h2 id="demo-title">体験版でできること</h2>
+        <dl>
+          <dt>遊べる範囲</dt><dd>最初に指名した1人の、入団から現役引退まで。引退後は選手名鑑で、全シーズンの成績や能力の変化を見られます。</dd>
+          <dt>はじめ方</dt><dd>「スカウトを始める」から。最初の数ステップは画面の案内に沿って進めます。</dd>
+          <dt>記録</dt><dd>ブラウザーに自動で保存されます。ブラウザーのデータを消すと最初からになります。</dd>
+          <dt>正式版</dt><dd>担当選手が独り立ちしたら次のドラフトへ。何人でも続けてスカウトできる Android 版を準備中です。</dd>
+        </dl>
+        <p class="caption">読み込むデータが大きいため、初回の起動に少し時間がかかります。球団名・リーグ名・選手名はすべて架空です。制作には生成AIを使用しています。</p>
+      </section>
+      <footer class="block game-footer"><a class="btn btn-primary" href={play} target="_blank" rel="noopener noreferrer">itch.ioで体験版を遊ぶ</a><p>遊んだ感想は、itch.io のページにある「体験版の感想を送る」から送れます。途中まで遊んだ感想も歓迎です。</p><small>紹介情報の更新：2026年11月24日</small></footer>
+    </div>
+    <RelatedWorks slugs={["mound-swindler","yojineko","zansetsu"]} />
+  </div></section>
 </BaseLayout>

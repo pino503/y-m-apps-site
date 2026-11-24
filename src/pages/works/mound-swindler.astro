@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedWorks from '../../components/RelatedWorks.astro';
+import '../../styles/detail.css';
+import '../../styles/game-detail.css';
+import { getEntry } from 'astro:content';
+const app = await getEntry('apps', 'mound-swindler');
+const { data } = app!;
+const play = data.storeUrl;
+const shots = [
+  { src: '/assets/mound-swindler/shot1_joint.jpg', alt: '後ろ向きになって股の下から投げる関節投手', cap: '関節投手：後ろ向きで股抜き投球' },
+  { src: '/assets/mound-swindler/shot2_balloon.jpg', alt: 'マウンドでふくらむ風船投手', cap: '風船投手：大きさに注目' },
+  { src: '/assets/mound-swindler/shot3_robo.jpg', alt: '両腕を上げる両腕ロボの投手', cap: '両腕ロボ：腕の向きで見分ける' },
+  { src: '/assets/mound-swindler/shot4_pogo.jpg', alt: 'ホッピングで跳ねる投手', cap: 'ホッピング投手：跳ぶ高さがカギ' },
+];
+---
+<BaseLayout title={`${data.title} — Y.M Apps`} description="ボークが廃止された2077年。クセ者投手8人のフェイントを見抜いて二塁を盗む、3Dの野球ゲーム。PUNIPOでブラウザーから遊べます。" ogImage={data.coverImage}>
+  <section class="stack-section"><div class="container detail-page game-detail">
+    <nav class="crumb" aria-label="パンくず"><a href="/">Home</a><span>/</span><a href="/#works">Works</a><span>/</span><span>{data.title}</span></nav>
+    <header class="game-hero">
+      <div>
+        <p class="neko-status">THE MOUND SWINDLER／盗塁ゲーム</p>
+        <h1>{data.title}</h1>
+        <p class="neko-tagline"><span>踊る。巻き戻る。消える。</span><span>全員ピッチャーです。</span></p>
+        <p>ボークが廃止された2077年。マウンドには、とんでもないフェイントで走者をだます「詐欺師」たちが立っています。あなたは一塁走者・背番号17。投手のクセを見抜いて、二塁を盗んでください。</p>
+      </div>
+      <figure><img src={data.coverImage} alt="一塁でリードをとる背番号17の走者と、マウンドの投手" width="1280" height="720" fetchpriority="high" /><figcaption>実際のゲーム画面</figcaption></figure>
+    </header>
+    <div class="card meta-bar">
+      <div class="mb-status"><span class="badge-live">公開中</span></div>
+      <div class="mb-chips"><span class="chip">PC・スマートフォン</span><span class="chip">ブラウザーゲーム</span><span class="chip">PUNIPO</span></div>
+      <div class="mb-actions"><a class="btn btn-primary" href={play} target="_blank" rel="noopener noreferrer">PUNIPOで遊ぶ</a><a class="btn btn-outline" href="#movie">紹介動画を見る</a></div>
+    </div>
+    <div class="detail-body">
+      <section class="block" id="movie" aria-labelledby="movie-title">
+        <h2 id="movie-title">紹介動画</h2>
+        <p>クセの強い投手8人と、盗塁のアウト・セーフの分かれ目を65秒で紹介します。</p>
+        <video class="vertical-video" controls playsinline preload="metadata" poster="/assets/mound-swindler/pv-poster.jpg" aria-label="マウンドの詐欺師 紹介動画">
+          <source src="/videos/mound-swindler-pv.mp4" type="video/mp4" />
+          <a href="/videos/mound-swindler-pv.mp4">紹介動画を開く</a>
+        </video>
+        <p class="caption">ナレーション：VOICEVOX:青山龍星</p>
+      </section>
+      <section class="block" aria-labelledby="features-title">
+        <h2 id="features-title">このゲームの遊びどころ</h2>
+        <div class="features">{data.features.map(f => <div class="feature game-feature"><div><h3>{f.title}</h3><p>{f.body}</p></div></div>)}</div>
+      </section>
+      <section class="block" aria-labelledby="screens-title">
+        <h2 id="screens-title">ゲーム画面</h2>
+        <div class="shots wide">
+          {shots.map(s => <div class="shot"><img src={s.src} alt={s.alt} width="1280" height="720" loading="lazy" decoding="async" /></div>)}
+        </div>
+      </section>
+      <section class="block" id="how-to-play" aria-labelledby="how-title">
+        <h2 id="how-title">操作方法とルール</h2>
+        <dl>
+          <dt>リード</dt><dd>画面を長押し。PCは Space を押し続けます。</dd>
+          <dt>帰塁</dt><dd>指を離す（Space を離す）。</dd>
+          <dt>盗塁</dt><dd>右にスワイプ。PCは →。</dd>
+          <dt>ルール</dt><dd>本塁への投球を見送ると1ストライク。3ストライクで1アウト。3アウトまでの盗塁数を競います。盗塁を重ねると投手が交代します。</dd>
+        </dl>
+        <p class="caption">実況：VOICEVOX:青山龍星／ベンチ：VOICEVOX:玄野武宏。BGM「疾走の瞬間」（オリジナル）。制作には生成AIを使用しています。</p>
+      </section>
+      <footer class="block game-footer"><a class="btn btn-primary" href={play} target="_blank" rel="noopener noreferrer">PUNIPOで遊ぶ</a><p>PUNIPO「blankcanvas ゲーム制作部アワード」の応募作品です。</p><small>紹介情報の更新：2026年11月24日</small></footer>
+    </div>
+    <RelatedWorks slugs={["playcord","yojineko","okusuri-nonde"]} />
+  </div></section>
+</BaseLayout>
